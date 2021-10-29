@@ -1,8 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Mahasiswa</title>
+    <title>Daftar Dana Jaminan</title>
     <div th:insert="fragment :: head"></div>
+    <style>
+        .table{
+            font-family: tahoma, sans-serif;
+            font-size: 12px;
+            width: 80%;
+            border: 4px solid #d3d3d3 !important;
+            background-color: #F9F9F9;
+        }
+        th{
+            font-weight: 200;
+            background-color: rgb(146, 146, 146);
+            border-collapse: collapse;
+            color: white;
+        }
+        th div {
+            color: white;
+            text-decoration: none !important;
+            cursor: pointer;
+        }
+        th div:hover {
+          color: #3c8dbc;
+        }
+        td div {
+            color: #bc3f26;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        td div:hover {
+            color: #fc3811;
+        }
+    </style>
   </head>
 <body>
     
@@ -33,23 +65,27 @@
             </div>
           </div>
 
-          <h2>Daftar Mahasiswa</h2>
-          <div class="table-responsive mt-3">
-            <table class="table table-striped table-sm my-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>NIM</th>
-                  <th>NAMA</th>
-                  <th>ALAMAT</th>
-                  <th>JURUSAN</th>
-                  <th class="text-center">ACTION</th>
-                </tr>
-              </thead>
-              <tbody id="content">
-                
-              </tbody>
-            </table>
+          <div class="accordion" id="accordionExample">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <div class="d-flex bd-highlight">
+                        <div class="p-2 bd-highlight">
+                            Daftar Dana Jaminan
+                        </div>
+                        <div class="ml-auto bd-highlight">
+                            <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body" id="content">
+
+                    </div>
+                </div>
+            </div>
           </div>
         </main>
       </div>
@@ -94,5 +130,6 @@
     </div>
     
     <div th:insert="fragment :: script"></div>
-    <script src="/js/dashboard.js"></script>
+    <script src="/js/danajaminan.js"></script>
+
 </body></html>
