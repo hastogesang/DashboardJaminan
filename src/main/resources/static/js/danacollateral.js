@@ -1,28 +1,55 @@
 $(document).ready(function(){
-    $.ajax({
-        url:'/api/danacollateral',
-        type:'get',
-        contentType:'application/json',
-        success:function(result) {
-            var str = "";
-            for(i=0; i < result.length; i++) {
-                str+=
-                `<tr>
-                    <td><span class="text-danger" onclick="edit(${result[i].id})">Edit</span></td>
-                    <td>${result[i].id}</td>
-                    <td>${result[i].businessDate}</td>
-                    <td>${result[i].code}</td>
-                    <td>${result[i].bank}</td>
-                    <td>${result[i].nomimal}</td>
-                    <td>${result[i].tanggalPenempatan}</td>
-                    <td>${result[i].jatuhTempo}</td>
-                    <td>${result[i].sukuBunga}</td>
-                </tr>`
-            }
+    // $.ajax({
+    //     url:'/api/danacollateral',
+    //     type:'get',
+    //     contentType:'application/json',
+    //     success:function(result) {
+    //         var str = "";
+    //         for(i=0; i < result.length; i++) {
+    //             str+=
+    //             `<tr>
+    //                 <td><div class="text-center"><span onclick="edit(${result[i].id})">Edit</span></div></td>
+    //                 <td>${result[i].id}</td>
+    //                 <td>${result[i].businessDate}</td>
+    //                 <td>${result[i].code}</td>
+    //                 <td>${result[i].bank}</td>
+    //                 <td>${result[i].nomimal}</td>
+    //                 <td>${result[i].tanggalPenempatan}</td>
+    //                 <td>${result[i].jatuhTempo}</td>
+    //                 <td>${result[i].sukuBunga}</td>
+    //             </tr>`
+    //         }
 
-            $('#tbody').html(str)
-        }
-    })
+    //         $('#tbody').html(str)
+    //     }
+    // })
+
+    var str = "";
+        str+=
+        `<tr>
+            <td><div class="text-center"><span onclick="edit(1294)">Edit</span></div></td>
+            <td>1294</td>
+            <td>10/26/2021</td>
+            <td>PT Prolindo Buana Semesta</td>
+            <td>BCA</td>
+            <td>6400000000.0000</td>
+            <td>9/20/2021</td>
+            <td>10/21/2021</td>
+            <td>2.6800</td>
+        </tr>
+        <tr>
+            <td><div class="text-center"><span onclick="edit(1293)">Edit</span></div></td>
+            <td>1293</td>
+            <td>10/4/2021</td>
+            <td>PT Global Buana Karya</td>
+            <td>BCA</td>
+            <td>252468042.9600</td>
+            <td>8/30/2021</td>
+            <td>9/30/2021</td>
+            <td>2.7500</td>
+        </tr>`
+
+    $('#tbody').html(str)
 })
 
 function add(){
@@ -33,9 +60,9 @@ function add(){
     <!-- <form> -->
         <div class="row">
             <div class="form-group form-row col-md-6">
-                <label for="anggotaKeliring" class="col-sm-4 col-form-label">Anggota Keliring</label>
+                <label for="anggotaKliring" class="col-sm-4 col-form-label">Anggota Kliring</label>
                 <div class="col-sm-8">
-                    <select id="anggotaKeliring" class="form-control">
+                    <select id="anggotaKliring" class="form-control">
                         <option selected>PT Agrodana Futures</option>
                         <option>PT Asia Trade Point Futures</option>
                         <option>PT Askap Futures</option>
@@ -60,7 +87,7 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="tanggalPenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="tanggalPenempatan">
+                    <input type="text" class="form-control" id="tanggalPenempatan" placeholder="dd/mm/yy">
                 </div>
             </div>
         </div>
@@ -146,15 +173,15 @@ function add(){
 function edit(id){
     var str = ''
     str = 
-    `<h3>Create</h3>
+    `<h3>Edit</h3>
                     
     <!-- <form> -->
-        <input type="text" id="id" value="${id}">
+        <input type="text" id="id" value="${id}" disabled>
         <div class="row">
             <div class="form-group form-row col-md-6">
-                <label for="anggotaKeliring" class="col-sm-4 col-form-label">Anggota Keliring</label>
+                <label for="anggotaKliring" class="col-sm-4 col-form-label">Anggota Kliring</label>
                 <div class="col-sm-8">
-                    <select id="anggotaKeliring" class="form-control">
+                    <select id="anggotaKliring" class="form-control">
                         <option selected>PT Agrodana Futures</option>
                         <option>PT Asia Trade Point Futures</option>
                         <option>PT Askap Futures</option>
@@ -188,7 +215,7 @@ function edit(id){
             <div class="form-group form-row col-md-6">
                 <label for="jatuhTempo" class="col-sm-4 col-form-label">Tanggal Jatoh Tempo</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="jatuhTempo" placeholder="dd/mm/yy">
+                    <input type="text" class="form-control" id="jatuhTempo">
                 </div>
             </div>
             <div class="form-group form-row col-md-6">
