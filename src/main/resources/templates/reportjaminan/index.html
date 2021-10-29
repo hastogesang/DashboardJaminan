@@ -1,44 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Daftar Dana Jaminan</title>
+    <title>Report Jaminan</title>
     <div th:insert="fragment :: head"></div>
     <style>
-        .table{
-            font-family: tahoma, sans-serif;
-            font-size: 12px;
-            width: 80%;
-            border: 4px solid #d3d3d3 !important;
-            background-color: #F9F9F9;
-        }
-        th{
-            font-weight: 200;
-            background-color: rgb(146, 146, 146);
-            border-collapse: collapse;
-            color: white;
-        }
-        th div {
-            color: white;
-            text-decoration: none !important;
-            cursor: pointer;
-        }
-        th div:hover {
-          color: #3c8dbc;
-        }
-        td div {
-            color: #bc3f26;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        td div:hover {
-            color: #fc3811;
-        }
+        
     </style>
   </head>
 <body>
+    <div th:insert="fragment :: navbar"></div>
     
-  <div th:insert="fragment :: navbar"></div>
 
     <div class="container-fluid">
       <div class="row">
@@ -59,7 +30,7 @@
                 <div class="card-header" id="headingOne">
                     <div class="d-flex bd-highlight">
                         <div class="p-2 bd-highlight">
-                            Daftar Dana Jaminan
+                            Report Jaminan
                         </div>
                         <div class="ml-auto bd-highlight">
                             <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -71,7 +42,7 @@
             
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body" id="content">
-
+                        <h5>test</h5>
                     </div>
                 </div>
             </div>
@@ -119,6 +90,6 @@
     </div>
     
     <div th:insert="fragment :: script"></div>
-    <script src="/js/danajaminan.js"></script>
+    <script src="/js/reportjaminan.js"></script>
 
 </body></html>
