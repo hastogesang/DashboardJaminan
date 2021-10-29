@@ -3,7 +3,7 @@
 	<head>
 		<title>Dana Collateral</title>
 		<div th:insert="fragment::head"></div>
-		<link rel="stylesheet" href="/css/danacollateral.css">
+		<link rel="stylesheet" href="/css/tablestyles.css">
 	</head>
 <body>
 	<div th:insert="fragment::navbar"></div>
@@ -46,13 +46,11 @@
 							
 							<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionOne">
 								<div id="card-body" class="card-body">
-									<h3>Dana Collateral</h3>
 									<div class="table-responsive">
 										<table id="table" class="table table-bordered table-sm">
 											<thead>
 												<tr>
-													<!-- <th><a href="/danacollateral/create" class="text-white">Tambah</a></th> -->
-													<th><span class="pointer" onclick="add()">Tambah</span></th>
+													<th><span onclick="add()">Tambah</span></th>
 													<th>id</th>
 													<th>businessdate</th>
 													<th>code</th>

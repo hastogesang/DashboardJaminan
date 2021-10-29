@@ -1,0 +1,36 @@
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+}
+.breadcrumb {
+    background-color: #FFFFFF;
+}
+.table{
+    font-family: tahoma, sans-serif;
+    font-size: 12px;
+    width: 80%;
+    border: 4px solid #d3d3d3 !important;
+    background-color: #F9F9F9;
+}
+th{
+    font-weight: 200;
+    background-color: rgb(146, 146, 146);
+    border-collapse: collapse;
+    color: white;
+}
+th span {
+    color: white;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+th span:hover {
+  color: #3c8dbc;
+}
+td span {
+    color: #bc3f26;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+td span:hover {
+    color: #fc3811;
+}
