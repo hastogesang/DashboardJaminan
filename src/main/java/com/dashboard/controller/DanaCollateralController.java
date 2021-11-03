@@ -6,17 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value = "/danacollateral")
+@RequestMapping("/danacollateral")
 public class DanaCollateralController {
-    @GetMapping(value = "")
+    @GetMapping("")
     public ModelAndView index() {
         ModelAndView view = new ModelAndView("dana_collateral/index");
         return view;
     }
-
-    // @GetMapping(value = "create")
-    // public ModelAndView create() {
-    //     ModelAndView view = new ModelAndView("dana_collateral/create");
-    //     return view;
-    // }
 }

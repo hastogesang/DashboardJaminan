@@ -1,12 +1,10 @@
 package com.dashboard.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.dashboard.model.DanaCollateral;
-import com.dashboard.repository.DanaCollateralRepo;
+import com.dashboard.model.AnggotaKliring;
+import com.dashboard.repository.AnggotaKliringRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,41 +20,41 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/api/danacollateral")
-public class DanaCollateralApiController {
+@RequestMapping("/api/anggotakliring")
+public class AnggotaKliringApiController {
     
     @Autowired
-    private DanaCollateralRepo danaCollateralRepo;
+    private AnggotaKliringRepo anggotaKliringRepo;
 
     @GetMapping("")
-    public ResponseEntity<List<DanaCollateral>> GetAllDanaCollateral(){
+    public ResponseEntity<List<AnggotaKliring>> GetAllAnggotaKliring(){
         try {
-            List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findAll();
+            List<AnggotaKliring> anggotaKliring = this.anggotaKliringRepo.findAll();
 
-            return new ResponseEntity<>(danaCollaterals, HttpStatus.OK);
+            return new ResponseEntity<>(anggotaKliring, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<List<DanaCollateral>> GetDanaCollateralById(@PathVariable("id") long id)
+    public ResponseEntity<List<AnggotaKliring>> GetAnggotaKliringById(@PathVariable("id") long id)
     {
         if (id != 0)
         {
-            List<DanaCollateral> danaCollateral = this.danaCollateralRepo.findDanaCollateralById(id);
-            return new ResponseEntity<>(danaCollateral, HttpStatus.OK);
+            List<AnggotaKliring> anggotaKliring = this.anggotaKliringRepo.findAnggotaKliringById(id);
+            return new ResponseEntity<>(anggotaKliring, HttpStatus.OK);
         } else {
-            List<DanaCollateral> danaCollateral = this.danaCollateralRepo.findAll();
-            return new ResponseEntity<>(danaCollateral, HttpStatus.OK);
+            List<AnggotaKliring> anggotaKliring = this.anggotaKliringRepo.findAll();
+            return new ResponseEntity<>(anggotaKliring, HttpStatus.OK);
         }
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> CreateDanaCollateral(@RequestBody DanaCollateral danaCollateral)
+    public ResponseEntity<Object> CreateAnggotaKliring(@RequestBody AnggotaKliring anggotaKliring)
     {
         try {
-            this.danaCollateralRepo.save(danaCollateral);
+            this.anggotaKliringRepo.save(anggotaKliring);
             return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
@@ -64,14 +62,14 @@ public class DanaCollateralApiController {
     }
 
     @PutMapping("")
-    public ResponseEntity<Object> EditDanaCollateral(@RequestBody DanaCollateral danaCollateral){
+    public ResponseEntity<Object> EditAnggotaKliring(@RequestBody AnggotaKliring anggotaKliring){
         try {
-            Optional<DanaCollateral> danaCollateralData = this.danaCollateralRepo.findById(danaCollateral.getId());
+            Optional<AnggotaKliring> anggotaKliringData = this.anggotaKliringRepo.findById(anggotaKliring.getId());
 
-            if(danaCollateralData.isPresent()){
-                danaCollateralData.get().setCode(danaCollateral.getCode());
+            if(anggotaKliringData.isPresent()){
+                anggotaKliringData.get().setCode(anggotaKliring.getCode());
                 
-                this.danaCollateralRepo.save(danaCollateralData.get());
+                this.anggotaKliringRepo.save(anggotaKliringData.get());
 
                 return new ResponseEntity<>("success", HttpStatus.OK);
             }else{

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Anggota Kliring")
+@Table(name = "AnggotaKliring")
 public class AnggotaKliring {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,10 @@ public class AnggotaKliring {
 
     @Column(name = "name")
     private String name;
-
+    
     @Column(name = "address")
     private String address;
+
+    @Column(name = "type")
+    private String type;
 }

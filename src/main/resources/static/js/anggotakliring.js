@@ -1,21 +1,40 @@
 $(document).ready(function(){
-    var str = ""
-    str+= 
-    `<tr>
-        <td><div class="text-center"><span onclick="edit(1)">Edit</span></div></td>
-        <td>172</td>
-        <td>PT Abi Komoditi Berjangka</td>
-        <td>Menara Rajawali Lt. 11 Jl. DR Ide Anak Agung Gde Agung Lot. 5.1 Kawasan Mega Kuningan Jakarta Selatan</td>
-    </tr>
-    <tr>
-        <td><div class="text-center"><span onclick="edit(2)">Edit</span></div></td>
-        <td>111</td>
-        <td>PT Adhikarya Cipta Persada</td>
-        <td>Multivision Tower Lt. 6 Jl. Kuningan Mulia LOT 9B
-        </td>
-    </tr>`
+    $.ajax({
+        url:'/api/anggotakliring',
+        type:'get',
+        contentType:'application/json',
+        success:function(result) {
+            var str = "";
+            for(i=0; i < result.length; i++) {
+                str+=
+                `<tr>
+                    <td><div class="text-center"><span onclick="edit(${result[i].id})">Edit</span></div></td>
+                    <td>${result[i].code}</td>
+                    <td>${result[i].name}</td>
+                    <td>${result[i].address}</td>
+                </tr>`
+            }
 
-    $('#tbody').html(str)
+            $('#tbody').html(str)
+        }
+    })
+    // var str = ""
+    // str+= 
+    // `<tr>
+    //     <td><div class="text-center"><span onclick="edit(1)">Edit</span></div></td>
+    //     <td>172</td>
+    //     <td>PT Abi Komoditi Berjangka</td>
+    //     <td>Menara Rajawali Lt. 11 Jl. DR Ide Anak Agung Gde Agung Lot. 5.1 Kawasan Mega Kuningan Jakarta Selatan</td>
+    // </tr>
+    // <tr>
+    //     <td><div class="text-center"><span onclick="edit(2)">Edit</span></div></td>
+    //     <td>111</td>
+    //     <td>PT Adhikarya Cipta Persada</td>
+    //     <td>Multivision Tower Lt. 6 Jl. Kuningan Mulia LOT 9B
+    //     </td>
+    // </tr>`
+
+    // $('#tbody').html(str)
 })
 
 function add(){

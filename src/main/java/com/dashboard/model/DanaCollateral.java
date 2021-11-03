@@ -28,8 +28,8 @@ public class DanaCollateral {
     @Column(name = "id")
     private Long id;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "id", timezone = "Asia/Jakarta")
     @Column(name = "businessDate")
     private Date businessDate;
 
@@ -42,14 +42,34 @@ public class DanaCollateral {
     @Column(name = "nominal")
     private Double nominal;
 
-    @Column(name = "tanggalPenempatan")
-    private String tanggalPenempatan;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "id", timezone = "Asia/Jakarta")
+    @Column(name = "tanggalPenempatan")
+    private Date tanggalPenempatan;
+
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "id", timezone = "Asia/Jakarta")
     @Column(name = "jatuhTempo")
     private Date jatuhTempo;
 
     @Column(name = "sukuBunga")
     private Double sukuBunga;
+
+    @Column(name = "penempatanBaru")
+    private String penempatanBaru;
+
+    @Column(name = "adjustmentBunga")
+    private Double adjustmentBunga;
+    
+    @Column(name = "bungaSetelahAdjustment")
+    private Double bungaSetelahAdjustment;
+
+    @Column(name = "aro")
+    private boolean aro;
+
+    @Column(name = "multiple")
+    private boolean multiple;
+
+    @Column(name = "sequence")
+    private String sequence;
 }

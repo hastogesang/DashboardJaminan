@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value = "/anggotakliring")
+@RequestMapping("/anggotakliring")
 public class AnggotaKliringController {
-    @GetMapping(value = "")
+    @GetMapping("")
     public ModelAndView index() {
         ModelAndView view = new ModelAndView("anggota_kliring/index");
         return view;
