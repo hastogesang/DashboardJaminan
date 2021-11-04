@@ -1,5 +1,6 @@
 package com.dashboard.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -26,50 +27,68 @@ public class DanaCollateral {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "id", timezone = "Asia/Jakarta")
-    @Column(name = "businessDate")
-    private Date businessDate;
+    @Column(name = "businessdate", nullable = true)
+    private Date businessdate;
 
-    @Column(name = "code")
+    @Column(name = "code", length = 3, nullable = true)
     private String code;
 
-    @Column(name = "bank")
+    @Column(name = "bank", length = 20, nullable = true)
     private String bank;
-
-    @Column(name = "nominal")
-    private Double nominal;
-
-    @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "id", timezone = "Asia/Jakarta")
-    @Column(name = "tanggalPenempatan")
-    private Date tanggalPenempatan;
-
-    @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "id", timezone = "Asia/Jakarta")
-    @Column(name = "jatuhTempo")
-    private Date jatuhTempo;
-
-    @Column(name = "sukuBunga")
-    private Double sukuBunga;
-
-    @Column(name = "penempatanBaru")
-    private String penempatanBaru;
-
-    @Column(name = "adjustmentBunga")
-    private Double adjustmentBunga;
     
-    @Column(name = "bungaSetelahAdjustment")
-    private Double bungaSetelahAdjustment;
+    @Column(name = "nominal", nullable = true)
+    private BigDecimal nominal;
+    
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "id", timezone = "Asia/Jakarta")
+    @Column(name = "tanggalpenempatan", nullable = true)
+    private Date tanggalpenempatan;
 
-    @Column(name = "aro")
-    private boolean aro;
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "id", timezone = "Asia/Jakarta")
+    @Column(name = "jatuhtempo", nullable = true)
+    private Date jatuhtempo;
 
-    @Column(name = "multiple")
-    private boolean multiple;
+    @Column(name = "jangkawaktu", nullable = true)
+    private Integer jangkawaktu;
 
-    @Column(name = "sequence")
-    private String sequence;
+    @Column(name = "sukubunga", nullable = true)
+    private BigDecimal sukubunga;
+
+    @Column(name = "bungabruto", nullable = true)
+    private BigDecimal bungabruto;
+
+    @Column(name = "pph", nullable = true)
+    private BigDecimal pph;
+
+    @Column(name = "adjustment", nullable = true)
+    private BigDecimal adjustment;
+
+    @Column(name = "bunganetto", nullable = true)
+    private BigDecimal bunganetto;
+
+    @Column(name = "bungatransfer", nullable = true)
+    private BigDecimal bungatransfer;
+
+    @Column(name = "penempatan", nullable = true)
+    private BigDecimal penempatan;
+
+    @Column(name = "aro", length = 1, nullable = true)
+    private String aro;
+
+    @Column(name = "multiple", length = 1, nullable = true)
+    private String multiple;
+
+    @Column(name = "sequence", nullable = true)
+    private Integer sequence;
+
+    @Column(name = "flag", length = 1, nullable = true)
+    private String flag;
+
+    @Column(name = "admin", nullable = true)
+    private BigDecimal admin;
 }

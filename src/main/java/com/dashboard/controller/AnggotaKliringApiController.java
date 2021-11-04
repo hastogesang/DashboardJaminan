@@ -38,7 +38,7 @@ public class AnggotaKliringApiController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<List<AnggotaKliring>> GetAnggotaKliringById(@PathVariable("id") long id)
+    public ResponseEntity<List<AnggotaKliring>> GetAnggotaKliringById(@PathVariable("id") Integer id)
     {
         if (id != 0)
         {

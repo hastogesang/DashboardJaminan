@@ -20,17 +20,17 @@ public class AnggotaKliring {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
-    @Column(name = "code")
+    @Column(name = "code", length = 4, nullable = true)
     private String code;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 200, nullable = true)
     private String name;
     
-    @Column(name = "address")
+    @Column(name = "address", length = 2000, nullable = true)
     private String address;
 
-    @Column(name = "type")
+    @Column(name = "type", length = 1, nullable = true)
     private String type;
 }

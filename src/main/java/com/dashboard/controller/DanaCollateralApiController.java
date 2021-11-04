@@ -1,7 +1,8 @@
 package com.dashboard.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @RestController
 @CrossOrigin("*")
@@ -40,7 +49,7 @@ public class DanaCollateralApiController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<List<DanaCollateral>> GetDanaCollateralById(@PathVariable("id") long id)
+    public ResponseEntity<List<DanaCollateral>> GetDanaCollateralById(@PathVariable("id") Integer id)
     {
         if (id != 0)
         {
@@ -80,5 +89,24 @@ public class DanaCollateralApiController {
         } catch (Exception e) {
             return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("get")
+    public List<DanaCollateral> GetDanaCollateral(){
+            List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findAll();
+            return danaCollaterals;
+    }
+
+    @GetMapping("pdf")
+    public String generatePdf() throws FileNotFoundException, JRException
+    {
+        JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(GetDanaCollateral());
+        JasperReport compileReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/static/assets/Blank_A4.jrxml"));
+        
+        HashMap<String, Object> map = new HashMap<>();
+        JasperPrint fillReport = JasperFillManager.fillReport(compileReport, map, beanCollectionDataSource);
+        JasperExportManager.exportReportToPdfFile(fillReport, "D:\\dana.pdf");
+
+        return "Generated";
     }
 }

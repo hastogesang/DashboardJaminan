@@ -7,7 +7,7 @@ import com.dashboard.model.DanaCollateral;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface DanaCollateralRepo extends JpaRepository<DanaCollateral, Long>{
+public interface DanaCollateralRepo extends JpaRepository<DanaCollateral, Integer>{
     @Query("FROM DanaCollateral WHERE id = ?1")
-    List<DanaCollateral> findDanaCollateralById(Long id);
+    List<DanaCollateral> findDanaCollateralById(Integer id);
 }

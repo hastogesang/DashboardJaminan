@@ -10,13 +10,13 @@ $(document).ready(function(){
                 `<tr>
                     <td><div class="text-center"><span onclick="edit(${result[i].id})">Edit</span></div></td>
                     <td>${result[i].id}</td>
-                    <td>${result[i].businessDate}</td>
+                    <td>${result[i].businessdate}</td>
                     <td>${result[i].code}</td>
                     <td>${result[i].bank}</td>
                     <td>${result[i].nominal}</td>
-                    <td>${result[i].tanggalPenempatan}</td>
-                    <td>${result[i].jatuhTempo}</td>
-                    <td>${result[i].sukuBunga}</td>
+                    <td>${result[i].tanggalpenempatan}</td>
+                    <td>${result[i].jatuhtempo}</td>
+                    <td>${result[i].sukubunga}</td>
                 </tr>`
             }
 
@@ -33,12 +33,9 @@ function add(){
     <!-- <form> -->
         <div class="row">
             <div class="form-group form-row col-md-6">
-                <label for="anggotaKliring" class="col-sm-4 col-form-label">Anggota Kliring</label>
+                <label for="code" class="col-sm-4 col-form-label">Anggota Kliring</label>
                 <div class="col-sm-8">
-                    <select id="anggotaKliring" class="form-control">
-                        <option selected>PT Agrodana Futures</option>
-                        <option>PT Asia Trade Point Futures</option>
-                        <option>PT Askap Futures</option>
+                    <select id="code" class="form-control">
                     </select>
                 </div>
             </div>
@@ -52,48 +49,48 @@ function add(){
 
         <div class="row">
             <div class="form-group form-row col-md-6">
-                <label for="penempatanBaru" class="col-sm-4 col-form-label">Penempatan Baru</label>
+                <label for="penempatan" class="col-sm-4 col-form-label">Penempatan Baru</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="penempatanBaru">
+                    <input type="text" class="form-control" id="penempatan">
                 </div>
             </div>
             <div class="form-group form-row col-md-6">
-                <label for="tanggalPenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
+                <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="tanggalPenempatan" placeholder="dd/mm/yy">
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group form-row col-md-6">
-                <label for="jatuhTempo" class="col-sm-4 col-form-label">Tanggal Jatoh Tempo</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" id="jatuhTempo" placeholder="dd/mm/yy">
-                </div>
-            </div>
-            <div class="form-group form-row col-md-6">
-                <label for="transferDana" class="col-sm-4 col-form-label">Transfer Dana</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" id="transferDana">
+                    <input type="text" class="form-control" id="tanggalpenempatan" placeholder="dd/mm/yy">
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group form-row col-md-6">
-                <label for="sukuBunga" class="col-sm-4 col-form-label">Suku Bunga</label>
+                <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatoh Tempo</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="jatuhtempo" placeholder="dd/mm/yy">
+                </div>
+            </div>
+            <div class="form-group form-row col-md-6">
+                <label for="nominal" class="col-sm-4 col-form-label">Transfer Dana</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="nominal">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group form-row col-md-6">
+                <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="sukuBunga">
+                    <input type="text" class="form-control" id="sukubunga">
                 </div>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="bunga">
                 </div>
             </div>
             <div class="form-group form-row col-md-6">
-                <label for="adjustmentBunga" class="col-sm-4 col-form-label">Adjustment Bunga</label>
+                <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="adjustmentBunga">
+                    <input type="text" class="form-control" id="adjustment">
                 </div>
             </div>
         </div>
@@ -140,27 +137,40 @@ function add(){
         <button type="button" class="btn btn-sm btn-primary" onclick="javascript:window.open('/danacollateral', '_self')">Batal</button>
     <!-- </form> -->`
 
+    $.ajax({
+        url: '/api/anggotakliring/',
+        type: 'get',
+        contentType: 'application/json',
+        success: function(anggotaKliringResult) {
+            var akr = anggotaKliringResult
+            var str2 = ''
+            for (i = 0; i < akr.length; i++) {
+                str2 += `<option value="${akr[i].code}">${akr[i].name}</option>`
+            }
+            $('#code').html(str2)
+        }
+    })
+
     $('#card-body').html(str)
 }
 
 function save(){
     var submitted_data =
     `{
-        "code":"`+ $('#anggotaKliring').val() +`",
+        "code":"`+ $('#code').val() +`",
         "bank":"`+ $('#bank').val() +`",
-        "penempatanBaru":"`+ $('#penempatanBaru').val() +`",
-        "tanggalPenempatan":"`+ $('#tanggalPenempatan').val() +`",
-        "jatuhTempo":"`+ $('#jatuhTempo').val() +`",
-        "nominal":"`+ $('#transferDana').val() +`",
-        "sukuBunga":"`+ $('#sukuBunga').val() +`",
-        "adjustmentBunga":"`+ $('#adjustmentBunga').val() +`",
-        "bungaSetelahAdjustment":"`+ $('#bungaSetelahAdjustment').val() +`",
+        "penempatan":"`+ $('#penempatan').val() +`",
+        "tanggalpenempatan":"`+ $('#tanggalpenempatan').val() +`",
+        "jatuhtempo":"`+ $('#jatuhtempo').val() +`",
+        "nominal":"`+ $('#nominal').val() +`",
+        "sukubunga":"`+ $('#sukubunga').val() +`",
+        "adjustment":"`+ $('#adjustment').val() +`",
         "aro":"`+ $('#aro').val() +`",
         "multiple":"`+ $('#multiple').val() +`",
         "sequence":"`+ $('#sequence').val() +`",
         "businessDate":"`+ $('#tanggalPenempatan').val() +`"
     }`;
-    console.log(submitted_data)
+    // console.log(submitted_data)
 
     $.ajax({
         url: "/api/danacollateral",
@@ -180,20 +190,18 @@ function edit(id){
         contentType:"application/json",
         success:function(result) {
             r = result[0]
+            // console.log(r)
             var str = ''
             str = 
             `<h3>Edit</h3>
                             
             <!-- <form> -->
-                <input type="text" id="id" value="${r.id}" disabled>
+                <input type="hidden" id="id" value="${r.id}" disabled>
                 <div class="row">
                     <div class="form-group form-row col-md-6">
                         <label for="anggotaKliring" class="col-sm-4 col-form-label">Anggota Kliring</label>
                         <div class="col-sm-8">
                             <select id="anggotaKliring" class="form-control">
-                                <option selected>PT Agrodana Futures</option>
-                                <option>PT Asia Trade Point Futures</option>
-                                <option>PT Askap Futures</option>
                             </select>
                         </div>
                     </div>
@@ -207,48 +215,48 @@ function edit(id){
         
                 <div class="row">
                     <div class="form-group form-row col-md-6">
-                        <label for="penempatanBaru" class="col-sm-4 col-form-label">Penempatan Baru</label>
+                        <label for="penempatan" class="col-sm-4 col-form-label">Penempatan Baru</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="penempatanBaru" value="${r.penempatanBaru}">
+                            <input type="text" class="form-control" id="penempatan" value="${r.penempatan}">
                         </div>
                     </div>
                     <div class="form-group form-row col-md-6">
-                        <label for="tanggalPenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
+                        <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="tanggalPenempatan" value="${r.tanggalPenempatan}">
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="row">
-                    <div class="form-group form-row col-md-6">
-                        <label for="jatuhTempo" class="col-sm-4 col-form-label">Tanggal Jatoh Tempo</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="jatuhTempo" value="${r.jatuhTempo}">
-                        </div>
-                    </div>
-                    <div class="form-group form-row col-md-6">
-                        <label for="transferDana" class="col-sm-4 col-form-label">Transfer Dana</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="transferDana" value="${r.nominal}">
+                            <input type="text" class="form-control" id="tanggalpenempatan" value="${r.tanggalpenempatan}">
                         </div>
                     </div>
                 </div>
         
                 <div class="row">
                     <div class="form-group form-row col-md-6">
-                        <label for="sukuBunga" class="col-sm-4 col-form-label">Suku Bunga</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="sukuBunga" value="${r.sukuBunga}">
-                        </div>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="bunga">
+                        <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatoh Tempo</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="jatuhtempo" value="${r.jatuhtempo}">
                         </div>
                     </div>
                     <div class="form-group form-row col-md-6">
-                        <label for="adjustmentBunga" class="col-sm-4 col-form-label">Adjustment Bunga</label>
+                        <label for="nominal" class="col-sm-4 col-form-label">Transfer Dana</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="adjustmentBunga" value="${r.adjustmentBunga}">
+                            <input type="text" class="form-control" id="nominal" value="${r.nominal}">
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="form-group form-row col-md-6">
+                        <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="sukubunga" value="${r.sukubunga}">
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="bunga" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group form-row col-md-6">
+                        <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="adjustment" value="${r.adjustment}">
                         </div>
                     </div>
                 </div>
@@ -257,7 +265,7 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="bungaSetelahAdjustment" class="col-sm-4 col-form-label">Bunga Setelah Adjustment</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="bungaSetelahAdjustment" value="${r.bungaSetelahAdjustment}">
+                            <input type="text" class="form-control" id="bungaSetelahAdjustment" readonly>
                         </div>
                     </div>
                     <div class="form-group form-row col-md-6">
@@ -285,16 +293,59 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="sequence" class="col-sm-4 col-form-label">Sequence</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="sequence">
+                            <input type="text" class="form-control" id="sequence" value="${r.sequence}">
                         </div>
                     </div>
                 </div>
                 
-                <button type="submit" class="btn btn-sm btn-primary" onclick="javascript:window.open('/danacollateral', '_self')">Simpan</button>
+                <button type="submit" class="btn btn-sm btn-primary" onclick="update()">Simpan</button>
                 <button type="submit" class="btn btn-sm btn-primary" onclick="javascript:window.open('/danacollateral', '_self')">Batal</button>
             <!-- </form> -->`
         
+            $.ajax({
+                url: '/api/anggotakliring/',
+                type: 'get',
+                contentType: 'application/json',
+                success: function(anggotaKliringResult) {
+                    var akr = anggotaKliringResult
+                    var str2 = ''
+                    for (i = 0; i < akr.length; i++) {
+                        str2 += `<option value="${akr[i].code}" ${r.code == akr[i].code ? "Selected" : ""}>${akr[i].name}</option>`
+                    }
+                    $('#anggotaKliring').html(str2)
+                }
+            })
+
             $('#card-body').html(str)
+        }
+    })
+}
+
+function update(){
+    var submitted_data =
+    `{
+        "id":"`+ $('#id').val() +`",
+        "code":"`+ $('#anggotaKliring').val() +`",
+        "bank":"`+ $('#bank').val() +`",
+        "penempatan":"`+ $('#penempatan').val() +`",
+        "tanggalpenempatan":"`+ $('#tanggalpenempatan').val() +`",
+        "jatuhtempo":"`+ $('#jatuhtempo').val() +`",
+        "nominal":"`+ $('#nominal').val() +`",
+        "sukubunga":"`+ $('#sukubunga').val() +`",
+        "adjustment":"`+ $('#adjustment').val() +`",
+        "aro":"`+ $('#aro').val() +`",
+        "multiple":"`+ $('#multiple').val() +`",
+        "sequence":"`+ $('#sequence').val() +`",
+        "businessDate":"`+ $('#tanggalpenempatan').val() +`"
+    }`;
+
+    $.ajax({
+        url: "/api/danacollateral",
+        type: "put",
+        contentType: "application/json",
+        data : submitted_data,
+        success: function(){
+            window.location.reload();
         }
     })
 }
