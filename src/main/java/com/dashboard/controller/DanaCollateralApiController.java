@@ -97,16 +97,16 @@ public class DanaCollateralApiController {
             return danaCollaterals;
     }
 
-    @GetMapping("pdf")
-    public String generatePdf() throws FileNotFoundException, JRException
-    {
-        JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(GetDanaCollateral());
-        JasperReport compileReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/static/assets/Blank_A4.jrxml"));
+    // @GetMapping("pdf")
+    // public String generatePdf() throws FileNotFoundException, JRException
+    // {
+    //     JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(GetDanaCollateral());
+    //     JasperReport compileReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/static/assets/Blank_A4.jrxml"));
         
-        HashMap<String, Object> map = new HashMap<>();
-        JasperPrint fillReport = JasperFillManager.fillReport(compileReport, map, beanCollectionDataSource);
-        JasperExportManager.exportReportToPdfFile(fillReport, "D:\\dana.pdf");
+    //     HashMap<String, Object> map = new HashMap<>();
+    //     JasperPrint fillReport = JasperFillManager.fillReport(compileReport, map, beanCollectionDataSource);
+    //     JasperExportManager.exportReportToPdfFile(fillReport, "D:\\dana.pdf");
 
-        return "Generated";
-    }
+    //     return "Generated";
+    // }
 }

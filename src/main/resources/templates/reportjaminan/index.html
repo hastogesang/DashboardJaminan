@@ -3,9 +3,9 @@
   <head>
     <title>Report Jaminan</title>
     <div th:insert="fragment :: head"></div>
-    <style>
-        
-    </style>
+    <link rel="stylesheet" href="/css/tablestyles.css">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+
   </head>
 <body>
     <div th:insert="fragment :: navbar"></div>
@@ -19,9 +19,15 @@
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Dashboard</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
-              <div class="btn-group mr-2">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                    </ol>
+                </nav>
+              <!-- <div class="btn-group mr-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-              </div>
+              </div> -->
             </div>
           </div>
 
@@ -41,9 +47,13 @@
                 </div>
             
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body" id="content">
-                        <h5>test</h5>
+                  <div class="container">
+                    <div class="row">
+                      <div class="card-body" id="content">
+                          
+                      </div>
                     </div>
+                  </div>
                 </div>
             </div>
           </div>

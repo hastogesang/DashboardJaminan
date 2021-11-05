@@ -1,88 +1,282 @@
-function FormTambah(){
-    let form = '';
-    form += `
-        <!-- <form> -->
+  function FormTambah(){
+      let form = '';
+      form += `
+          <!-- <form> -->
+              <div class="row">
+                <div class="form-group form-row col-md-6">
+                  <label for="code" class="col-sm-4 col-form-label">Anggota Keliring</label>
+                  <div class="col-sm-8">
+                    <select id="code" class="form-control input-sm">
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group form-row col-md-6">
+                  <label for="bank" class="col-sm-4 col-form-label">Bank</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control input-sm" id="bank">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="form-group form-row col-md-6">
+                  <label for="jumlah" class="col-sm-4 col-form-label">Penempatan Awal</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="jumlah">
+                  </div>
+                </div>
+                <div class="form-group form-row col-md-6">
+                  <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="tanggalpenempatan" placeholder="dd/mm/yy">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="form-group form-row col-md-6">
+                  <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="jatuhtempo" placeholder="dd/mm/yy">
+                  </div>
+                </div>
+                <div class="form-group form-row col-md-6">
+                  <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
+                  <div class="col-sm-4">
+                    <input type="text" class="form-control" id="sukubunga" onblur="calcInterest()">
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="text" class="form-control" id="bunga" readonly="readonly">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="form-group form-row col-md-6">
+                  <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="adjustment" onblur="calcAdjusment();">
+                  </div>
+                </div>
+                <div class="form-group form-row col-md-6">
+                  <label for="afterAdjustment" class="col-sm-4 col-form-label">Bunga Setelah Adjustment</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="afterAdjustment" readonly="readonly">
+                  </div>
+                </div>
+              </div>
+                
+              <div class="row">
+                <div class="form-group form-row col-md-6">
+                  <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="transferdana">
+                  </div>
+                </div>
+                <div class="form-group form-row col-md-6">
+                  <label for="transferdanakbi" class="col-sm-4 col-form-label">Transfer Dana Ke KBI</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="transferdanakbi">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="form-group form-row col-md-6">
+                  <label for="admin" class="col-sm-4 col-form-label">Biaya Admin</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="admin">
+                  </div>
+                </div>
+                <div class="form-group form-row col-md-6">
+                  <label for="aro" class="col-sm-4 col-form-label">ARO</label>
+                  <div class="col-sm-8">
+                    <select id="aro" class="form-control">
+                      <option selected>-- Pilih --</option>
+                      <option>True</option>
+                      <option>False</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+                
+              <div class="row">
+                <div class="form-group form-row col-md-6">
+                  <label for="multiple" class="col-sm-4 col-form-label">Multiple</label>
+                  <div class="col-sm-8">
+                    <select id="multiple" class="form-control">
+                      <option selected>-- Pilih --</option>
+                      <option>True</option>
+                      <option>False</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group form-row col-md-6">
+                  <label for="sequence" class="col-sm-4 col-form-label">Sequence</label>
+                  <div class="col-sm-8">
+                    <input type="number" class="form-control" id="sequence">
+                  </div>
+                </div>
+              </div>
+              
+              <button type="submit" class="btn btn-sm btn-primary" onclick="save(this.value)">Simpan</button>
+              <button type="submit" class="btn btn-sm btn-dark" onclick="javascript:window.open('/danajaminan', '_self')">Batal</button>
+          <!-- </form> -->
+      `;
+      $.ajax({
+          url: '/api/anggotakliring/',
+          type: 'get',
+          contentType: 'application/json',
+          success: function(anggotaKliringResult) {
+              var akr = anggotaKliringResult
+              var str2 = ''
+              for (i = 0; i < akr.length; i++) {
+                  if(akr[i].name == null){
+                    str2 += `<option value="${akr[i].code}"></option>`
+                  } else {
+                    str2 += `<option value="${akr[i].code}">${akr[i].name}</option>`
+                  }
+              }
+              $('#code').html(str2)
+          }
+      })
+      $("#card-body").html(form);
+  }
+
+  function save(){
+    var submitted_data =
+    `{
+        "code":"`+ $('#code').val() +`",
+        "bank":"`+ $('#bank').val() +`",
+        "jumlah":"`+ $('#jumlah').val() +`",
+        "tanggalpenempatan":"`+ $('#tanggalpenempatan').val() +`",
+        "jatuhtempo":"`+ $('#jatuhtempo').val() +`",
+        "transferdana":"`+ $('#transferdana').val() +`",
+        "sukubunga":"`+ $('#sukubunga').val() +`",
+        "adjustment":"`+ $('#adjustment').val() +`",
+        "bunga":"`+ $('#afterAdjustment').val() +`",
+        "admin":"`+ $('#admin').val() +`",
+        "transferdanakbi":"`+ $('#transferdanakbi').val() +`",
+        "aro":"`+ $('#aro').val().substring(0,1) +`",
+        "multiple":"`+ $('#multiple').val().substring(0,1) +`",
+        "sequence":"`+ $('#sequence').val() +`",
+        "businessdate":"`+ $('#tanggalpenempatan').val() +`"
+    }`;
+    console.log(submitted_data);
+
+    // $.ajax({
+    //     url: "/api/danacollateral",
+    //     type: "post",
+    //     contentType: "application/json",
+    //     data : submitted_data,
+    //     success: function(){
+    //         window.location.reload();
+    //     }
+    // })
+  }
+
+  function FormEdit(id){
+    $.ajax({
+      url: '/api/danajaminan/' + id,
+      type: 'get',
+      contentType: 'application/json',
+      success: function (data) {
+        console.log(data);
+          let form = '';
+            form += `
+            <!-- <form> -->
             <div class="row">
               <div class="form-group form-row col-md-6">
-                <label for="anggotaKeliring" class="col-sm-4 col-form-label">Anggota Keliring</label>
+                <label for="code" class="col-sm-4 col-form-label">Anggota Keliring</label>
                 <div class="col-sm-8">
-                  <select id="anggotaKeliring" class="form-control input-sm">
-                    <option selected>PT Agrodana Futures</option>
-                    <option>PT Asia Trade Point Futures</option>
-                    <option>PT Askap Futures</option>
+                  <select id="code" class="form-control input-sm">
                   </select>
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
                 <label for="bank" class="col-sm-4 col-form-label">Bank</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control input-sm" id="bank">
+                  <input type="text" class="form-control input-sm" id="bank" value="${data.bank}">
                 </div>
               </div>
             </div>
 
             <div class="row">
               <div class="form-group form-row col-md-6">
-                <label for="penempatanBaru" class="col-sm-4 col-form-label">Penempatan Baru</label>
+                <label for="jumlah" class="col-sm-4 col-form-label">Penempatan Awal</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="penempatanBaru">
+                  <input type="text" class="form-control" id="jumlah" value="${data.penempatan}">
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
-                <label for="tanggalPenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
+                <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="tanggalPenempatan">
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="form-group form-row col-md-6">
-                <label for="jatuhTempo" class="col-sm-4 col-form-label">Tanggal Jatoh Tempo</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="jatuhTempo" placeholder="dd/mm/yy">
-                </div>
-              </div>
-              <div class="form-group form-row col-md-6">
-                <label for="transferDana" class="col-sm-4 col-form-label">Transfer Dana</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="transferDana">
+                  <input type="text" class="form-control" id="tanggalpenempatan" placeholder="dd/mm/yy" value="${data.tanggalpenempatan}">
                 </div>
               </div>
             </div>
 
             <div class="row">
               <div class="form-group form-row col-md-6">
-                <label for="sukuBunga" class="col-sm-4 col-form-label">Suku Bunga</label>
+                <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="jatuhtempo" placeholder="dd/mm/yy" value="${data.jatuhtempo}">
+                </div>
+              </div>
+              <div class="form-group form-row col-md-6">
+                <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
                 <div class="col-sm-4">
-                  <input type="text" class="form-control" id="sukuBunga">
+                  <input type="text" class="form-control" id="sukubunga" onblur="calcInterest()" value="${data.sukubunga}">
                 </div>
                 <div class="col-sm-4">
-                  <input type="text" class="form-control" id="bunga">
+                  <input type="text" class="form-control" id="bunga" readonly="readonly">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group form-row col-md-6">
+                <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="adjustment" onblur="calcAdjusment();" value="${data.adjustment}">
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
-                <label for="adjustmentBunga" class="col-sm-4 col-form-label">Adjustment Bunga</label>
+                <label for="afterAdjustment" class="col-sm-4 col-form-label">Bunga Setelah Adjustment</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="adjustmentBunga">
+                  <input type="text" class="form-control" id="afterAdjustment" readonly="readonly">
                 </div>
               </div>
             </div>
               
             <div class="row">
               <div class="form-group form-row col-md-6">
-                <label for="bungaAdjustment" class="col-sm-4 col-form-label">Bunga Setelah Adjustment</label>
+                <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="bungaAdjustment">
+                  <input type="text" class="form-control" id="transferdana" value="${data.transferdana}">
+                </div>
+              </div>
+              <div class="form-group form-row col-md-6">
+                <label for="transferdanakbi" class="col-sm-4 col-form-label">Transfer Dana Ke KBI</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="transferdanakbi" value="${data.transferdanakbi}">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group form-row col-md-6">
+                <label for="admin" class="col-sm-4 col-form-label">Biaya Admin</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="admin" value="${data.admin}">
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
                 <label for="aro" class="col-sm-4 col-form-label">ARO</label>
                 <div class="col-sm-8">
                   <select id="aro" class="form-control">
-                    <option selected>-- Pilih --</option>
-                    <option>True</option>
-                    <option>False</option>
+                    <option ${data.aro == "T" ? "Selected" : ""}>True</option>
+                    <option ${data.aro == "F" ? "Selected" : ""}>False</option>
                   </select>
                 </div>
               </div>
@@ -93,207 +287,105 @@ function FormTambah(){
                 <label for="multiple" class="col-sm-4 col-form-label">Multiple</label>
                 <div class="col-sm-8">
                   <select id="multiple" class="form-control">
-                    <option selected>-- Pilih --</option>
-                    <option>True</option>
-                    <option>False</option>
+                    <option ${data.multiple == "T" ? "Selected" : ""}>True</option>
+                    <option ${data.multiple == "F" ? "Selected" : ""}>False</option>
                   </select>
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
                 <label for="sequence" class="col-sm-4 col-form-label">Sequence</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="sequence">
+                  <input type="number" class="form-control" id="sequence" value="${data.sequence}">
                 </div>
               </div>
             </div>
             
-            <button type="submit" class="btn btn-sm btn-primary" onclick="TambahData(this.value)">Simpan</button>
+            <button type="submit" class="btn btn-sm btn-primary" onclick="save(this.value)">Simpan</button>
             <button type="submit" class="btn btn-sm btn-dark" onclick="javascript:window.open('/danajaminan', '_self')">Batal</button>
-        <!-- </form> -->
-    `;
-    $("#content").html(form);
-}
+            <!-- </form> -->
+            `;
+            $('#tanggalpenempatan').val()
 
-function FormEdit(){
-  let form = '';
-    form += `
-        <!-- <form> -->
-          <h5>Edit Dana Jaminan</h5>
-            <div class="row">
-              <div class="form-group form-row col-md-6">
-                <label for="anggotaKeliring" class="col-sm-4 col-form-label">Anggota Keliring</label>
-                <div class="col-sm-8">
-                  <select id="anggotaKeliring" class="form-control input-sm">
-                    <option selected>PT Agrodana Futures</option>
-                    <option>PT Asia Trade Point Futures</option>
-                    <option>PT Askap Futures</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group form-row col-md-6">
-                <label for="bank" class="col-sm-4 col-form-label">Bank</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control input-sm" id="bank">
-                </div>
-              </div>
-            </div>
+            $.ajax({
+                url: '/api/anggotakliring/',
+                type: 'get',
+                contentType: 'application/json',
+                success: function(anggotaKliringResult) {
+                    var akr = anggotaKliringResult
+                    var str2 = ''
+                    for (i = 0; i < akr.length; i++) {
+                        str2 += `<option value="${akr[i].code}" ${data.code == akr[i].code ? "Selected" : ""}>${akr[i].name}</option>`
+                    }
+                    $('#code').html(str2)
+                }
+            })
+            $("#card-body").html(form);
+        }
+    })
+  }
 
-            <div class="row">
-              <div class="form-group form-row col-md-6">
-                <label for="penempatanBaru" class="col-sm-4 col-form-label">Penempatan Baru</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="penempatanBaru">
-                </div>
-              </div>
-              <div class="form-group form-row col-md-6">
-                <label for="tanggalPenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="tanggalPenempatan">
-                </div>
-              </div>
-            </div>
+  function TampilData(){
+      $.ajax({
+        url: 'api/danajaminan',
+        type: 'get',
+        contentType: 'application/json',
+        success: function(data){
+          // console.log(data);
+          let table = ''
+          for (let i = 0; i < data.length; i++) {
+              table += "<tr>";
+              table += `<td class="text-center">
+                          <div onclick="FormEdit(${data[i].id})">edit</div>
+                        </td>`;
+              table += "<td>" + data[i].id + "</td>";
+              table += "<td>" + data[i].businessdate+ "</td>";
+              table += "<td>" + data[i].code+ "</td>";
+              table += "<td>" + data[i].bank+ "</td>";
+              table += "<td>" + data[i].jumlah+ "</td>";
+              table += "<td>" + data[i].tanggalpenempatan+ "</td>";
+              table += "<td>" + data[i].jatuhtempo+ "</td>";
+              table += "<td>" + data[i].sukubunga.toFixed(4)+ "</td>";
+              table += "<td>" + data[i].admin.toFixed(4)+ "</td>";
+              table += "</tr>";
+          }
+          $('#tbody').html(table);
+        }
+      })
+  }
 
-            <div class="row">
-              <div class="form-group form-row col-md-6">
-                <label for="jatuhTempo" class="col-sm-4 col-form-label">Tanggal Jatoh Tempo</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="jatuhTempo" placeholder="dd/mm/yy">
-                </div>
-              </div>
-              <div class="form-group form-row col-md-6">
-                <label for="transferDana" class="col-sm-4 col-form-label">Transfer Dana</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="transferDana">
-                </div>
-              </div>
-            </div>
 
-            <div class="row">
-              <div class="form-group form-row col-md-6">
-                <label for="sukuBunga" class="col-sm-4 col-form-label">Suku Bunga</label>
-                <div class="col-sm-4">
-                  <input type="text" class="form-control" id="sukuBunga">
-                </div>
-                <div class="col-sm-4">
-                  <input type="text" class="form-control" id="bunga">
-                </div>
-              </div>
-              <div class="form-group form-row col-md-6">
-                <label for="adjustmentBunga" class="col-sm-4 col-form-label">Adjustment Bunga</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="adjustmentBunga">
-                </div>
-              </div>
-            </div>
-              
-            <div class="row">
-              <div class="form-group form-row col-md-6">
-                <label for="bungaAdjustment" class="col-sm-4 col-form-label">Bunga Setelah Adjustment</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="bungaAdjustment">
-                </div>
-              </div>
-              <div class="form-group form-row col-md-6">
-                <label for="aro" class="col-sm-4 col-form-label">ARO</label>
-                <div class="col-sm-8">
-                  <select id="aro" class="form-control">
-                    <option selected>-- Pilih --</option>
-                    <option>True</option>
-                    <option>False</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-              
-            <div class="row">
-              <div class="form-group form-row col-md-6">
-                <label for="multiple" class="col-sm-4 col-form-label">Multiple</label>
-                <div class="col-sm-8">
-                  <select id="multiple" class="form-control">
-                    <option selected>-- Pilih --</option>
-                    <option>True</option>
-                    <option>False</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group form-row col-md-6">
-                <label for="sequence" class="col-sm-4 col-form-label">Sequence</label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="sequence">
-                </div>
-              </div>
-            </div>
-            
-            <button type="submit" class="btn btn-sm btn-primary" onclick="TambahData(this.value)">Simpan</button>
-            <button type="submit" class="btn btn-sm btn-dark" onclick="javascript:window.open('/danajaminan', '_self')">Batal</button>
-        <!-- </form> -->
-    `;
-    $("#content").html(form);
-}
+  $(document).ready(function() {
+      TampilData();
+  });
 
-function TampilData(){
-    let table = '';
-    table += `
-      <div class="table-responsive mt-3">
-        <table class="table table-bordered table-sm my-table">
-          <thead>
-            <tr>
-              <th>
-                  <div onclick="FormTambah()">Tambah</div>
-              </th>
-              <th>id</th>
-              <th>businessdate</th>
-              <th>code</th>
-              <th>bank</th>
-              <th>jumlah</th>
-              <th>tanggalpenempatan</th>
-              <th>jatuhtempo</th>
-              <th>sukubunga</th>
-              <th>admin</th>
-            </tr>
-          </thead>
-          <tbody id="content">
-            <tr>
-                <td class="text-center">
-                    <div onclick="FormEdit()">edit</div>
-                </td>
-                <td>5599</td>
-                <td>10/26/2021</td>
-                <td>PT Menara mas futures</td>
-                <td>BCA</td>
-                <td>100000000000.000</td>
-                <td>9/20/2021</td>
-                <td>10/21/2021</td>
-                <td>2.68000</td>
-                <td>0.0000</td>
-            </tr>
-            <tr>
-                <td class="text-center">
-                    <div onclick="FormEdit()">edit</div>
-                </td>
-                <td>5599</td>
-                <td>10/26/2021</td>
-                <td>PT Menara mas futures</td>
-                <td>BCA</td>
-                <td>100000000000.000</td>
-                <td>9/20/2021</td>
-                <td>10/21/2021</td>
-                <td>2.68000</td>
-                <td>0.0000</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    `;
-    
-    $('#content').html(table);
-}
+  function stopRKey(evt) { 
+    var evt = (evt) ? evt : ((event) ? event : null); 
+    var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); 
+    if ((evt.keyCode == 13) && (node.type=="text"))  {return false;} 
+  }
 
-function TambahData(){
-    var test = $('#bank').val();
-    console.log(test);
-}
+  document.onkeypress = stopRKey;
 
-$(document).ready(function() {
-    TampilData();
-});
+  function calcInterest() {
+    var date1 = $("#jatuhtempo").val();
+    var match = /(\d+)\/(\d+)\/(\d+)/.exec(date1)
+    var start_date = new Date(match[3], match[2], match[1]);
+    var date2 = $("#tanggalpenempatan").val();
+    var match = /(\d+)\/(\d+)\/(\d+)/.exec(date2)
+    var end_date = new Date(match[3], match[2], match[1]);
+    var timeDiff = Math.abs(end_date.getTime() - start_date.getTime());
+    var datediff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    var bungaBruto = ($("#jumlah").val() * $("#sukubunga").val() / 100) / 365 * datediff;
+    var bungaNeto = parseFloat(bungaBruto) - parseFloat(bungaBruto * 20 / 100);
+
+    $("#bunga").val(bungaNeto.toFixed(2));
+  }
+
+  function calcAdjusment() {
+    var adjustment = $("#adjustment").val();
+    var bunga = $("#bunga").val();
+    var afterAdjustment = parseFloat(bunga) + parseFloat(adjustment);
+
+    $("#afterAdjustment").val(afterAdjustment.toFixed(2));
+  }
+
