@@ -49,7 +49,7 @@
             <h1 class="h2">Dashboard</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group mr-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                <a th:href="@{api/danajaminan/export}" type="button" class="btn btn-sm btn-outline-secondary">Export</a>
               </div>
             </div>
           </div>
@@ -71,6 +71,12 @@
             
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body" id="card-body">
+                      <input id="bank" type="text" placeholder="masukkan nama bank..">
+                      <input id="date1" type="date">
+                      <input id="date2" type="date">
+                      <button onclick="SearchBydate()">search</button>
+                      <button onclick="ResetSearch()">reset</button>
+                      <br><br>
                       <div class="table-responsive">
                         <table class="table table-bordered table-sm my-table">
                           <thead>
@@ -101,43 +107,7 @@
       </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Edit Data Mahasiswa</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form id="form-edit-mahasiswa">
-              <div class="form-group">
-                  <label for="nim" class="col-form-label">NIM:</label>
-                  <input type="text" class="form-control" id="nim">
-              </div>
-              <div class="form-group">
-                  <label for="nama" class="col-form-label">NAMA:</label>
-                  <input type="text" class="form-control" id="nama">
-              </div>
-              <div class="form-group">
-                <label for="alamat" class="col-form-label">ALAMAT:</label>
-                <input type="text" class="form-control" id="alamat">
-              </div>
-              <div class="form-group">
-                <label for="jurusan" class="col-form-label">JURUSAN:</label>
-                <input type="text" class="form-control" id="jurusan">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onclick="Update(this.value)" id="btn-edit">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
+
     
     <div th:insert="fragment :: script"></div>
     <script src="/js/danajaminan.js"></script>

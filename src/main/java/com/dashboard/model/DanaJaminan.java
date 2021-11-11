@@ -1,16 +1,23 @@
 package com.dashboard.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,23 +33,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "DanaJaminan")
-public class DanaJaminan {
+public class DanaJaminan implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
     @Temporal(TemporalType.DATE)
     @Column(name = "businessdate")
     private Date businessdate;
 
-    // @ManyToMany
-    // @JoinColumn(name = "code", insertable = false, updatable = false, referencedColumnName = "code")
-    // private AnggotaKliring anggotaKliring;
+    @OneToMany(targetEntity = AnggotaKliring.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "code", referencedColumnName = "code")
+    private List<AnggotaKliring> anggotaKliring;
 
-    @Column(name = "code", insertable = false, updatable = false, length = 3)
+    @Column(name = "code", length = 4)
     private String code;
 
     @Column(name = "bank", length = 20)
@@ -52,14 +59,14 @@ public class DanaJaminan {
     private BigDecimal jumlah;
 
     @Column(name = "jangkawaktu")
-    private Integer jangkaWaktu;
+    private Integer jangkawaktu;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
     @Temporal(TemporalType.DATE)
     @Column(name = "tanggalpenempatan")
     private Date tanggalpenempatan;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
     @Temporal(TemporalType.DATE)
     @Column(name = "jatuhtempo")
     private Date jatuhtempo;
