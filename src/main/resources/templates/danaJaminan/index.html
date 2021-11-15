@@ -34,6 +34,10 @@
         td div:hover {
             color: #fc3811;
         }
+
+        .accordion {
+          margin-bottom: 50px;
+        }
     </style>
   </head>
 <body>
@@ -49,7 +53,7 @@
             <h1 class="h2">Dashboard</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group mr-2">
-                <a th:href="@{api/danajaminan/export}" type="button" class="btn btn-sm btn-outline-secondary">Export</a>
+                <button onclick="ExportData()" type="button" class="btn btn-sm btn-outline-secondary">Export</button>
               </div>
             </div>
           </div>

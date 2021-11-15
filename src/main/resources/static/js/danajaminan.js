@@ -1,7 +1,7 @@
   function FormTambah(){
       let form = '';
       form += `
-          <!-- <form> -->
+          <form onsubmit="event.preventDefault();">
               <div class="row">
                 <div class="form-group form-row col-md-6">
                   <label for="code" class="col-sm-4 col-form-label">Anggota Keliring</label>
@@ -42,11 +42,9 @@
                 </div>
                 <div class="form-group form-row col-md-6">
                   <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
-                  <div class="col-sm-4">
-                    <input type="text" class="form-control" id="sukubunga" onchange="calcInterest()" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
-                  </div>
-                  <div class="col-sm-4">
-                    <input type="text" class="form-control" id="bunga" readonly="readonly">
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="sukubunga" onblur="ubahAngka(this.value, this.id); calcInterest()" onfocus="reformat(this.value, this.id)">
+                    <input type="text" class="form-control mt-2" id="bunga" readonly="readonly">
                   </div>
                 </div>
               </div>
@@ -55,7 +53,7 @@
                 <div class="form-group form-row col-md-6">
                   <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="adjustment" onchange="calcAdjusment();" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
+                    <input type="text" class="form-control" id="adjustment" onblur="ubahAngka(this.value, this.id); calcAdjusment()" onfocus="reformat(this.value, this.id)">
                   </div>
                 </div>
                 <div class="form-group form-row col-md-6">
@@ -120,8 +118,8 @@
               </div>
               
               <button type="submit" class="btn btn-sm btn-primary" onclick="save(this.value)">Simpan</button>
-              <button type="submit" class="btn btn-sm btn-dark" onclick="javascript:window.open('/danajaminan', '_self')">Batal</button>
-          <!-- </form> -->
+              <input type="reset" class="btn btn-sm btn-dark" value="batal"></input>
+          </form>
       `;
       $.ajax({
           url: '/api/anggotakliring/',
@@ -144,42 +142,46 @@
   }
 
   function save(){
+
     var datediff = DateDiff();
-    var jumlah = $("#jumlah").val().replaceAll(".", "").replaceAll(",", ".");
-    var afterAdjusment = $('#afterAdjustment').val().replaceAll(".", "").replaceAll(",", ".");
-    var transferDana = $('#transferdana').val().replaceAll(".", "").replaceAll(",", ".");
-    var transferDanaKbi = $('#transferdanakbi').val().replaceAll(".", "").replaceAll(",", ".");
-    var admin = $('#admin').val().replaceAll(".", "").replaceAll(",", ".");
+    var jumlah = reformatAngka($("#jumlah").val());
+    var transferDana = reformatAngka($('#transferdana').val());
+    var transferDanaKbi = reformatAngka($('#transferdanakbi').val());
+    var adjustment = reformatAngka($("#adjustment").val());
     
-    var bungaBruto = (jumlah * $("#sukubunga").val() / 100) / 365 * datediff;
-    var penempatan = parseFloat(jumlah) + parseFloat(afterAdjusment) - parseFloat(transferDana) - parseFloat(transferDanaKbi);
+    var bungaBruto = (jumlah * reformatAngka($("#sukubunga").val()) / 100) / 365 * datediff;
+    var bungaNeto = parseFloat(bungaBruto) - parseFloat(bungaBruto * 20 / 100);
+    var afterAdjustment = bungaNeto + parseFloat(adjustment);
+    var penempatan = parseFloat(jumlah) + parseFloat(afterAdjustment) - parseFloat(transferDana) - parseFloat(transferDanaKbi);
 
     var submitted_data =
     `{
+        "businessdate":"`+ $('#tanggalpenempatan').val() +`",
         "code":"`+ $('#code').val() +`",
         "bank":"`+ $('#bank').val() +`",
-        "jumlah":"`+ jumlah +`",
+        "jumlah":"`+ reformatAngka($('#jumlah').val()) +`",
         "jangkawaktu":"`+ datediff +`",
         "tanggalpenempatan":"`+ $('#tanggalpenempatan').val() +`",
         "jatuhtempo":"`+ $('#jatuhtempo').val() +`",
-        "transferdana":"`+ transferDana +`",
-        "sukubunga":"`+ $('#sukubunga').val() +`",
-        "bungabruto":"`+ bungaBruto +`",
-        "adjustment":"`+ $('#adjustment').val().replaceAll(".", "").replaceAll(",", ".") +`",
-        "bunga":"`+ parseFloat(afterAdjusment) +`",
-        "admin":"`+ admin +`",
-        "transferdanakbi":"`+ transferDanaKbi +`",
-        "penempatan":"`+ penempatan.toFixed(4) +`",
+        "sukubunga":"`+ reformatAngka($('#sukubunga').val()) +`",
+        "bungabruto":"`+ toFixed(bungaBruto, 4) +`",
+        "pph":"`+ toFixed(bungaBruto, 4) +`",
+        "bunga":"`+ toFixed(afterAdjustment, 4) +`",
+        "adjustment":"`+ reformatAngka($('#adjustment').val()) +`",
+        "admin":"`+ reformatAngka($('#admin').val()) +`",
+        "transferdana":"`+ reformatAngka($('#transferdana').val()) +`",
+        "transferdanakbi":"`+ reformatAngka($('#transferdanakbi').val()) +`",
+        "penempatan":"`+ toFixed(penempatan, 4) +`",
         "aro":"`+ $('#aro').val().substring(0,1) +`",
         "multiple":"`+ $('#multiple').val().substring(0,1) +`",
         "sequence":"`+ $('#sequence').val() +`",
-        "businessdate":"`+ $('#tanggalpenempatan').val() +`"
+        "flag":"`+ 0 +`"
     }`;
 
     console.log(submitted_data);
 
     // $.ajax({
-    //     url: "/api/danacollateral",
+    //     url: "/api/danajaminan",
     //     type: "post",
     //     contentType: "application/json",
     //     data : submitted_data,
@@ -198,7 +200,7 @@
         console.log(data);
           let form = '';
             form += `
-            <!-- <form> -->
+          <form onsubmit="event.preventDefault();">
             <div class="row">
               <div class="form-group form-row col-md-6">
                 <label for="code" class="col-sm-4 col-form-label">Anggota Keliring</label>
@@ -219,7 +221,7 @@
               <div class="form-group form-row col-md-6">
                 <label for="jumlah" class="col-sm-4 col-form-label">Penempatan Awal</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="jumlah" value="${formatRupiah(data.penempatan)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
+                  <input type="text" class="form-control" id="jumlah" value="${formatRupiah(data.jumlah)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
@@ -239,11 +241,9 @@
               </div>
               <div class="form-group form-row col-md-6">
                 <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
-                <div class="col-sm-4">
-                  <input type="text" class="form-control" id="sukubunga" onblur="calcInterest()" value="${data.sukubunga.toFixed(4)}">
-                </div>
-                <div class="col-sm-4">
-                  <input type="text" class="form-control" id="bunga" readonly="readonly">
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="sukubunga" value="${formatRupiah(data.sukubunga)}" onblur="ubahAngka(this.value, this.id); calcInterest()" onfocus="reformat(this.value, this.id)">
+                  <input type="text" class="form-control mt-2" id="bunga" readonly="readonly">
                 </div>
               </div>
             </div>
@@ -252,7 +252,7 @@
               <div class="form-group form-row col-md-6">
                 <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="adjustment" onblur="calcAdjusment(); ubahAngka(this.value, this.id)" value="${formatRupiah(data.adjustment)}" onfocus="reformat(this.value, this.id)">
+                  <input type="text" class="form-control" id="adjustment" value="${formatRupiah(data.adjustment)}" onblur="ubahAngka(this.value, this.id); calcAdjusment()" onfocus="reformat(this.value, this.id)">
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
@@ -267,7 +267,7 @@
               <div class="form-group form-row col-md-6">
                 <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="transferdana" value="${formatRupiah(data.transferdana)}" onfocus="reformat(this.value, this.id)" onblur="ubahAngka(this.value, this.id)">
+                  <input type="text" class="form-control" id="transferdana" value="${formatRupiah(data.transferdana)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
@@ -315,8 +315,8 @@
             </div>
             
             <button type="submit" class="btn btn-sm btn-primary" onclick="save(this.value)">Simpan</button>
-            <button type="submit" class="btn btn-sm btn-dark" onclick="javascript:window.open('/danajaminan', '_self')">Batal</button>
-            <!-- </form> -->
+            <input type="reset" class="btn btn-sm btn-dark" value="batal"></input>
+          </form>
             `;
             $('#tanggalpenempatan').val()
 
@@ -388,14 +388,12 @@
     // if(angka.includes(",") && angka.includes("."))
     //     return angka
     // else
-        return new Intl.NumberFormat("id", {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(angka)
+        return new Intl.NumberFormat("id", {minimumFractionDigits: 2, maximumFractionDigits: 4}).format(angka)
   }
 
   function reformatAngka(angka){
       return angka = angka.replaceAll(".","").replaceAll(",", ".")
   }
-
-
 
   function SearchBydate(){
     var date1 = $("#date1").val();
@@ -426,6 +424,36 @@
     })
   }
 
+  function ExportData(){
+    var date1 = $("#date1").val();
+    var date2 = $("#date2").val();
+    var bank = $('#bank').val();
+
+    if(date1 != '' && date2 != ''){
+      date1 = date1.replaceAll("-", "/");
+      date2 = date2.replaceAll("-", "/");
+    }
+
+    console.log(date1);
+    console.log(date2);
+    console.log(bank);
+
+    // var data = 
+    // `{
+    //   "bank":"`+bank+`",
+    //   "date1":"`+date1+`",
+    //   "date2":"`+date2+`"
+    // }`
+
+    $.ajax({
+      url:'/api/danajaminan/export?bankParam='+ bank +'&date1Param='+ date1 +'&date2Param='+date2,
+      type: 'get',
+      success: function(){
+        console.log("oke");
+      }
+    })
+  }
+
   function ResetSearch(){
     $('#bank').val("");
     $('#date1').val("");
@@ -449,22 +477,34 @@
 
   document.onkeypress = stopRKey;
 
+  function toFixed(num, fixed) {
+      var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+      return num.toString().match(re)[0];
+  }
+
+
   function calcInterest() {
     var jumlah = reformatAngka($("#jumlah").val());
     
     var datediff = DateDiff();
-    var bungaBruto = (jumlah * $("#sukubunga").val() / 100) / 365 * datediff;
+    var bungaBruto = (jumlah * reformatAngka($("#sukubunga").val()) / 100) / 365 * datediff;
     var bungaNeto = parseFloat(bungaBruto) - parseFloat(bungaBruto * 20 / 100);
+    console.log(jumlah);
+    console.log(datediff);
+    console.log($("#sukubunga").val());
 
-    $("#bunga").val(formatRupiah(bungaNeto.toFixed(4)));
+    $("#bunga").val(bungaNeto.toFixed(2));
+    // console.log(toFixed(bungaNeto, 4));
   }
 
   function calcAdjusment() {
-    var adjustment = $("#adjustment").val();
-    var bunga = reformatAngka($("#bunga").val());
+    var adjustment = reformatAngka($("#adjustment").val());
+    var bunga = $("#bunga").val();
+    console.log(adjustment);
+    console.log(bunga);
     var afterAdjustment = parseFloat(bunga) + parseFloat(adjustment);
 
-    $("#afterAdjustment").val(formatRupiah(afterAdjustment.toFixed(4)));
+    $("#afterAdjustment").val(afterAdjustment.toFixed(2));
   }
 
   $(document).ready(function() {

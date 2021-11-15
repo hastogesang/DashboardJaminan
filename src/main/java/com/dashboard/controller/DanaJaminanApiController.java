@@ -3,6 +3,7 @@ package com.dashboard.controller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +15,6 @@ import com.dashboard.DanaJaminanExcelExporter;
 import com.dashboard.model.DanaCollateralParam;
 import com.dashboard.model.DanaJaminan;
 import com.dashboard.repository.DanaJaminanRepo;
-import com.dashboard.service.ReportService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -40,13 +40,10 @@ public class DanaJaminanApiController {
     @Autowired
     private DanaJaminanRepo danaJaminanRepo;
 
-    @Autowired
-    private ReportService reportService;
-
     @GetMapping(value = "/danajaminan")
     public ResponseEntity<List<DanaJaminan>> GetAllDanaJaminan() {
         try {
-            List<DanaJaminan> danaJaminans = this.danaJaminanRepo.GetDanaJaminan();
+            List<DanaJaminan> danaJaminans = this.danaJaminanRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
 
             return new ResponseEntity<>(danaJaminans, HttpStatus.OK);
         } catch (Exception e) {
@@ -124,17 +121,38 @@ public class DanaJaminanApiController {
     // }
 
     @GetMapping("/danajaminan/export") // export to excel
-    public void exportToExcel(HttpServletResponse response) throws IOException {
-        response.setContentType("application/octet-stream");
-        // DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        // String currentDateTime = dateFormatter.format(new Date());
+    public void exportToExcel(HttpServletResponse response, @RequestParam String bankParam, @RequestParam String date1Param, @RequestParam String date2Param) throws IOException, ParseException {
+        String bank;
+        Date date1, date2;
 
+        if(bankParam != "") {
+            bank = bankParam;
+        } else {
+            bank = null;
+        }
+
+        if(date1Param != ""){
+            date1 = new SimpleDateFormat("yyyy/MM/dd").parse(date1Param);
+        } else {
+            date1 = null;
+        }
+
+        if(date2Param != ""){
+            date2 = new SimpleDateFormat("yyyy/MM/dd").parse(date2Param);
+        } else {
+            date2 = null;
+        }
+
+        System.out.println(bank);
+        System.out.println(date1);
+        System.out.println(date2);
+        response.setContentType("application/octet-stream");
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=report.xlsx";
         response.setHeader(headerKey, headerValue);
 
-        List<DanaJaminan> danaJaminans = danaJaminanRepo.GetDanaJaminan();
-
+        List<DanaJaminan> danaJaminans = danaJaminanRepo.GetFilteredDanaJamninan(bank, date1, date2, Sort.by(Sort.Direction.DESC, "id"));
+        // System.out.println(danaJaminans);
         DanaJaminanExcelExporter excelExporter = new DanaJaminanExcelExporter(danaJaminans);
 
         excelExporter.export(response);

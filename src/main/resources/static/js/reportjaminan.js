@@ -15,12 +15,9 @@ function TampilData(){
 
             <div class="row">
             <div class="form-group form-row col-md-6">
-                <label for="anggotaKeliring" class="col-sm-4 col-form-label">Nama Anggota Kliring</label>
+                <label for="code" class="col-sm-4 col-form-label">Nama Anggota Kliring</label>
                 <div class="col-sm-8">
-                  <select id="anggotaKeliring" class="form-control form-control-sm">
-                      <option selected>PT Agrodana Futures</option>
-                      <option>PT Asia Trade Point Futures</option>
-                      <option>PT Askap Futures</option>
+                  <select id="code" class="form-control form-control-sm">
                   </select>
                 </div>
             </div>
@@ -45,6 +42,24 @@ function TampilData(){
             <button type="submit" class="btn btn-sm btn-primary">Generate all report</button>
         </form>
     `;
+
+    $.ajax({
+      url: '/api/anggotakliring/',
+      type: 'get',
+      contentType: 'application/json',
+      success: function(anggotaKliringResult) {
+          var akr = anggotaKliringResult
+          var str2 = ''
+          for (i = 0; i < akr.length; i++) {
+              if(akr[i].name == null){
+                str2 += `<option value="${akr[i].code}"></option>`
+              } else {
+                str2 += `<option value="${akr[i].code}">${akr[i].name}</option>`
+              }
+          }
+          $('#code').html(str2)
+      }
+  })
     $("#content").html(form);
 }
 

@@ -2,6 +2,8 @@ package com.dashboard.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class DanaJaminan implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy", locale = "id", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.DATE)
     @Column(name = "businessdate")
     private Date businessdate;
@@ -61,12 +63,12 @@ public class DanaJaminan implements Serializable {
     @Column(name = "jangkawaktu")
     private Integer jangkawaktu;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy", locale = "id", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.DATE)
     @Column(name = "tanggalpenempatan")
     private Date tanggalpenempatan;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy", locale = "id", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.DATE)
     @Column(name = "jatuhtempo")
     private Date jatuhtempo;
