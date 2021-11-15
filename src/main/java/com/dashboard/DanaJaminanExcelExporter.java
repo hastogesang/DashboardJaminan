@@ -154,7 +154,7 @@ public class DanaJaminanExcelExporter {
             // cell.setCellStyle(styleNumber);
 
             createCell(row, columnCount++, danaJaminan.getBusinessdate(), styleDate);
-            createCell(row, columnCount++, danaJaminan.getAnggotaKliring().get(0).getName(), styleDate);
+            createCell(row, columnCount++, danaJaminan.getAnggotaKliring().get(0).getName(), style);
             createCell(row, columnCount++, danaJaminan.getBank(), style);
             createCell(row, columnCount++, danaJaminan.getJumlah(), styleNumber);
             createCell(row, columnCount++, danaJaminan.getJangkawaktu(), style);

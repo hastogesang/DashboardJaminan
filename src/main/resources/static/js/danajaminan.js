@@ -418,7 +418,7 @@
       contentType: 'application/json',
       data: data,
       success: function(data){
-        console.log(data);
+        // console.log(data);
         content(data)
       }
     })
@@ -438,20 +438,8 @@
     console.log(date2);
     console.log(bank);
 
-    // var data = 
-    // `{
-    //   "bank":"`+bank+`",
-    //   "date1":"`+date1+`",
-    //   "date2":"`+date2+`"
-    // }`
+    $('#exportbutton').attr("href", `/api/danajaminan/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
 
-    $.ajax({
-      url:'/api/danajaminan/export?bankParam='+ bank +'&date1Param='+ date1 +'&date2Param='+date2,
-      type: 'get',
-      success: function(){
-        console.log("oke");
-      }
-    })
   }
 
   function ResetSearch(){
@@ -509,5 +497,6 @@
 
   $(document).ready(function() {
       TampilData();
+      $('#exportbutton').attr("href", `/api/danajaminan/export?bankParam=&date1Param=&date2Param=`);
   });
 
