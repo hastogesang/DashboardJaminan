@@ -1,8 +1,15 @@
 package com.dashboard.controller;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +47,8 @@ public class DanaCollateralApiController {
     @GetMapping("")
     public ResponseEntity<List<DanaCollateral>> GetAllDanaCollateral(){
         try {
-            List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
+            // List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
+            List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findTop1000ByOrderByIdDesc();
 
             return new ResponseEntity<>(danaCollaterals, HttpStatus.OK);
         } catch (Exception e) {
@@ -150,15 +159,72 @@ public class DanaCollateralApiController {
         excelExporter.export(response);
     }
 
-    @PostMapping("test")
-    public ResponseEntity<List<DanaCollateral>> GetTestData(){
-        try {
+    // @Scheduled(fixedRate = 100000)
+    @Scheduled(cron = "00 00 08 * * *")
+    public void fetchDBJob() throws ParseException{
+        List<DanaCollateral> danaCollaterals = danaCollateralRepo.findTop1000ByOrderByIdDesc();
 
-            List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        LocalDate today = LocalDate.now();
 
-            return new ResponseEntity<>(danaCollaterals, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        for (int i = 0; i < danaCollaterals.size(); i++) {
+            Optional<DanaCollateral> danaCollateral = danaCollateralRepo.findById(danaCollaterals.get(i).getId());
+            String jatuhtempo = danaCollaterals.get(i).getJatuhtempo().toString();
+            LocalDate jatuhtempoparse = LocalDate.parse(jatuhtempo);
+
+            if(danaCollateral.isPresent()){
+                if(today.isEqual(jatuhtempoparse)){
+                    if(danaCollateral.get().getAro().equalsIgnoreCase("T")){
+                        Integer tambahBulan = 30;
+                        Long adjustment = 0L;
+                        LocalDate jatuhTempoBaru = jatuhtempoparse.plusDays(tambahBulan);
+
+                        if(isWeekend(jatuhTempoBaru) == DayOfWeek.SATURDAY){
+                            jatuhTempoBaru = jatuhTempoBaru.plusDays(2);
+                        } else if(isWeekend(jatuhTempoBaru) == DayOfWeek.SUNDAY){
+                            jatuhTempoBaru = jatuhTempoBaru.plusDays(1);
+                        }
+
+                        Date jatuhTempoDate = Date.from(jatuhTempoBaru.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                        long daysBetween = Duration.between(jatuhtempoparse.atStartOfDay(), jatuhTempoBaru.atStartOfDay()).toDays();
+
+                        BigDecimal nominal = danaCollateral.get().getNominal();
+                        BigDecimal bungaBruto = (nominal.multiply(danaCollateral.get().getSukubunga()).divide(BigDecimal.valueOf(100), 2)).divide(BigDecimal.valueOf(365), 2).multiply(BigDecimal.valueOf(daysBetween));
+                        BigDecimal pph = bungaBruto.multiply(BigDecimal.valueOf(20)).divide(BigDecimal.valueOf(100), 2);
+                        BigDecimal bungaNeto = bungaBruto.subtract(pph);
+                        BigDecimal afterAdjustment = bungaNeto.add(BigDecimal.valueOf(adjustment));
+                        BigDecimal penempatan = nominal.add(afterAdjustment).subtract(danaCollateral.get().getBungatransfer());
+
+                        DanaCollateral danaCollateralData = new DanaCollateral();
+                        danaCollateralData.setBusinessdate(danaCollateral.get().getJatuhtempo());
+                        danaCollateralData.setCode(danaCollateral.get().getCode());
+                        danaCollateralData.setBank(danaCollateral.get().getBank());
+                        danaCollateralData.setNominal(danaCollateral.get().getNominal());
+                        danaCollateralData.setTanggalpenempatan(danaCollateral.get().getJatuhtempo());
+                        danaCollateralData.setJatuhtempo(jatuhTempoDate);
+                        danaCollateralData.setJangkawaktu((int) daysBetween);
+                        danaCollateralData.setSukubunga(danaCollateral.get().getSukubunga());
+                        danaCollateralData.setBungabruto(bungaBruto.setScale(4, RoundingMode.DOWN));
+                        danaCollateralData.setPph(pph.setScale(4, RoundingMode.DOWN));
+                        danaCollateralData.setAdjustment(BigDecimal.valueOf(adjustment));
+                        danaCollateralData.setBunganetto(afterAdjustment.setScale(4, RoundingMode.DOWN));
+                        danaCollateralData.setBungatransfer(danaCollateral.get().getBungatransfer());
+                        danaCollateralData.setPenempatan(penempatan.setScale(4, RoundingMode.DOWN));
+                        danaCollateralData.setAro(danaCollateral.get().getAro());
+                        danaCollateralData.setMultiple(danaCollateral.get().getMultiple());
+                        danaCollateralData.setSequence(danaCollateral.get().getSequence());
+                        danaCollateralData.setFlag(danaCollateral.get().getFlag());
+                        danaCollateralData.setAdmin(danaCollateral.get().getAdmin());
+                        danaCollateralRepo.save(danaCollateralData);
+                    }
+                }
+            }
         }
     }
+
+    public static DayOfWeek isWeekend(final LocalDate ld) 
+    {
+        DayOfWeek day = DayOfWeek.of(ld.get(ChronoField.DAY_OF_WEEK));
+        return day;
+    }
 }
+ 
