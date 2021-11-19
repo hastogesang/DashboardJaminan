@@ -11,8 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface DanaJaminanRepo extends JpaRepository<DanaJaminan, Integer> {
-    @Query("select d from DanaJaminan d where d.id < 11")
-    List<DanaJaminan> GetDanaJaminan();
+    // @Query("select d from DanaJaminan d where d.id < 11")
+    List<DanaJaminan> findTop1000ByOrderByIdDesc();
 
     @Query("FROM DanaJaminan WHERE"
     + " (:bank IS NULL OR bank LIKE '%' + :bank + '%')"

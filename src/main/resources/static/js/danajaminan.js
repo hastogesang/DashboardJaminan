@@ -1,3 +1,41 @@
+// main function
+  function TampilData(){
+    $.ajax({
+      url: '/api/danajaminan',
+      type: 'get',
+      contentType: 'application/json',
+      success: function(data){
+        console.log(data);
+        content(data);
+      }
+    })
+  }
+
+  function content(data) {
+  let table = '';
+  for (let i = 0; i < data.length; i++) {
+    table += "<tr>";
+    table += `<td class="text-center">
+                          <div onclick="FormEdit(${data[i].id})">edit</div>
+                        </td>`;
+    table += "<td>" + data[i].id + "</td>";
+    table += "<td>" + data[i].businessdate + "</td>";
+    table += "<td>" + data[i].anggotaKliring[0].name + "</td>";
+    table += "<td id='cek'>" + data[i].bank + "</td>";
+    table += "<td>" + formatRupiah(data[i].jumlah) + "</td>";
+    table += "<td>" + data[i].tanggalpenempatan + "</td>";
+    table += "<td>" + data[i].jatuhtempo + "</td>";
+    if (data[i].sukubunga != null) {
+      table += "<td>" + data[i].sukubunga.toFixed(4) + "</td>";
+    }
+    if (data[i].admin != null) {
+      table += "<td>" + formatRupiah(data[i].admin) + "</td>";
+    }
+    table += "</tr>";
+  }
+  $('#tbody').html(table);
+  }
+
   function FormTambah(){
       let form = '';
       form += `
@@ -28,7 +66,7 @@
                 <div class="form-group form-row col-md-6">
                   <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="tanggalpenempatan" placeholder="mm/dd/yyyy">
+                    <input type="date" class="form-control" id="tanggalpenempatan">
                   </div>
                 </div>
               </div>
@@ -37,7 +75,7 @@
                 <div class="form-group form-row col-md-6">
                   <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="jatuhtempo" placeholder="mm/dd/yyyy">
+                    <input type="date" class="form-control" id="jatuhtempo">
                   </div>
                 </div>
                 <div class="form-group form-row col-md-6">
@@ -141,56 +179,6 @@
       $("#card-body").html(form);
   }
 
-  function save(){
-
-    var datediff = DateDiff();
-    var jumlah = reformatAngka($("#jumlah").val());
-    var transferDana = reformatAngka($('#transferdana').val());
-    var transferDanaKbi = reformatAngka($('#transferdanakbi').val());
-    var adjustment = reformatAngka($("#adjustment").val());
-    
-    var bungaBruto = (jumlah * reformatAngka($("#sukubunga").val()) / 100) / 365 * datediff;
-    var bungaNeto = parseFloat(bungaBruto) - parseFloat(bungaBruto * 20 / 100);
-    var afterAdjustment = bungaNeto + parseFloat(adjustment);
-    var penempatan = parseFloat(jumlah) + parseFloat(afterAdjustment) - parseFloat(transferDana) - parseFloat(transferDanaKbi);
-
-    var submitted_data =
-    `{
-        "businessdate":"`+ $('#tanggalpenempatan').val() +`",
-        "code":"`+ $('#code').val() +`",
-        "bank":"`+ $('#bank').val() +`",
-        "jumlah":"`+ reformatAngka($('#jumlah').val()) +`",
-        "jangkawaktu":"`+ datediff +`",
-        "tanggalpenempatan":"`+ $('#tanggalpenempatan').val() +`",
-        "jatuhtempo":"`+ $('#jatuhtempo').val() +`",
-        "sukubunga":"`+ reformatAngka($('#sukubunga').val()) +`",
-        "bungabruto":"`+ toFixed(bungaBruto, 4) +`",
-        "pph":"`+ toFixed(bungaBruto, 4) +`",
-        "bunga":"`+ toFixed(afterAdjustment, 4) +`",
-        "adjustment":"`+ reformatAngka($('#adjustment').val()) +`",
-        "admin":"`+ reformatAngka($('#admin').val()) +`",
-        "transferdana":"`+ reformatAngka($('#transferdana').val()) +`",
-        "transferdanakbi":"`+ reformatAngka($('#transferdanakbi').val()) +`",
-        "penempatan":"`+ toFixed(penempatan, 4) +`",
-        "aro":"`+ $('#aro').val().substring(0,1) +`",
-        "multiple":"`+ $('#multiple').val().substring(0,1) +`",
-        "sequence":"`+ $('#sequence').val() +`",
-        "flag":"`+ 0 +`"
-    }`;
-
-    console.log(submitted_data);
-
-    // $.ajax({
-    //     url: "/api/danajaminan",
-    //     type: "post",
-    //     contentType: "application/json",
-    //     data : submitted_data,
-    //     success: function(){
-    //         window.location.reload();
-    //     }
-    // })
-  }
-
   function FormEdit(id){
     $.ajax({
       url: '/api/danajaminan/' + id,
@@ -198,6 +186,11 @@
       contentType: 'application/json',
       success: function (data) {
         console.log(data);
+        var tanggalpenempatan = data.tanggalpenempatan.split("/");
+        tanggalpenempatan = tanggalpenempatan[2]+'-'+tanggalpenempatan[0]+'-'+tanggalpenempatan[1];
+        var jatuhtempo = data.jatuhtempo.split("/");
+        jatuhtempo = jatuhtempo[2]+'-'+jatuhtempo[0]+'-'+jatuhtempo[1];
+        
           let form = '';
             form += `
           <form onsubmit="event.preventDefault();">
@@ -227,7 +220,7 @@
               <div class="form-group form-row col-md-6">
                 <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="tanggalpenempatan" placeholder="dd/mm/yy" value="${data.tanggalpenempatan}">
+                  <input type="date" class="form-control" id="tanggalpenempatan" placeholder="dd/mm/yy" value="${tanggalpenempatan}">
                 </div>
               </div>
             </div>
@@ -236,7 +229,7 @@
               <div class="form-group form-row col-md-6">
                 <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="jatuhtempo" placeholder="dd/mm/yy" value="${data.jatuhtempo}">
+                  <input type="date" class="form-control" id="jatuhtempo" placeholder="dd/mm/yy" value="${jatuhtempo}">
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
@@ -314,11 +307,10 @@
               </div>
             </div>
             
-            <button type="submit" class="btn btn-sm btn-primary" onclick="save(this.value)">Simpan</button>
+            <button type="submit" class="btn btn-sm btn-primary" onclick="Update(${data.id})">Simpan</button>
             <input type="reset" class="btn btn-sm btn-dark" value="batal"></input>
           </form>
             `;
-            $('#tanggalpenempatan').val()
 
             $.ajax({
                 url: '/api/anggotakliring/',
@@ -338,42 +330,132 @@
     })
   }
 
-  function TampilData(){
-      $.ajax({
-        url: '/api/danajaminan',
-        type: 'get',
-        contentType: 'application/json',
-        success: function(data){
-          console.log(data);
-          content(data);
+  function save(){
+
+    var bussinessDate = new Date();
+    var today = (bussinessDate.getMonth()+1)+'/'+ bussinessDate.getDate()+'/'+bussinessDate.getFullYear();
+    var datediff = DateDiff();
+    var jumlah = reformatAngka($("#jumlah").val());
+    var transferDana = reformatAngka($('#transferdana').val());
+    var transferDanaKbi = reformatAngka($('#transferdanakbi').val());
+    var adjustment = reformatAngka($("#adjustment").val());
+    
+    var bungaBruto = (jumlah * reformatAngka($("#sukubunga").val()) / 100) / 365 * datediff;
+    var pph = bungaBruto * 20 / 100;
+    var bungaNeto = parseFloat(bungaBruto) - parseFloat(bungaBruto * 20 / 100);
+    var afterAdjustment = bungaNeto + parseFloat(adjustment);
+    var penempatan = parseFloat(jumlah) + parseFloat(afterAdjustment) - parseFloat(transferDana) - parseFloat(transferDanaKbi);
+    var tanggalpenempatan = new Date($('#tanggalpenempatan').val());
+    tanggalpenempatan = (tanggalpenempatan.getMonth()+1)+'/'+ tanggalpenempatan.getDate()+'/'+tanggalpenempatan.getFullYear();
+    var jatuhtempo = new Date($('#jatuhtempo').val());
+    jatuhtempo = (jatuhtempo.getMonth()+1)+'/'+ jatuhtempo.getDate()+'/'+jatuhtempo.getFullYear();
+
+    console.log(tanggalpenempatan);
+    console.log(jatuhtempo);
+
+    var submitted_data =
+    `{
+        "businessdate":"`+ today +`",
+        "code":"`+ $('#code').val() +`",
+        "bank":"`+ $('#bank').val() +`",
+        "jumlah":"`+ reformatAngka($('#jumlah').val()) +`",
+        "jangkawaktu":"`+ datediff +`",
+        "tanggalpenempatan":"`+ tanggalpenempatan +`",
+        "jatuhtempo":"`+ jatuhtempo +`",
+        "sukubunga":"`+ reformatAngka($('#sukubunga').val()) +`",
+        "bungabruto":"`+ toFixed(bungaBruto, 4) +`",
+        "pph":"`+ toFixed(pph, 4) +`",
+        "bunga":"`+ toFixed(afterAdjustment, 4) +`",
+        "adjustment":"`+ reformatAngka($('#adjustment').val()) +`",
+        "admin":"`+ reformatAngka($('#admin').val()) +`",
+        "transferdana":"`+ reformatAngka($('#transferdana').val()) +`",
+        "transferdanakbi":"`+ reformatAngka($('#transferdanakbi').val()) +`",
+        "penempatan":"`+ toFixed(penempatan, 4) +`",
+        "aro":"`+ $('#aro').val().substring(0,1) +`",
+        "multiple":"`+ $('#multiple').val().substring(0,1) +`",
+        "sequence":"`+ $('#sequence').val() +`",
+        "flag":"`+ 0 +`"
+    }`;
+
+    console.log(submitted_data);
+
+    $.ajax({
+        url: "/api/danajaminan",
+        type: "post",
+        contentType: "application/json",
+        data : submitted_data,
+        success: function(){
+            window.location.reload();
         }
-      })
+    })
+
   }
 
-  function content(data) {
-    let table = '';
-    for (let i = 0; i < data.length; i++) {
-      table += "<tr>";
-      table += `<td class="text-center">
-                            <div onclick="FormEdit(${data[i].id})">edit</div>
-                          </td>`;
-      table += "<td>" + data[i].id + "</td>";
-      table += "<td>" + data[i].businessdate + "</td>";
-      table += "<td>" + data[i].anggotaKliring[0].name + "</td>";
-      table += "<td id='cek'>" + data[i].bank + "</td>";
-      table += "<td>" + formatRupiah(data[i].jumlah) + "</td>";
-      table += "<td>" + data[i].tanggalpenempatan + "</td>";
-      table += "<td>" + data[i].jatuhtempo + "</td>";
-      if (data[i].sukubunga != null) {
-        table += "<td>" + data[i].sukubunga.toFixed(4) + "</td>";
-      }
-      if (data[i].admin != null) {
-        table += "<td>" + formatRupiah(data[i].admin) + "</td>";
-      }
-      table += "</tr>";
-    }
-    $('#tbody').html(table);
+  function Update(id){
+    var bussinessDate = new Date();
+    var today = (bussinessDate.getMonth()+1)+'/'+ bussinessDate.getDate()+'/'+bussinessDate.getFullYear();
+    var datediff = DateDiff();
+    var jumlah = reformatAngka($("#jumlah").val());
+    var transferDana = reformatAngka($('#transferdana').val());
+    var transferDanaKbi = reformatAngka($('#transferdanakbi').val());
+    var adjustment = reformatAngka($("#adjustment").val());
+    
+    var bungaBruto = (jumlah * reformatAngka($("#sukubunga").val()) / 100) / 365 * datediff;
+    var pph = bungaBruto * 20 / 100;
+    var bungaNeto = parseFloat(bungaBruto) - parseFloat(bungaBruto * 20 / 100);
+    var afterAdjustment = bungaNeto + parseFloat(adjustment);
+    var penempatan = parseFloat(jumlah) + parseFloat(afterAdjustment) - parseFloat(transferDana) - parseFloat(transferDanaKbi);
+    var tanggalpenempatan = new Date($('#tanggalpenempatan').val());
+    tanggalpenempatan = (tanggalpenempatan.getMonth()+1)+'/'+ tanggalpenempatan.getDate()+'/'+tanggalpenempatan.getFullYear();
+    var jatuhtempo = new Date($('#jatuhtempo').val());
+    jatuhtempo = (jatuhtempo.getMonth()+1)+'/'+ jatuhtempo.getDate()+'/'+jatuhtempo.getFullYear();
+
+    console.log(tanggalpenempatan);
+    console.log(jatuhtempo);
+
+    var formData =
+    `{
+        "businessdate":"`+ today +`",
+        "code":"`+ $('#code').val() +`",
+        "bank":"`+ $('#bank').val() +`",
+        "jumlah":"`+ reformatAngka($('#jumlah').val()) +`",
+        "jangkawaktu":"`+ datediff +`",
+        "tanggalpenempatan":"`+ tanggalpenempatan +`",
+        "jatuhtempo":"`+ jatuhtempo +`",
+        "sukubunga":"`+ reformatAngka($('#sukubunga').val()) +`",
+        "bungabruto":"`+ toFixed(bungaBruto, 4) +`",
+        "pph":"`+ toFixed(pph, 4) +`",
+        "bunga":"`+ toFixed(afterAdjustment, 4) +`",
+        "adjustment":"`+ reformatAngka($('#adjustment').val()) +`",
+        "admin":"`+ reformatAngka($('#admin').val()) +`",
+        "transferdana":"`+ reformatAngka($('#transferdana').val()) +`",
+        "transferdanakbi":"`+ reformatAngka($('#transferdanakbi').val()) +`",
+        "penempatan":"`+ toFixed(penempatan, 4) +`",
+        "aro":"`+ $('#aro').val().substring(0,1) +`",
+        "multiple":"`+ $('#multiple').val().substring(0,1) +`",
+        "sequence":"`+ $('#sequence').val() +`",
+        "flag":"`+ 0 +`"
+    }`;
+
+    console.log(formData);
+    // console.log(id);
+
+    // $.ajax({
+    //     url:'/api/danajaminan/'+id,
+    //     type: 'put' ,
+    //     contentType:'application/json',
+    //     data: formData,
+    //     success: function(){
+    //       alert('success');
+    //     }
+    // });
   }
+
+
+
+
+
+// function tambahan
 
   function ubahAngka(angka,id){
     $('#'+id).val(formatRupiah(angka));
@@ -422,25 +504,28 @@
         content(data)
       }
     })
-  }
-
-  function ExportData(){
-    var date1 = $("#date1").val();
-    var date2 = $("#date2").val();
-    var bank = $('#bank').val();
-
-    if(date1 != '' && date2 != ''){
-      date1 = date1.replaceAll("-", "/");
-      date2 = date2.replaceAll("-", "/");
-    }
-
-    console.log(date1);
-    console.log(date2);
-    console.log(bank);
 
     $('#exportbutton').attr("href", `/api/danajaminan/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
-
   }
+
+  // function ExportData(){
+  //   var date1 = $("#date1").val();
+  //   var date2 = $("#date2").val();
+  //   var bank = $('#bank').val();
+
+  //   if(date1 != '' && date2 != ''){
+  //     date1 = date1.replaceAll("-", "/");
+  //     date2 = date2.replaceAll("-", "/");
+  //   }
+
+  //   console.log(date1);
+  //   console.log(date2);
+  //   console.log(bank);
+
+  //   $('#exportbutton').attr("href", `/api/danajaminan/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
+    // window.location.href(`/api/danajaminan/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
+
+  // }
 
   function ResetSearch(){
     $('#bank').val("");
@@ -457,19 +542,18 @@
     return datediff;
   }
 
-  function stopRKey(evt) { 
-    var evt = (evt) ? evt : ((event) ? event : null); 
-    var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); 
-    if ((evt.keyCode == 13) && (node.type=="text"))  {return false;} 
-  }
+  // function stopRKey(evt) { 
+  //   var evt = (evt) ? evt : ((event) ? event : null); 
+  //   var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); 
+  //   if ((evt.keyCode == 13) && (node.type=="text"))  {return false;} 
+  // }
 
-  document.onkeypress = stopRKey;
+  // document.onkeypress = stopRKey;
 
   function toFixed(num, fixed) {
       var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
       return num.toString().match(re)[0];
   }
-
 
   function calcInterest() {
     var jumlah = reformatAngka($("#jumlah").val());

@@ -27,13 +27,13 @@ function TampilData(){
               <div class="form-group form-row col-md-6">
                 <label for="tanggalAwal" class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control form-control-sm" id="tanggalAwal" placeholder="dd/mm/yy" required>
+                  <input type="text" class="form-control form-control-sm" id="tanggalAwal" placeholder="mm/dd/yyyy" required>
                 </div>
               </div>
               <div class="form-group form-row col-md-4">
                 <label for="tanggalAkhir" class="col-sm-4 col-form-label">Sampai Dengan</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control form-control-sm" id="tanggalAkhir" placeholder="dd/mm/yy" required>
+                  <input type="text" class="form-control form-control-sm" id="tanggalAkhir" placeholder="mm/dd/yyyy" required>
                 </div>
               </div>
             </div>

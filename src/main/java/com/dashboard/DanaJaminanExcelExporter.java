@@ -152,7 +152,7 @@ public class DanaJaminanExcelExporter {
             styleNumber.setBorderRight(BorderStyle.THIN);
             styleNumber.setBorderLeft(BorderStyle.THIN);
             // cell.setCellStyle(styleNumber);
-
+            
             createCell(row, columnCount++, danaJaminan.getBusinessdate(), styleDate);
             createCell(row, columnCount++, danaJaminan.getAnggotaKliring().get(0).getName(), style);
             createCell(row, columnCount++, danaJaminan.getBank(), style);
@@ -162,19 +162,15 @@ public class DanaJaminanExcelExporter {
             createCell(row, columnCount++, danaJaminan.getJatuhtempo(), styleDate);
             createCell(row, columnCount++, danaJaminan.getSukubunga(), style);
             createCell(row, columnCount++, danaJaminan.getBungabruto(), styleNumber);
-            createCell(row, columnCount++, danaJaminan.getPph(), styleNumber);
-            createCell(row, columnCount++, danaJaminan.getBunga(), styleNumber);
-            createCell(row, columnCount++, danaJaminan.getAdmin(), styleNumber);
-            createCell(row, columnCount++, danaJaminan.getTransferdana(), styleNumber);
-            createCell(row, columnCount++, danaJaminan.getTransferdanakbi(), styleNumber);
-            createCell(row, columnCount++, danaJaminan.getPenempatan(), styleNumber);
-            createCell(row, columnCount++, danaJaminan.getAro(), style);
-            createCell(row, columnCount++, danaJaminan.getMultiple(), style);
-            if(danaJaminan.getSequence() == null){
-                createCell(row, columnCount++, "null", style);
-            } else {
-                createCell(row, columnCount++, danaJaminan.getSequence(), style);
-            }
+            createCell(row, columnCount++, danaJaminan.getPph()== null ? "null" : danaJaminan.getBunga(), styleNumber);
+            createCell(row, columnCount++, danaJaminan.getBunga() == null ? "null" : danaJaminan.getBunga(), styleNumber);
+            createCell(row, columnCount++, danaJaminan.getAdmin() == null ? "null" : danaJaminan.getAdmin(), styleNumber);
+            createCell(row, columnCount++, danaJaminan.getTransferdana() == null ? "null" : danaJaminan.getTransferdana(), styleNumber);
+            createCell(row, columnCount++, danaJaminan.getTransferdanakbi() == null ? "null" : danaJaminan.getTransferdanakbi(), styleNumber);
+            createCell(row, columnCount++, danaJaminan.getPenempatan() == null ? "null" : danaJaminan.getPenempatan(), styleNumber);
+            createCell(row, columnCount++, danaJaminan.getAro() == null ? "null" : danaJaminan.getAro(), style);
+            createCell(row, columnCount++, danaJaminan.getMultiple() == null ? "null" : danaJaminan.getMultiple(), style);
+            createCell(row, columnCount++, danaJaminan.getSequence() == null ? "null" : danaJaminan.getSequence(), style);
 
         }
     }
