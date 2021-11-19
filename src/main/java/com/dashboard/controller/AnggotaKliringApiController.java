@@ -3,6 +3,7 @@ package com.dashboard.controller;
 import java.util.List;
 import java.util.Optional;
 
+
 import com.dashboard.model.AnggotaKliring;
 import com.dashboard.repository.AnggotaKliringRepo;
 
@@ -38,15 +39,30 @@ public class AnggotaKliringApiController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<List<AnggotaKliring>> GetAnggotaKliringById(@PathVariable("id") Integer id)
+    public ResponseEntity<AnggotaKliring> GetAnggotaKliringById(@PathVariable("id") Integer id)
     {
-        if (id != 0)
+        try
         {
-            List<AnggotaKliring> anggotaKliring = this.anggotaKliringRepo.findAnggotaKliringById(id);
+            AnggotaKliring anggotaKliring = this.anggotaKliringRepo.findAnggotaKliringById(id);
             return new ResponseEntity<>(anggotaKliring, HttpStatus.OK);
-        } else {
-            List<AnggotaKliring> anggotaKliring = this.anggotaKliringRepo.findAll();
-            return new ResponseEntity<>(anggotaKliring, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @GetMapping("code/{code}")
+    public ResponseEntity<Boolean> IsCodeExist(@PathVariable("code") String code)
+    {
+        try
+        {
+            Optional<String> anggotaKliring = this.anggotaKliringRepo.isCodeExist(code);
+            if(anggotaKliring.isPresent())
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            else
+                return new ResponseEntity<>(false, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
@@ -68,6 +84,9 @@ public class AnggotaKliringApiController {
 
             if(anggotaKliringData.isPresent()){
                 anggotaKliringData.get().setCode(anggotaKliring.getCode());
+                anggotaKliringData.get().setName(anggotaKliring.getName());
+                anggotaKliringData.get().setAddress(anggotaKliring.getAddress());
+                anggotaKliringData.get().setType(anggotaKliring.getType());
                 
                 this.anggotaKliringRepo.save(anggotaKliringData.get());
 

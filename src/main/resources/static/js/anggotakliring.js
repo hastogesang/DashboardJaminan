@@ -24,7 +24,9 @@ function add(){
     var str = ''
     str = 
     `<h3>Create</h3>
-                    
+    <div id="alert" class="alert alert-danger fade show" role="alert" style="display:none">
+    </div>
+
     <!-- <form> -->
 
         <div class="form-group form-row">
@@ -42,7 +44,7 @@ function add(){
         <div class="form-group form-row">
             <label for="address" class="col-sm-2 col-form-label">Alamat</label>
             <div class="col-sm-4">
-                <textarea class="form-control" id="addres" rows="2"></textarea>
+                <textarea class="form-control" id="address" rows="2"></textarea>
             </div>
         </div>
         <div class="form-group form-row">
@@ -67,15 +69,28 @@ function save(){
         "address":"`+ $('#address').val() +`",
         "type":"`+ $('#type').val() +`"
     }`;
-    console.log(submitted_data)
 
     $.ajax({
-        url: "/api/anggotakliring",
-        type: "post",
+        url: "/api/anggotakliring/code/" + $('#code').val(),
+        type: "get",
         contentType: "application/json",
-        data : submitted_data,
-        success: function(){
-            window.location.reload();
+        success: function(result){
+            console.log(result)
+            if(result){
+                $('#alert').text("Code " + $('#code').val() + " already exist")
+                $('#alert').show("fast")
+            } 
+            else {
+                $.ajax({
+                    url: "/api/anggotakliring",
+                    type: "post",
+                    contentType: "application/json",
+                    data : submitted_data,
+                    success: function(){
+                        window.location.reload();
+                    }
+                })
+            }
         }
     })
 }
@@ -86,35 +101,34 @@ function edit(id){
         type:"get",
         contentType:"application/json",
         success:function(result) {
-            r = result[0]
             var str =""
             str = 
             `<h3>Edit</h3>
                             
             <!-- <form> -->
-            <input type="hidden" id="id" value="${r.id}" disabled>
+            <input type="hidden" id="id" value="${result.id}" disabled>
             <div class="form-group form-row">
                 <label for="code" class="col-sm-2 col-form-label">Code</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="code" value="${r.code}">
+                    <input type="text" class="form-control" id="code" value="${result.code}">
                 </div>
             </div>
             <div class="form-group form-row">
-                <label for="anggotaKliring" class="col-sm-2 col-form-label">AnggotaKliring</label>
+                <label for="name" class="col-sm-2 col-form-label">AnggotaKliring</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="anggotaKliring" value="${r.name}">
+                    <input type="text" class="form-control" id="name" value="${result.name}">
                 </div>
             </div>
             <div class="form-group form-row">
                 <label for="address" class="col-sm-2 col-form-label">Alamat</label>
                 <div class="col-sm-4">
-                    <textarea class="form-control" id="address" rows="2">${r.address}</textarea>
+                    <textarea class="form-control" id="address" rows="2">${result.address}</textarea>
                 </div>
             </div>
             <div class="form-group form-row">
                 <label for="type" class="col-sm-2 col-form-label">Tipe</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="type" value="${r.type}">
+                    <input type="text" class="form-control" id="type" value="${result.type}">
                 </div>
             </div>
 

@@ -1,10 +1,7 @@
 package com.dashboard.controller;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Optional;
-
-import javax.websocket.server.PathParam;
 
 import com.dashboard.model.Mahasiswa;
 import com.dashboard.repository.MahasiswaRepo;
@@ -21,8 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import net.sf.jasperreports.engine.JRException;
 
 @RestController
 @CrossOrigin("*")
@@ -73,8 +68,6 @@ public class MahasiswaApiController {
             Optional<Mahasiswa> mahasiswaData = this.mahasiswaRepo.findById(id);
 
             if (mahasiswaData.isPresent()) {
-                // set id biar nanti nge replace data dengan id ini
-                // karyawanData.get().setId(id);
                 mahasiswaData.get().setNim(mahasiswa.getNim());
                 mahasiswaData.get().setNama(mahasiswa.getNama());
                 mahasiswaData.get().setAlamat(mahasiswa.getAlamat());

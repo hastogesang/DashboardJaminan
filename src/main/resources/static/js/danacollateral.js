@@ -4,26 +4,118 @@ $(document).ready(function(){
         type:'get',
         contentType:'application/json',
         success:function(result) {
-            var str = "";
-            for(i=0; i < result.length; i++) {
-                str+=
-                `<tr>
-                    <td><div class="text-center"><span onclick="edit(${result[i].id})">Edit</span></div></td>
-                    <td>${result[i].id}</td>
-                    <td>${result[i].businessdate}</td>
-                    <td>${result[i].code}</td>
-                    <td>${result[i].bank}</td>
-                    <td>${result[i].nominal}</td>
-                    <td>${result[i].tanggalpenempatan}</td>
-                    <td>${result[i].jatuhtempo}</td>
-                    <td>${result[i].sukubunga}</td>
-                </tr>`
-            }
-
-            $('#tbody').html(str)
+            setTBody(result);
         }
     })
+
+    // $('#search').attr("href", `/api/danacollateral/export?bankParam=&date1Param=&date2Param=`);
 })
+
+function setTBody(result) {
+    var str = "";
+    for (i = 0; i < result.length; i++) {
+        str +=
+            `<tr>
+                <td><div class="text-center"><span onclick="edit(${result[i].id})">Edit</span></div></td>
+                <td>${result[i].id}</td>
+                <td>${result[i].businessdate}</td>
+                <td>${result[i].anggotaKliring[0].name}</td>
+                <td>${result[i].bank}</td>
+                <td>${formatAngka(result[i].nominal)}</td>
+                <td>${result[i].tanggalpenempatan}</td>
+                <td>${result[i].jatuhtempo}</td>
+                <td>${formatAngka(result[i].sukubunga)}</td>
+            </tr>`;
+    }
+
+    $('#tbody').html(str);
+}
+
+function searchtest() {
+    var bank = $("#myInput").val()
+    var date1 = $("#startDate").val()
+    var date2 = $("#endDate").val()
+
+    date1 = date1.replaceAll("-", "/")
+    date2 = date2.replaceAll("-", "/")
+
+    var submitted_data =
+    `{
+        "bank":"`+ bank +`",
+        "date1":"`+ date1 +`",
+        "date2":"`+ date2 +`"
+    }`;
+
+    $.ajax({
+        url:'/api/danacollateral/filter',
+        type:'post',
+        data: submitted_data,
+        contentType:'application/json',
+        success:function(result) {
+            setTBody(result)
+        }
+    })
+
+    exportData(bank, date1, date2)
+};
+
+function reset(){
+    $("#myInput").val("")
+    $("#startDate").val("")
+    $("#endDate").val("")
+}
+
+function exportData(bank, date1, date2){
+    $('#search').attr("href", `/api/danacollateral/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
+
+  }
+
+function format(angka, id){
+    $("#"+id).val(formatAngka(angka))
+}
+
+function reformat(angka, id){
+    $("#"+id).val(reformatAngka(angka))
+}
+
+function formatAngka(angka){
+    // if(angka.includes(",") && angka.includes("."))
+    //     return angka
+    // else
+        return new Intl.NumberFormat("id", {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(angka)
+}
+
+function reformatAngka(angka){
+    return angka = angka.replaceAll(".","").replaceAll(",", ".")
+}
+
+
+function calcInterest() {
+    var jumlah = reformatAngka($("#jumlah").val())
+    var sukuBunga = $("#sukubunga").val()
+
+    var datediff = calcDatediff();
+    var bungaBruto = (jumlah * sukuBunga / 100) / 365 * datediff
+    var bungaNeto = parseFloat(bungaBruto) - parseFloat(bungaBruto * 20 / 100)
+    $("#bunga").val(formatAngka(bungaNeto.toFixed(2)));
+}
+
+function calcDatediff() {
+    var date1 = new Date($("#jatuhtempo").val())
+    var date2 = new Date($("#tanggalpenempatan").val())
+
+    var timeDiff = Math.abs(date1.getTime() - date2.getTime())
+    var datediff = Math.ceil(timeDiff / (1000 * 3600 * 24))
+    return datediff;
+}
+
+function calcAdjustment() {
+    var adjustment = $("#adjustment").val()
+    var bunga = reformatAngka($("#bunga").val())
+    var afterAdjustment = parseFloat(bunga) + parseFloat(adjustment)
+
+    $("#afterAdjustment").val(formatAngka(afterAdjustment.toFixed(2)))
+}
 
 function add(){
     var str = ''
@@ -49,30 +141,30 @@ function add(){
 
         <div class="row">
             <div class="form-group form-row col-md-6">
-                <label for="penempatan" class="col-sm-4 col-form-label">Penempatan Baru</label>
+                <label for="jumlah" class="col-sm-4 col-form-label">Penempatan Baru</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="penempatan">
+                    <input type="text" class="form-control" id="jumlah" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)">
                 </div>
             </div>
             <div class="form-group form-row col-md-6">
                 <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="tanggalpenempatan" placeholder="dd/mm/yy">
+                    <input type="date" class="form-control" id="tanggalpenempatan">
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group form-row col-md-6">
-                <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatoh Tempo</label>
+                <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="jatuhtempo" placeholder="dd/mm/yy">
+                    <input type="date" class="form-control" id="jatuhtempo">
                 </div>
             </div>
             <div class="form-group form-row col-md-6">
-                <label for="nominal" class="col-sm-4 col-form-label">Transfer Dana</label>
+                <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="nominal">
+                    <input type="text" class="form-control" id="transferdana" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)">
                 </div>
             </div>
         </div>
@@ -81,25 +173,25 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="sukubunga">
+                    <input type="text" class="form-control" id="sukubunga" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" onchange="calcInterest()" >
                 </div>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="bunga">
+                    <input type="text" class="form-control" id="bunga" readonly>
                 </div>
             </div>
             <div class="form-group form-row col-md-6">
                 <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="adjustment">
+                    <input type="text" class="form-control" id="adjustment" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" onchange="calcAdjustment()">
                 </div>
             </div>
         </div>
             
         <div class="row">
             <div class="form-group form-row col-md-6">
-                <label for="bungaSetelahAdjustment" class="col-sm-4 col-form-label">Bunga Setelah Adjustment</label>
+                <label for="afterAdjustment" class="col-sm-4 col-form-label">Bunga Setelah Adjustment</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="bungaSetelahAdjustment">
+                    <input type="text" class="form-control" id="afterAdjustment" readonly>
                 </div>
             </div>
             <div class="form-group form-row col-md-6">
@@ -107,8 +199,8 @@ function add(){
                 <div class="col-sm-8">
                     <select id="aro" class="form-control">
                         <option selected hidden disabled>-- Pilih --</option>
-                        <option>True</option>
-                        <option>False</option>
+                        <option value="T">True</option>
+                        <option value="F">False</option>
                     </select>
                 </div>
             </div>
@@ -120,8 +212,8 @@ function add(){
                 <div class="col-sm-8">
                     <select id="multiple" class="form-control">
                         <option selected hidden disabled>-- Pilih --</option>
-                        <option>True</option>
-                        <option>False</option>
+                        <option value="T">True</option>
+                        <option value="F">False</option>
                     </select>
                 </div>
             </div>
@@ -141,11 +233,10 @@ function add(){
         url: '/api/anggotakliring/',
         type: 'get',
         contentType: 'application/json',
-        success: function(anggotaKliringResult) {
-            var akr = anggotaKliringResult
+        success: function(akResult) {
             var str2 = ''
-            for (i = 0; i < akr.length; i++) {
-                str2 += `<option value="${akr[i].code}">${akr[i].name}</option>`
+            for (i = 0; i < akResult.length; i++) {
+                str2 += `<option value="${akResult[i].code}">${akResult[i].name}</option>`
             }
             $('#code').html(str2)
         }
@@ -155,21 +246,46 @@ function add(){
 }
 
 function save(){
+    var today = new Date()
+    var businessDate = (today.getMonth()+1) + "/" + today.getDate() + "/" + today.getFullYear()
+    var temp_tglPenempatan = new Date($('#tanggalpenempatan').val())
+    var tanggalPenempatan = (temp_tglPenempatan.getMonth()+1) + "/" + temp_tglPenempatan.getDate() + "/" + temp_tglPenempatan.getFullYear()
+    var temp_jatuhTempo = new Date($('#jatuhtempo').val())
+    var jatuhTempo = (temp_jatuhTempo.getMonth()+1) + "/" + temp_jatuhTempo.getDate() + "/" + temp_jatuhTempo.getFullYear()
+    var datediff = calcDatediff()
+    var pph = reformatAngka($("#sukubunga").val()) / 100 / 365 * datediff
+    var bungaBruto = reformatAngka($("#jumlah").val()) * pph
+
+    var adjustment = reformatAngka($("#adjustment").val())
+    var bunga = reformatAngka($("#bunga").val())
+    var afterAdjustment = (parseFloat(bunga) + parseFloat(adjustment)).toFixed(2)
+
+    var penempatan = (parseFloat(reformatAngka($('#jumlah').val())) + parseFloat(afterAdjustment) - parseFloat(reformatAngka($('#transferdana').val())).toFixed(2))
+    var flag = 0
+    var admin = 0
     var submitted_data =
     `{
+        "businessDate":"`+ businessDate +`",
         "code":"`+ $('#code').val() +`",
         "bank":"`+ $('#bank').val() +`",
-        "penempatan":"`+ $('#penempatan').val() +`",
-        "tanggalpenempatan":"`+ $('#tanggalpenempatan').val() +`",
-        "jatuhtempo":"`+ $('#jatuhtempo').val() +`",
-        "nominal":"`+ $('#nominal').val() +`",
-        "sukubunga":"`+ $('#sukubunga').val() +`",
-        "adjustment":"`+ $('#adjustment').val() +`",
+        "nominal":"`+ reformatAngka($('#jumlah').val()) +`",
+        "tanggalpenempatan":"`+ tanggalPenempatan +`",
+        "jatuhtempo":"`+ jatuhTempo +`",
+        "jangkawaktu":"`+ datediff +`",
+        "sukubunga":"`+ reformatAngka($('#sukubunga').val()) +`",
+        "bungabruto":"`+ bungaBruto +`",
+        "pph":"`+ pph +`",
+        "adjustment":"`+ reformatAngka($('#adjustment').val()) +`",
+        "bunganetto":"`+ afterAdjustment +`",
+        "bungatransfer":"`+ reformatAngka($('#transferdana').val()) +`",
+        "penempatan":"`+ penempatan +`",
         "aro":"`+ $('#aro').val() +`",
         "multiple":"`+ $('#multiple').val() +`",
         "sequence":"`+ $('#sequence').val() +`",
-        "businessDate":"`+ $('#tanggalPenempatan').val() +`"
-    }`;
+        "flag":"`+ flag +`",
+        "admin":"`+ admin +`"
+    }`
+
     // console.log(submitted_data)
 
     $.ajax({
@@ -178,7 +294,7 @@ function save(){
         contentType: "application/json",
         data : submitted_data,
         success: function(){
-            window.location.reload();
+            window.location.reload()
         }
     })
 }
@@ -189,56 +305,58 @@ function edit(id){
         type:"get",
         contentType:"application/json",
         success:function(result) {
-            r = result[0]
-            // console.log(r)
+            var temp_tanggalPenempatan = result.tanggalpenempatan.split("/")
+            var tanggalpenempatan = temp_tanggalPenempatan[2] + "-" + temp_tanggalPenempatan[0] + "-" + temp_tanggalPenempatan[1]
+            var temp_jatuhTempo = result.jatuhtempo.split("/")
+            var jatuhtempo = temp_jatuhTempo[2] + "-" + temp_jatuhTempo[0] + "-" + temp_jatuhTempo[1]
             var str = ''
             str = 
             `<h3>Edit</h3>
                             
             <!-- <form> -->
-                <input type="hidden" id="id" value="${r.id}" disabled>
+                <input type="hidden" id="id" value="${result.id}" disabled>
                 <div class="row">
                     <div class="form-group form-row col-md-6">
-                        <label for="anggotaKliring" class="col-sm-4 col-form-label">Anggota Kliring</label>
+                        <label for="code" class="col-sm-4 col-form-label">Anggota Kliring</label>
                         <div class="col-sm-8">
-                            <select id="anggotaKliring" class="form-control">
+                            <select id="code" class="form-control">
                             </select>
                         </div>
                     </div>
                     <div class="form-group form-row col-md-6">
                         <label for="bank" class="col-sm-4 col-form-label">Bank</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="bank" value="${r.bank}">
+                            <input type="text" class="form-control" id="bank" value="${result.bank}">
                         </div>
                     </div>
                 </div>
         
                 <div class="row">
                     <div class="form-group form-row col-md-6">
-                        <label for="penempatan" class="col-sm-4 col-form-label">Penempatan Baru</label>
+                        <label for="jumlah" class="col-sm-4 col-form-label">Penempatan Baru</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="penempatan" value="${r.penempatan}">
+                            <input type="text" class="form-control" id="jumlah" value="${formatAngka(result.nominal)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)">
                         </div>
                     </div>
                     <div class="form-group form-row col-md-6">
                         <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="tanggalpenempatan" value="${r.tanggalpenempatan}">
+                            <input type="date" class="form-control" id="tanggalpenempatan" value="${tanggalpenempatan}">
                         </div>
                     </div>
                 </div>
         
                 <div class="row">
                     <div class="form-group form-row col-md-6">
-                        <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatoh Tempo</label>
+                        <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="jatuhtempo" value="${r.jatuhtempo}">
+                            <input type="date" class="form-control" id="jatuhtempo" value="${jatuhtempo}">
                         </div>
                     </div>
                     <div class="form-group form-row col-md-6">
-                        <label for="nominal" class="col-sm-4 col-form-label">Transfer Dana</label>
+                        <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="nominal" value="${r.nominal}">
+                            <input type="text" class="form-control" id="transferdana" value="${formatAngka(result.bungatransfer)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)">
                         </div>
                     </div>
                 </div>
@@ -247,7 +365,7 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="sukubunga" value="${r.sukubunga}">
+                            <input type="text" class="form-control" id="sukubunga" value="${formatAngka(result.sukubunga)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" onchange="calcInterest()">
                         </div>
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="bunga" readonly>
@@ -256,25 +374,24 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="adjustment" value="${r.adjustment}">
+                            <input type="text" class="form-control" id="adjustment" value="${formatAngka(result.adjustment)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" onchange="calcAdjustment()">
                         </div>
                     </div>
                 </div>
                     
                 <div class="row">
                     <div class="form-group form-row col-md-6">
-                        <label for="bungaSetelahAdjustment" class="col-sm-4 col-form-label">Bunga Setelah Adjustment</label>
+                        <label for="afterAdjustment" class="col-sm-4 col-form-label">Bunga Setelah Adjustment</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="bungaSetelahAdjustment" readonly>
+                            <input type="text" class="form-control" id="afterAdjustment" readonly>
                         </div>
                     </div>
                     <div class="form-group form-row col-md-6">
                         <label for="aro" class="col-sm-4 col-form-label">ARO</label>
                         <div class="col-sm-8">
                             <select id="aro" class="form-control">
-                                <option ${r.aro == true ? "Selected" : ""}>True</option>
-                                <option ${r.aro == false ? "Selected" : ""}>False</option>
-                                
+                                <option value="T" ${result.multiple != null ? result.aro.toUpperCase() == "T" ? "Selected" : "" : ""}>True</option>
+                                <option value="F" ${result.multiple != null ? result.aro.toUpperCase() == "F" ? "Selected" : "" : ""}>False</option>
                             </select>
                         </div>
                     </div>
@@ -285,15 +402,15 @@ function edit(id){
                         <label for="multiple" class="col-sm-4 col-form-label">Multiple</label>
                         <div class="col-sm-8">
                             <select id="multiple" class="form-control">
-                                <option ${r.multiple == true ? "Selected" : ""}>True</option>
-                                <option ${r.multiple == false ? "Selected" : ""}>False</option>
+                                <option value="T" ${result.multiple != null ? result.multiple.toUpperCase() == "T" ? "Selected" : "" : ""}>True</option>
+                                <option value="F" ${result.multiple != null ? result.multiple.toUpperCase() == "F" ? "Selected" : "" : ""}>False</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group form-row col-md-6">
                         <label for="sequence" class="col-sm-4 col-form-label">Sequence</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="sequence" value="${r.sequence}">
+                            <input type="text" class="form-control" id="sequence" value="${result.sequence}">
                         </div>
                     </div>
                 </div>
@@ -301,43 +418,71 @@ function edit(id){
                 <button type="submit" class="btn btn-sm btn-primary" onclick="update()">Simpan</button>
                 <button type="submit" class="btn btn-sm btn-primary" onclick="javascript:window.open('/danacollateral', '_self')">Batal</button>
             <!-- </form> -->`
-        
+
             $.ajax({
                 url: '/api/anggotakliring/',
                 type: 'get',
                 contentType: 'application/json',
-                success: function(anggotaKliringResult) {
-                    var akr = anggotaKliringResult
+                success: function(akResult) {
                     var str2 = ''
-                    for (i = 0; i < akr.length; i++) {
-                        str2 += `<option value="${akr[i].code}" ${r.code == akr[i].code ? "Selected" : ""}>${akr[i].name}</option>`
+                    for (i = 0; i < akResult.length; i++) {
+                        str2 += `<option value="${akResult[i].code}" ${result.code == akResult[i].code ? "Selected" : ""}>${akResult[i].name}</option>`
                     }
-                    $('#anggotaKliring').html(str2)
+                    $('#code').html(str2)
                 }
             })
 
             $('#card-body').html(str)
+            // calcInterest();
+            // calcAdjustment();
         }
     })
 }
 
 function update(){
+    var today = new Date()
+    var businessDate = (today.getMonth()+1) + "/" + today.getDate() + "/" + today.getFullYear()
+    var temp_tglPenempatan = new Date($('#tanggalpenempatan').val())
+    var tanggalPenempatan = (temp_tglPenempatan.getMonth()+1) + "/" + temp_tglPenempatan.getDate() + "/" + temp_tglPenempatan.getFullYear()
+    var temp_jatuhTempo = new Date($('#jatuhtempo').val())
+    var jatuhTempo = (temp_jatuhTempo.getMonth()+1) + "/" + temp_jatuhTempo.getDate() + "/" + temp_jatuhTempo.getFullYear()
+    var datediff = calcDatediff()
+    var pph = reformatAngka($("#sukubunga").val()) / 100 / 365 * datediff
+    var bungaBruto = reformatAngka($("#jumlah").val()) * pph
+
+    var adjustment = reformatAngka($("#adjustment").val())
+    var bunga = reformatAngka($("#bunga").val())
+    var afterAdjustment = (parseFloat(bunga) + parseFloat(adjustment)).toFixed(2)
+
+    var penempatan = (parseFloat(reformatAngka($('#jumlah').val())) + parseFloat(afterAdjustment) - parseFloat(reformatAngka($('#transferdana').val())).toFixed(2))
+    var flag = 0
+    var admin = 0
+
     var submitted_data =
     `{
         "id":"`+ $('#id').val() +`",
-        "code":"`+ $('#anggotaKliring').val() +`",
+        "businessDate":"`+ businessDate +`",
+        "code":"`+ $('#code').val() +`",
         "bank":"`+ $('#bank').val() +`",
-        "penempatan":"`+ $('#penempatan').val() +`",
-        "tanggalpenempatan":"`+ $('#tanggalpenempatan').val() +`",
-        "jatuhtempo":"`+ $('#jatuhtempo').val() +`",
-        "nominal":"`+ $('#nominal').val() +`",
-        "sukubunga":"`+ $('#sukubunga').val() +`",
-        "adjustment":"`+ $('#adjustment').val() +`",
+        "nominal":"`+ reformatAngka($('#jumlah').val()) +`",
+        "tanggalpenempatan":"`+ tanggalPenempatan +`",
+        "jatuhtempo":"`+ jatuhTempo +`",
+        "jangkawaktu":"`+ datediff +`",
+        "sukubunga":"`+ reformatAngka($('#sukubunga').val()) +`",
+        "bungabruto":"`+ bungaBruto +`",
+        "pph":"`+ pph +`",
+        "adjustment":"`+ reformatAngka($('#adjustment').val()) +`",
+        "bunganetto":"`+ afterAdjustment +`",
+        "bungatransfer":"`+ reformatAngka($('#transferdana').val()) +`",
+        "penempatan":"`+ penempatan +`",
         "aro":"`+ $('#aro').val() +`",
         "multiple":"`+ $('#multiple').val() +`",
         "sequence":"`+ $('#sequence').val() +`",
-        "businessDate":"`+ $('#tanggalpenempatan').val() +`"
+        "flag":"`+ flag +`",
+        "admin":"`+ admin +`"
     }`;
+
+    // console.log(submitted_data)
 
     $.ajax({
         url: "/api/danacollateral",

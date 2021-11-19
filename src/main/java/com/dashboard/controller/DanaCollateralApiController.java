@@ -1,15 +1,21 @@
 package com.dashboard.controller;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.HashMap;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
+
+import com.dashboard.excel.DanaCollateralExcelExporter;
 import com.dashboard.model.DanaCollateral;
+import com.dashboard.model.DanaCollateralParam;
 import com.dashboard.repository.DanaCollateralRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,15 +25,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @RestController
 @CrossOrigin("*")
@@ -40,7 +39,29 @@ public class DanaCollateralApiController {
     @GetMapping("")
     public ResponseEntity<List<DanaCollateral>> GetAllDanaCollateral(){
         try {
-            List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findAll();
+            List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
+
+            return new ResponseEntity<>(danaCollaterals, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+    
+    @PostMapping("filter")
+    public ResponseEntity<List<DanaCollateral>> GetFilteredDanaCollateral(@RequestBody DanaCollateralParam param){
+        try {
+            String bank = null;
+            Date date1 = null, date2 = null;
+            if(param.getBank() != "")
+                bank = param.getBank();
+
+            if(param.getDate1() != "")
+                date1 = new SimpleDateFormat("yyyy/MM/dd").parse(param.getDate1());
+
+            if(param.getDate2() != "")
+                date2 = new SimpleDateFormat("yyyy/MM/dd").parse(param.getDate2());
+
+            List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.GetFilteredDanaCollateral(bank, date1, date2, Sort.by(Sort.Direction.DESC, "id"));
 
             return new ResponseEntity<>(danaCollaterals, HttpStatus.OK);
         } catch (Exception e) {
@@ -49,15 +70,18 @@ public class DanaCollateralApiController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<List<DanaCollateral>> GetDanaCollateralById(@PathVariable("id") Integer id)
+    public ResponseEntity<DanaCollateral> GetDanaCollateralById(@PathVariable("id") Integer id)
     {
-        if (id != 0)
+        try
         {
-            List<DanaCollateral> danaCollateral = this.danaCollateralRepo.findDanaCollateralById(id);
-            return new ResponseEntity<>(danaCollateral, HttpStatus.OK);
-        } else {
-            List<DanaCollateral> danaCollateral = this.danaCollateralRepo.findAll();
-            return new ResponseEntity<>(danaCollateral, HttpStatus.OK);
+            Optional<DanaCollateral> danaCollateral = this.danaCollateralRepo.findById(id);
+            if (danaCollateral.isPresent()) 
+                return new ResponseEntity(danaCollateral, HttpStatus.OK);
+            else
+                return ResponseEntity.notFound().build();
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
@@ -78,7 +102,25 @@ public class DanaCollateralApiController {
             Optional<DanaCollateral> danaCollateralData = this.danaCollateralRepo.findById(danaCollateral.getId());
 
             if(danaCollateralData.isPresent()){
+                danaCollateralData.get().setBusinessdate(danaCollateral.getBusinessdate());
                 danaCollateralData.get().setCode(danaCollateral.getCode());
+                danaCollateralData.get().setBank(danaCollateral.getBank());
+                danaCollateralData.get().setNominal(danaCollateral.getNominal());
+                danaCollateralData.get().setTanggalpenempatan(danaCollateral.getTanggalpenempatan());
+                danaCollateralData.get().setJatuhtempo(danaCollateral.getJatuhtempo());
+                danaCollateralData.get().setJangkawaktu(danaCollateral.getJangkawaktu());
+                danaCollateralData.get().setSukubunga(danaCollateral.getSukubunga());
+                danaCollateralData.get().setBungabruto(danaCollateral.getBungabruto());
+                danaCollateralData.get().setPph(danaCollateral.getPph());
+                danaCollateralData.get().setAdjustment(danaCollateral.getAdjustment());
+                danaCollateralData.get().setBunganetto(danaCollateral.getBunganetto());
+                danaCollateralData.get().setBungatransfer(danaCollateral.getBungatransfer());
+                danaCollateralData.get().setPenempatan(danaCollateral.getPenempatan());
+                danaCollateralData.get().setAro(danaCollateral.getAro());
+                danaCollateralData.get().setMultiple(danaCollateral.getMultiple());
+                danaCollateralData.get().setSequence(danaCollateral.getSequence());
+                danaCollateralData.get().setFlag(danaCollateral.getFlag());
+                danaCollateralData.get().setAdmin(danaCollateral.getAdmin());
                 
                 this.danaCollateralRepo.save(danaCollateralData.get());
 
@@ -91,22 +133,32 @@ public class DanaCollateralApiController {
         }
     }
 
-    @GetMapping("get")
-    public List<DanaCollateral> GetDanaCollateral(){
-            List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findAll();
-            return danaCollaterals;
+    @GetMapping("export") // export to excel
+    public void exportToExcel(HttpServletResponse response, @RequestParam String bankParam, @RequestParam String date1Param, @RequestParam String date2Param) throws IOException, ParseException {
+        String bank = bankParam != "" ? bankParam : null;
+        Date date1 = date1Param != "" ? new SimpleDateFormat("yyyy/MM/dd").parse(date1Param) : null;
+        Date date2 = date2Param != "" ? new SimpleDateFormat("yyyy/MM/dd").parse(date2Param) : null;
+
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=report.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<DanaCollateral> danaCollaterals = danaCollateralRepo.GetFilteredDanaCollateral(bank, date1, date2, Sort.by(Sort.Direction.DESC, "id"));
+        DanaCollateralExcelExporter excelExporter = new DanaCollateralExcelExporter(danaCollaterals);
+
+        excelExporter.export(response);
     }
 
-    // @GetMapping("pdf")
-    // public String generatePdf() throws FileNotFoundException, JRException
-    // {
-    //     JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(GetDanaCollateral());
-    //     JasperReport compileReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/static/assets/Blank_A4.jrxml"));
-        
-    //     HashMap<String, Object> map = new HashMap<>();
-    //     JasperPrint fillReport = JasperFillManager.fillReport(compileReport, map, beanCollectionDataSource);
-    //     JasperExportManager.exportReportToPdfFile(fillReport, "D:\\dana.pdf");
+    @PostMapping("test")
+    public ResponseEntity<List<DanaCollateral>> GetTestData(){
+        try {
 
-    //     return "Generated";
-    // }
+            List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
+
+            return new ResponseEntity<>(danaCollaterals, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
 }

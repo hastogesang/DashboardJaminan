@@ -48,6 +48,19 @@
 							
 							<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionOne">
 								<div id="card-body" class="card-body">
+									<div class="d-flex">
+										<div>
+											<input id="myInput" type="text" placeholder="Masukkan nama bank..">
+											<input id="startDate" type="date" placeholder="Start Date">
+											<input id="endDate" type="date" placeholder="End Date">
+											<a class="btn btn-sm btn-outline-secondary" id="search" onclick="searchtest()">search</a>
+											<button class="btn btn-sm btn-outline-secondary" id="reset" onclick="reset()">reset</button>
+										</div>
+										<div class="ml-auto">
+											<a type="button" class="btn btn-sm btn-outline-secondary" id="exportbutton">Export</a>
+										</div>
+									</div>
+									<br>
 									<div class="table-responsive">
 										<table id="table" class="table table-bordered table-sm">
 											<thead>
