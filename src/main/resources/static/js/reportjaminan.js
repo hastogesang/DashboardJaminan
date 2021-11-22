@@ -14,13 +14,13 @@ function TampilData(){
             </div>
 
             <div class="row">
-            <div class="form-group form-row col-md-6">
-                <label for="code" class="col-sm-4 col-form-label">Nama Anggota Kliring</label>
-                <div class="col-sm-8">
-                  <select id="code" class="form-control form-control-sm">
-                  </select>
-                </div>
-            </div>
+              <div class="form-group form-row col-md-6">
+                  <label for="code" class="col-sm-4 col-form-label">Nama Anggota Kliring</label>
+                  <div class="col-sm-8">
+                    <select id="code" class="form-control form-control-sm">
+                    </select>
+                  </div>
+              </div>
             </div>
 
             <div class="row">

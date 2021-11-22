@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "DanaJaminan")
-public class DanaJaminan implements Serializable {
+public class DanaJaminan extends Common implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -111,5 +111,8 @@ public class DanaJaminan implements Serializable {
 
     @Column(name = "flag", length = 1)
     private String flag;
+
+    @Column(name = "flag_bunga", length = 1)
+    private String flag_bunga;
 
 }

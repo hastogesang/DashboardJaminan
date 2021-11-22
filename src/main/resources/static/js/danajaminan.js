@@ -155,6 +155,19 @@
                 </div>
               </div>
               
+              <div class="row">
+                <div class="form-group form-row col-md-6">
+                  <label for="flag_bunga" class="col-sm-4 col-form-label">Bunga</label>
+                  <div class="col-sm-8">
+                    <select id="flag_bunga" class="form-control">
+                      <option selected>-- Pilih --</option>
+                      <option value="T">Transfer</option>
+                      <option value="F">Tambah</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
               <button type="submit" class="btn btn-sm btn-primary" onclick="save(this.value)">Simpan</button>
               <input type="reset" class="btn btn-sm btn-dark" value="batal"></input>
           </form>
@@ -306,6 +319,19 @@
                 </div>
               </div>
             </div>
+
+            <div class="row">
+              <div class="form-group form-row col-md-6">
+                <label for="flag_bunga" class="col-sm-4 col-form-label">Bunga</label>
+                <div class="col-sm-8">
+                  <select id="flag_bunga" class="form-control">
+                    <option selected>-- Pilih --</option>
+                    <option value="T">Transfer</option>
+                    <option value="F">Tambah</option>
+                  </select>
+                </div>
+              </div>
+            </div>
             
             <button type="submit" class="btn btn-sm btn-primary" onclick="Update(${data.id})">Simpan</button>
             <input type="reset" class="btn btn-sm btn-dark" value="batal"></input>
@@ -374,26 +400,30 @@
         "aro":"`+ $('#aro').val().substring(0,1) +`",
         "multiple":"`+ $('#multiple').val().substring(0,1) +`",
         "sequence":"`+ $('#sequence').val() +`",
-        "flag":"`+ 0 +`"
+        "flag":"`+ 0 +`",
+        "flag_bunga":"`+ $('#flag_bunga').val() +`"
     }`;
 
     console.log(submitted_data);
 
-    $.ajax({
-        url: "/api/danajaminan",
-        type: "post",
-        contentType: "application/json",
-        data : submitted_data,
-        success: function(){
-            window.location.reload();
-        }
-    })
+    if($('#flag_bunga').val()=="T"){
+      console.log("oke");
+    }
+    // $.ajax({
+    //     url: "/api/danajaminan",
+    //     type: "post",
+    //     contentType: "application/json",
+    //     data : submitted_data,
+    //     success: function(){
+    //         window.location.reload();
+    //     }
+    // })
 
   }
 
   function Update(id){
-    var bussinessDate = new Date();
-    var today = (bussinessDate.getMonth()+1)+'/'+ bussinessDate.getDate()+'/'+bussinessDate.getFullYear();
+    // var bussinessDate = new Date();
+    // var today = (bussinessDate.getMonth()+1)+'/'+ bussinessDate.getDate()+'/'+bussinessDate.getFullYear();
     var datediff = DateDiff();
     var jumlah = reformatAngka($("#jumlah").val());
     var transferDana = reformatAngka($('#transferdana').val());
@@ -415,7 +445,7 @@
 
     var formData =
     `{
-        "businessdate":"`+ today +`",
+        "businessdate":"`+ tanggalpenempatan +`",
         "code":"`+ $('#code').val() +`",
         "bank":"`+ $('#bank').val() +`",
         "jumlah":"`+ reformatAngka($('#jumlah').val()) +`",
@@ -434,21 +464,22 @@
         "aro":"`+ $('#aro').val().substring(0,1) +`",
         "multiple":"`+ $('#multiple').val().substring(0,1) +`",
         "sequence":"`+ $('#sequence').val() +`",
-        "flag":"`+ 0 +`"
+        "flag":"`+ 0 +`",
+        "flag_bunga":"`+ $('#flag_bunga').val() +`"
     }`;
 
     console.log(formData);
     // console.log(id);
 
-    // $.ajax({
-    //     url:'/api/danajaminan/'+id,
-    //     type: 'put' ,
-    //     contentType:'application/json',
-    //     data: formData,
-    //     success: function(){
-    //       alert('success');
-    //     }
-    // });
+    $.ajax({
+        url:'/api/danajaminan/'+id,
+        type: 'put' ,
+        contentType:'application/json',
+        data: formData,
+        success: function(){
+          alert('success');
+        }
+    });
   }
 
 
