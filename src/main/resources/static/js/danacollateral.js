@@ -8,7 +8,7 @@ $(document).ready(function(){
         }
     })
 
-    // $('#search').attr("href", `/api/danacollateral/export?bankParam=&date1Param=&date2Param=`);
+    // $('#exportbutton').attr("href", `/api/danacollateral/export?bankParam=&date1Param=&date2Param=`);
 })
 
 function setTBody(result) {
@@ -31,7 +31,7 @@ function setTBody(result) {
     $('#tbody').html(str);
 }
 
-function searchtest() {
+function searchFiltered() {
     var bank = $("#myInput").val()
     var date1 = $("#startDate").val()
     var date2 = $("#endDate").val()
@@ -55,8 +55,6 @@ function searchtest() {
             setTBody(result)
         }
     })
-
-    exportData(bank, date1, date2)
 };
 
 function reset(){
@@ -65,8 +63,12 @@ function reset(){
     $("#endDate").val("")
 }
 
-function exportData(bank, date1, date2){
-    $('#search').attr("href", `/api/danacollateral/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
+function exportData(){
+    var bank = $("#myInput").val()
+    var date1 = $("#startDate").val()
+    var date2 = $("#endDate").val()
+    // $('#exportbutton').attr("href", `/api/danacollateral/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
+    window.location.assign(`/api/danacollateral/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`, "Download")
 
   }
 
@@ -92,11 +94,13 @@ function reformatAngka(angka){
 
 function calcInterest() {
     var jumlah = reformatAngka($("#jumlah").val())
-    var sukuBunga = $("#sukubunga").val()
+    var sukuBunga = reformatAngka($("#sukubunga").val())
 
     var datediff = calcDatediff();
     var bungaBruto = (jumlah * sukuBunga / 100) / 365 * datediff
     var bungaNeto = parseFloat(bungaBruto) - parseFloat(bungaBruto * 20 / 100)
+
+    console.log(bungaNeto)
     $("#bunga").val(formatAngka(bungaNeto.toFixed(2)));
 }
 
@@ -110,11 +114,15 @@ function calcDatediff() {
 }
 
 function calcAdjustment() {
-    var adjustment = $("#adjustment").val()
+    var adjustment = reformatAngka($("#adjustment").val())
     var bunga = reformatAngka($("#bunga").val())
+    console.log(adjustment)
+    console.log(bunga)
+
     var afterAdjustment = parseFloat(bunga) + parseFloat(adjustment)
 
     $("#afterAdjustment").val(formatAngka(afterAdjustment.toFixed(2)))
+    // $("#afterAdjustment").val(afterAdjustment.toFixed(2))
 }
 
 function add(){
@@ -173,7 +181,7 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="sukubunga" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" onchange="calcInterest()" >
+                    <input type="text" class="form-control" id="sukubunga" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcInterest();">
                 </div>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="bunga" readonly>
@@ -182,7 +190,7 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="adjustment" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" onchange="calcAdjustment()">
+                    <input type="text" class="form-control" id="adjustment" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcAdjustment();">
                 </div>
             </div>
         </div>
@@ -253,8 +261,8 @@ function save(){
     var temp_jatuhTempo = new Date($('#jatuhtempo').val())
     var jatuhTempo = (temp_jatuhTempo.getMonth()+1) + "/" + temp_jatuhTempo.getDate() + "/" + temp_jatuhTempo.getFullYear()
     var datediff = calcDatediff()
-    var pph = reformatAngka($("#sukubunga").val()) / 100 / 365 * datediff
-    var bungaBruto = reformatAngka($("#jumlah").val()) * pph
+    var bungaBruto = reformatAngka($("#jumlah").val()) * reformatAngka($("#sukubunga").val()) / 100 / 365 * datediff
+    var pph = parseFloat(bungaBruto * 20 / 100)
 
     var adjustment = reformatAngka($("#adjustment").val())
     var bunga = reformatAngka($("#bunga").val())
@@ -265,7 +273,7 @@ function save(){
     var admin = 0
     var submitted_data =
     `{
-        "businessDate":"`+ businessDate +`",
+        "businessdate":"`+ businessDate +`",
         "code":"`+ $('#code').val() +`",
         "bank":"`+ $('#bank').val() +`",
         "nominal":"`+ reformatAngka($('#jumlah').val()) +`",
@@ -365,7 +373,7 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="sukubunga" value="${formatAngka(result.sukubunga)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" onchange="calcInterest()">
+                            <input type="text" class="form-control" id="sukubunga" value="${formatAngka(result.sukubunga)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcInterest();">
                         </div>
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="bunga" readonly>
@@ -374,7 +382,7 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="adjustment" value="${formatAngka(result.adjustment)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" onchange="calcAdjustment()">
+                            <input type="text" class="form-control" id="adjustment" value="${formatAngka(result.adjustment)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcAdjustment();">
                         </div>
                     </div>
                 </div>
@@ -433,13 +441,13 @@ function edit(id){
             })
 
             $('#card-body').html(str)
-            // calcInterest();
-            // calcAdjustment();
         }
     })
 }
 
 function update(){
+    calcInterest()
+    calcAdjustment()
     var today = new Date()
     var businessDate = (today.getMonth()+1) + "/" + today.getDate() + "/" + today.getFullYear()
     var temp_tglPenempatan = new Date($('#tanggalpenempatan').val())
@@ -447,8 +455,8 @@ function update(){
     var temp_jatuhTempo = new Date($('#jatuhtempo').val())
     var jatuhTempo = (temp_jatuhTempo.getMonth()+1) + "/" + temp_jatuhTempo.getDate() + "/" + temp_jatuhTempo.getFullYear()
     var datediff = calcDatediff()
-    var pph = reformatAngka($("#sukubunga").val()) / 100 / 365 * datediff
-    var bungaBruto = reformatAngka($("#jumlah").val()) * pph
+    var bungaBruto = reformatAngka($("#jumlah").val()) * reformatAngka($("#sukubunga").val()) / 100 / 365 * datediff
+    var pph = parseFloat(bungaBruto * 20 / 100)
 
     var adjustment = reformatAngka($("#adjustment").val())
     var bunga = reformatAngka($("#bunga").val())
@@ -461,7 +469,7 @@ function update(){
     var submitted_data =
     `{
         "id":"`+ $('#id').val() +`",
-        "businessDate":"`+ businessDate +`",
+        "businessdate":"`+ businessDate +`",
         "code":"`+ $('#code').val() +`",
         "bank":"`+ $('#bank').val() +`",
         "nominal":"`+ reformatAngka($('#jumlah').val()) +`",

@@ -19,9 +19,9 @@ public interface DanaCollateralRepo extends JpaRepository<DanaCollateral, Intege
     + " AND ((jatuhtempo BETWEEN :date1 AND :date2) OR :date1 IS NULL OR :date2 IS NULL)")
     List<DanaCollateral> GetFilteredDanaCollateral(@Param("bank") String bank, @Param("date1") Date date1, @Param("date2") Date date2, Sort sort);
 
-    @Query("FROM DanaCollateral dc WHERE dc.id < 21")
-    List<DanaCollateral> GetDC();
+    // @Query("FROM DanaCollateral dc WHERE dc.id < 21")
+    // List<DanaCollateral> GetDC();
 
-    @Query("FROM DanaCollateral")
-    List<DanaCollateral> GetTest(Sort sort);
+    // @Query("FROM DanaCollateral")
+    List<DanaCollateral> findTop1000ByOrderByIdDesc();
 }
