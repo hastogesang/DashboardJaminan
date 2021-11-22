@@ -15,8 +15,8 @@ import lombok.Data;
 @Data
 @MappedSuperclass
 public class Common{
-    
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "id", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.DATE)
     @Column(name = "created_on")
     private Date createdOn;
@@ -24,7 +24,7 @@ public class Common{
     @Column(name = "created_by")
     private String createdBy;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "id", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.DATE)
     @Column(name = "modified_on")
     private Date modifiedOn;

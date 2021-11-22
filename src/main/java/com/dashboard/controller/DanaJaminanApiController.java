@@ -139,6 +139,7 @@ public class DanaJaminanApiController {
                 danaJaminanData.get().setMultiple(danaJaminan.getMultiple());
                 danaJaminanData.get().setSequence(danaJaminan.getSequence());
                 danaJaminanData.get().setFlag(danaJaminan.getFlag());
+                danaJaminanData.get().setFlag_bunga(danaJaminan.getFlag_bunga());
                 danaJaminanData.get().setModifiedBy("admin");
                 danaJaminanData.get().setModifiedOn(new Date());
                 this.danaJaminanRepo.save(danaJaminanData.get());
@@ -206,7 +207,7 @@ public class DanaJaminanApiController {
             LocalDate jatuhtempoparse = LocalDate.parse(jatuhtempo);
             // System.out.println(jatuhtempoparse);
 
-            if(danaJaminan.get().getAro() != null){
+            if(danaJaminan.get().getAro() != null && danaJaminan.get().getFlag_bunga() != null){
                 if(today.isEqual(jatuhtempoparse)){
                     if(danaJaminan.get().getAro().equalsIgnoreCase("T")){
                         Integer tambahBulan = 30;
@@ -228,6 +229,11 @@ public class DanaJaminanApiController {
 
                         long daysBetween = Duration.between(jatuhtempoparse.atStartOfDay(), jatuhTempoBaru.atStartOfDay()).toDays();
                         BigDecimal jumlah = danaJaminan.get().getJumlah();
+                        // if(danaJaminan.get().getFlag_bunga() != null){
+                        if(danaJaminan.get().getFlag_bunga().equalsIgnoreCase("F")){
+                            jumlah = danaJaminan.get().getPenempatan();
+                        }
+                        // }
                         BigDecimal bungaBruto =  (jumlah.multiply(danaJaminan.get().getSukubunga()).divide(new BigDecimal("100"), 2)).divide(BigDecimal.valueOf(365), 2).multiply(BigDecimal.valueOf(daysBetween));
                         // BigDecimal bungaBruto = (jumlah * danaJaminan.get().getSukubunga() / 100) / 365 * daysBetween;
                         BigDecimal bungaNeto = bungaBruto.subtract(bungaBruto.multiply(BigDecimal.valueOf(20)).divide(new BigDecimal("100"), 2));
@@ -242,15 +248,7 @@ public class DanaJaminanApiController {
                         danaJaminan2.setBusinessdate(danaJaminan.get().getJatuhtempo());
                         danaJaminan2.setCode(danaJaminan.get().getCode());
                         danaJaminan2.setBank(danaJaminan.get().getBank());
-                        if(danaJaminan.get().getFlag_bunga() != null){
-                            if(danaJaminan.get().getFlag_bunga().equalsIgnoreCase("F")){
-                                danaJaminan2.setJumlah(penempatan);
-                            } else {
-                                danaJaminan2.setJumlah(danaJaminan.get().getJumlah());
-                            }
-                        } else {
-                            danaJaminan2.setJumlah(danaJaminan.get().getJumlah());
-                        }
+                        danaJaminan2.setJumlah(jumlah);
                         danaJaminan2.setJangkawaktu((int) daysBetween);
                         danaJaminan2.setTanggalpenempatan(danaJaminan.get().getJatuhtempo());
                         danaJaminan2.setJatuhtempo(jatuhTempoDate);

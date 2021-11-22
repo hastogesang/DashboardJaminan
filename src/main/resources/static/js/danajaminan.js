@@ -51,7 +51,7 @@
                 <div class="form-group form-row col-md-6">
                   <label for="bank" class="col-sm-4 col-form-label">Bank</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control input-sm" id="bank">
+                    <input type="text" class="form-control input-sm" id="bank" required>
                   </div>
                 </div>
               </div>
@@ -60,13 +60,13 @@
                 <div class="form-group form-row col-md-6">
                   <label for="jumlah" class="col-sm-4 col-form-label">Penempatan Awal</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="jumlah" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
+                    <input type="text" class="form-control" id="jumlah" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
                   </div>
                 </div>
                 <div class="form-group form-row col-md-6">
                   <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                   <div class="col-sm-8">
-                    <input type="date" class="form-control" id="tanggalpenempatan">
+                    <input type="date" class="form-control" id="tanggalpenempatan" required>
                   </div>
                 </div>
               </div>
@@ -75,13 +75,13 @@
                 <div class="form-group form-row col-md-6">
                   <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                   <div class="col-sm-8">
-                    <input type="date" class="form-control" id="jatuhtempo">
+                    <input type="date" class="form-control" id="jatuhtempo" required>
                   </div>
                 </div>
                 <div class="form-group form-row col-md-6">
                   <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="sukubunga" onblur="ubahAngka(this.value, this.id); calcInterest()" onfocus="reformat(this.value, this.id)">
+                    <input type="text" class="form-control" id="sukubunga" onblur="ubahAngka(this.value, this.id); calcInterest()" onfocus="reformat(this.value, this.id)" required>
                     <input type="text" class="form-control mt-2" id="bunga" readonly="readonly">
                   </div>
                 </div>
@@ -91,7 +91,7 @@
                 <div class="form-group form-row col-md-6">
                   <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="adjustment" onblur="ubahAngka(this.value, this.id); calcAdjusment()" onfocus="reformat(this.value, this.id)">
+                    <input type="text" class="form-control" id="adjustment" onblur="ubahAngka(this.value, this.id); calcAdjusment()" onfocus="reformat(this.value, this.id)" required>
                   </div>
                 </div>
                 <div class="form-group form-row col-md-6">
@@ -106,13 +106,14 @@
                 <div class="form-group form-row col-md-6">
                   <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="transferdana" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
+                    <input type="text" class="form-control" id="transferdana" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
+                    <span id="alerttransfer" class="text-danger d-none">transfer dana tidak boleh lebih dari after adjustment dan tidak boleh 0</span> 
                   </div>
                 </div>
                 <div class="form-group form-row col-md-6">
                   <label for="transferdanakbi" class="col-sm-4 col-form-label">Transfer Dana Ke KBI</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="transferdanakbi" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
+                    <input type="text" class="form-control" id="transferdanakbi" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
                   </div>
                 </div>
               </div>
@@ -121,14 +122,14 @@
                 <div class="form-group form-row col-md-6">
                   <label for="admin" class="col-sm-4 col-form-label">Biaya Admin</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control" id="admin" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
+                    <input type="text" class="form-control" id="admin" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
                   </div>
                 </div>
                 <div class="form-group form-row col-md-6">
                   <label for="aro" class="col-sm-4 col-form-label">ARO</label>
                   <div class="col-sm-8">
-                    <select id="aro" class="form-control">
-                      <option selected>-- Pilih --</option>
+                    <select id="aro" class="form-control" required>
+                      <option selected value="">-- Pilih --</option>
                       <option>True</option>
                       <option>False</option>
                     </select>
@@ -140,8 +141,8 @@
                 <div class="form-group form-row col-md-6">
                   <label for="multiple" class="col-sm-4 col-form-label">Multiple</label>
                   <div class="col-sm-8">
-                    <select id="multiple" class="form-control">
-                      <option selected>-- Pilih --</option>
+                    <select id="multiple" class="form-control" required>
+                      <option selected value="">-- Pilih --</option>
                       <option>True</option>
                       <option>False</option>
                     </select>
@@ -150,7 +151,7 @@
                 <div class="form-group form-row col-md-6">
                   <label for="sequence" class="col-sm-4 col-form-label">Sequence</label>
                   <div class="col-sm-8">
-                    <input type="number" class="form-control" id="sequence">
+                    <input type="number" class="form-control" id="sequence" required>
                   </div>
                 </div>
               </div>
@@ -159,8 +160,8 @@
                 <div class="form-group form-row col-md-6">
                   <label for="flag_bunga" class="col-sm-4 col-form-label">Bunga</label>
                   <div class="col-sm-8">
-                    <select id="flag_bunga" class="form-control">
-                      <option selected>-- Pilih --</option>
+                    <select id="flag_bunga" class="form-control" required>
+                      <option selected value="">-- Pilih --</option>
                       <option value="T">Transfer</option>
                       <option value="F">Tambah</option>
                     </select>
@@ -211,14 +212,14 @@
               <div class="form-group form-row col-md-6">
                 <label for="code" class="col-sm-4 col-form-label">Anggota Keliring</label>
                 <div class="col-sm-8">
-                  <select id="code" class="form-control input-sm">
+                  <select id="code" class="form-control input-sm" required>
                   </select>
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
                 <label for="bank" class="col-sm-4 col-form-label">Bank</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control input-sm" id="bank" value="${data.bank}">
+                  <input type="text" class="form-control input-sm" id="bank" value="${data.bank}" required>
                 </div>
               </div>
             </div>
@@ -227,13 +228,13 @@
               <div class="form-group form-row col-md-6">
                 <label for="jumlah" class="col-sm-4 col-form-label">Penempatan Awal</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="jumlah" value="${formatRupiah(data.jumlah)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
+                  <input type="text" class="form-control" id="jumlah" value="${formatRupiah(data.jumlah)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
                 <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                 <div class="col-sm-8">
-                  <input type="date" class="form-control" id="tanggalpenempatan" placeholder="dd/mm/yy" value="${tanggalpenempatan}">
+                  <input type="date" class="form-control" id="tanggalpenempatan" placeholder="dd/mm/yy" value="${tanggalpenempatan}" required>
                 </div>
               </div>
             </div>
@@ -242,14 +243,14 @@
               <div class="form-group form-row col-md-6">
                 <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                 <div class="col-sm-8">
-                  <input type="date" class="form-control" id="jatuhtempo" placeholder="dd/mm/yy" value="${jatuhtempo}">
+                  <input type="date" class="form-control" id="jatuhtempo" placeholder="dd/mm/yy" value="${jatuhtempo}" required>
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
                 <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
                 <div class="col-sm-8">
                   <input type="text" class="form-control" id="sukubunga" value="${formatRupiah(data.sukubunga)}" onblur="ubahAngka(this.value, this.id); calcInterest()" onfocus="reformat(this.value, this.id)">
-                  <input type="text" class="form-control mt-2" id="bunga" readonly="readonly">
+                  <input type="text" class="form-control mt-2" id="bunga" readonly="readonly" required>
                 </div>
               </div>
             </div>
@@ -258,28 +259,29 @@
               <div class="form-group form-row col-md-6">
                 <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="adjustment" value="${formatRupiah(data.adjustment)}" onblur="ubahAngka(this.value, this.id); calcAdjusment()" onfocus="reformat(this.value, this.id)">
+                  <input type="text" class="form-control" id="adjustment" value="${formatRupiah(data.adjustment)}" onblur="ubahAngka(this.value, this.id); calcAdjusment()" onfocus="reformat(this.value, this.id)" required>
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
                 <label for="afterAdjustment" class="col-sm-4 col-form-label">Bunga Setelah Adjustment</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="afterAdjustment" readonly="readonly" >
+                  <input type="text" class="form-control" id="afterAdjustment" readonly="readonly">
                 </div>
               </div>
             </div>
-              
+
             <div class="row">
               <div class="form-group form-row col-md-6">
                 <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="transferdana" value="${formatRupiah(data.transferdana)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
+                  <input type="text" class="form-control" id="transferdana" value="${formatRupiah(data.transferdana)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
+                  <span id="alerttransfer" class="text-danger d-none">transfer dana tidak boleh lebih dari after adjustment dan tidak boleh 0</span>
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
                 <label for="transferdanakbi" class="col-sm-4 col-form-label">Transfer Dana Ke KBI</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="transferdanakbi" value="${formatRupiah(data.transferdanakbi)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
+                  <input type="text" class="form-control" id="transferdanakbi" value="${formatRupiah(data.transferdanakbi)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
                 </div>
               </div>
             </div>
@@ -288,7 +290,7 @@
               <div class="form-group form-row col-md-6">
                 <label for="admin" class="col-sm-4 col-form-label">Biaya Admin</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control" id="admin" value="${formatRupiah(data.admin)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)">
+                  <input type="text" class="form-control" id="admin" value="${formatRupiah(data.admin)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
@@ -315,7 +317,7 @@
               <div class="form-group form-row col-md-6">
                 <label for="sequence" class="col-sm-4 col-form-label">Sequence</label>
                 <div class="col-sm-8">
-                  <input type="number" class="form-control" id="sequence" value="${data.sequence}">
+                  <input type="number" class="form-control" id="sequence" value="${data.sequence}" required>
                 </div>
               </div>
             </div>
@@ -326,8 +328,8 @@
                 <div class="col-sm-8">
                   <select id="flag_bunga" class="form-control">
                     <option selected>-- Pilih --</option>
-                    <option value="T">Transfer</option>
-                    <option value="F">Tambah</option>
+                    <option value="T" ${data.flag_bunga == "T" ? "Selected" : ""}>Transfer</option>
+                    <option value="F" ${data.flag_bunga == "F" ? "Selected" : ""}>Tambah</option>
                   </select>
                 </div>
               </div>
@@ -376,8 +378,8 @@
     var jatuhtempo = new Date($('#jatuhtempo').val());
     jatuhtempo = (jatuhtempo.getMonth()+1)+'/'+ jatuhtempo.getDate()+'/'+jatuhtempo.getFullYear();
 
-    console.log(tanggalpenempatan);
-    console.log(jatuhtempo);
+    // console.log(tanggalpenempatan);
+    // console.log(jatuhtempo);
 
     var submitted_data =
     `{
@@ -407,17 +409,35 @@
     console.log(submitted_data);
 
     if($('#flag_bunga').val()=="T"){
-      console.log("oke");
+      // console.log(reformatAngka($('#transferdana').val()));
+      // console.log($('#bunga').val());
+      if(parseFloat(reformatAngka($('#transferdana').val())) > parseFloat($('#bunga').val()) || parseFloat(reformatAngka($('#transferdana').val())) == 0){
+        // console.log("oke");
+        // console.log("nol");
+        $('#alerttransfer').removeClass('d-none')
+      } else {
+        $('#alerttransfer').addClass('d-none')
+        $.ajax({
+            url: "/api/danajaminan",
+            type: "post",
+            contentType: "application/json",
+            data : submitted_data,
+            success: function(){
+                window.location.reload();
+            }
+        })
+      }
+    } else {
+      $.ajax({
+          url: "/api/danajaminan",
+          type: "post",
+          contentType: "application/json",
+          data : submitted_data,
+          success: function(){
+              window.location.reload();
+          }
+      })
     }
-    // $.ajax({
-    //     url: "/api/danajaminan",
-    //     type: "post",
-    //     contentType: "application/json",
-    //     data : submitted_data,
-    //     success: function(){
-    //         window.location.reload();
-    //     }
-    // })
 
   }
 
@@ -471,15 +491,36 @@
     console.log(formData);
     // console.log(id);
 
-    $.ajax({
-        url:'/api/danajaminan/'+id,
-        type: 'put' ,
-        contentType:'application/json',
-        data: formData,
-        success: function(){
-          alert('success');
-        }
-    });
+    if($('#flag_bunga').val()=="T"){
+      // console.log(reformatAngka($('#transferdana').val()));
+      // console.log($('#bunga').val());
+      if(parseFloat(reformatAngka($('#transferdana').val())) > parseFloat($('#bunga').val()) || parseFloat(reformatAngka($('#transferdana').val())) == 0){
+        // console.log("oke");
+        // console.log("nol");
+        $('#alerttransfer').removeClass('d-none')
+      } else {
+        $('#alerttransfer').addClass('d-none')
+        $.ajax({
+            url:'/api/danajaminan/'+id,
+            type: 'put' ,
+            contentType: "application/json",
+            data : formData,
+            success: function(){
+                window.location.reload();
+            }
+        })
+      }
+    } else if($('#flag_bunga').val()=="F"){
+      $.ajax({
+          url:'/api/danajaminan/'+id,
+          type: 'put' ,
+          contentType: "application/json",
+          data : formData,
+          success: function(){
+              window.location.reload();
+          }
+      })
+    }
   }
 
 
@@ -592,9 +633,9 @@
     var datediff = DateDiff();
     var bungaBruto = (jumlah * reformatAngka($("#sukubunga").val()) / 100) / 365 * datediff;
     var bungaNeto = parseFloat(bungaBruto) - parseFloat(bungaBruto * 20 / 100);
-    console.log(jumlah);
-    console.log(datediff);
-    console.log($("#sukubunga").val());
+    // console.log(jumlah);
+    // console.log(datediff);
+    // console.log($("#sukubunga").val());
 
     $("#bunga").val(bungaNeto.toFixed(2));
     // console.log(toFixed(bungaNeto, 4));
@@ -603,8 +644,8 @@
   function calcAdjusment() {
     var adjustment = reformatAngka($("#adjustment").val());
     var bunga = $("#bunga").val();
-    console.log(adjustment);
-    console.log(bunga);
+    // console.log(adjustment);
+    // console.log(bunga);
     var afterAdjustment = parseFloat(bunga) + parseFloat(adjustment);
 
     $("#afterAdjustment").val(afterAdjustment.toFixed(2));
