@@ -130,7 +130,7 @@ function add(){
     str = 
     `<h3>Create</h3>
                     
-    <!-- <form> -->
+    <form onsubmit="preventDefault()";>
         <div class="row">
             <div class="form-group form-row col-md-6">
                 <label for="code" class="col-sm-4 col-form-label">Anggota Kliring</label>
@@ -142,7 +142,7 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="bank" class="col-sm-4 col-form-label">Bank</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="bank">
+                    <input type="text" class="form-control" id="bank" required>
                 </div>
             </div>
         </div>
@@ -151,13 +151,13 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="jumlah" class="col-sm-4 col-form-label">Penempatan Baru</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="jumlah" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)">
+                    <input type="text" class="form-control" id="jumlah" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" required>
                 </div>
             </div>
             <div class="form-group form-row col-md-6">
                 <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                 <div class="col-sm-8">
-                    <input type="date" class="form-control" id="tanggalpenempatan">
+                    <input type="date" class="form-control" id="tanggalpenempatan" required>
                 </div>
             </div>
         </div>
@@ -166,13 +166,13 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                 <div class="col-sm-8">
-                    <input type="date" class="form-control" id="jatuhtempo">
+                    <input type="date" class="form-control" id="jatuhtempo" required>
                 </div>
             </div>
             <div class="form-group form-row col-md-6">
                 <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="transferdana" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)">
+                    <input type="text" class="form-control" id="transferdana" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" required>
                 </div>
             </div>
         </div>
@@ -181,7 +181,7 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="sukubunga" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcInterest();">
+                    <input type="text" class="form-control" id="sukubunga" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcInterest();" required>
                 </div>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="bunga" readonly>
@@ -190,7 +190,7 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="adjustment" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcAdjustment();">
+                    <input type="text" class="form-control" id="adjustment" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcAdjustment();" required>
                 </div>
             </div>
         </div>
@@ -205,8 +205,8 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="aro" class="col-sm-4 col-form-label">ARO</label>
                 <div class="col-sm-8">
-                    <select id="aro" class="form-control">
-                        <option selected hidden disabled>-- Pilih --</option>
+                    <select id="aro" class="form-control" required>
+                        <option selected hidden disabled value="">-- Pilih --</option>
                         <option value="T">True</option>
                         <option value="F">False</option>
                     </select>
@@ -218,8 +218,8 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="multiple" class="col-sm-4 col-form-label">Multiple</label>
                 <div class="col-sm-8">
-                    <select id="multiple" class="form-control">
-                        <option selected hidden disabled>-- Pilih --</option>
+                    <select id="multiple" class="form-control" required>
+                        <option selected hidden disabled value="">-- Pilih --</option>
                         <option value="T">True</option>
                         <option value="F">False</option>
                     </select>
@@ -228,14 +228,28 @@ function add(){
             <div class="form-group form-row col-md-6">
                 <label for="sequence" class="col-sm-4 col-form-label">Sequence</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" id="sequence">
+                    <input type="number" class="form-control" id="sequence" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group form-row col-md-6">
+                <label for="flagBunga" class="col-sm-4 col-form-label">Bunga</label>
+                <div class="col-sm-8">
+                    <select id="flagBunga" class="form-control" required>
+                        <option selected hidden disabled value="">-- Pilih --</option>
+                        <option value="T">Transfer</option>
+                        <option value="F">Tambah</option>
+                    </select>
                 </div>
             </div>
         </div>
         
-        <button type="button" class="btn btn-sm btn-primary" onclick="save()">Simpan</button>
-        <button type="button" class="btn btn-sm btn-primary" onclick="javascript:window.open('/danacollateral', '_self')">Batal</button>
-    <!-- </form> -->`
+        <button type="submit" class="btn btn-sm btn-primary" onclick="save()">Simpan</button>
+        <!-- <button type="button" class="btn btn-sm btn-primary" onclick="javascript:window.open('/danacollateral', '_self')">Batal</button> -->
+        <button type="reset" class="btn btn-sm btn-dark">Batal</button>
+    </form>`
 
     $.ajax({
         url: '/api/anggotakliring/',
@@ -271,6 +285,8 @@ function save(){
     var penempatan = (parseFloat(reformatAngka($('#jumlah').val())) + parseFloat(afterAdjustment) - parseFloat(reformatAngka($('#transferdana').val())).toFixed(2))
     var flag = 0
     var admin = 0
+    var created_by = "admin"
+    var created_on = (today.getMonth()+1) + "/" + today.getDate() + "/" + today.getFullYear()
     var submitted_data =
     `{
         "businessdate":"`+ businessDate +`",
@@ -291,20 +307,39 @@ function save(){
         "multiple":"`+ $('#multiple').val() +`",
         "sequence":"`+ $('#sequence').val() +`",
         "flag":"`+ flag +`",
-        "admin":"`+ admin +`"
+        "admin":"`+ admin +`",
+        "flag_bunga:"` + $('flagBunga') + `",
+        "created_by:"` + created_by + `",
+        "created_on:"` + created_on + `"
     }`
 
     // console.log(submitted_data)
 
-    $.ajax({
-        url: "/api/danacollateral",
-        type: "post",
-        contentType: "application/json",
-        data : submitted_data,
-        success: function(){
-            window.location.reload()
+    if($('flagBunga').val() == "T"){
+        if(reformatAngka($('#transferdana').val()) == afterAdjustment && reformatAngka($('#transferdana').val()) != 0){
+            $.ajax({
+                url: "/api/danacollateral",
+                type: "post",
+                contentType: "application/json",
+                data : submitted_data,
+                success: function(){
+                    window.location.reload()
+                }
+            })
+        } else {
+            alert("[TEMP] Transfer is not valid")
         }
-    })
+    } else if($('flagBunga').val() == "F"){
+        $.ajax({
+            url: "/api/danacollateral",
+            type: "post",
+            contentType: "application/json",
+            data : submitted_data,
+            success: function(){
+                window.location.reload()
+            }
+        })
+    }
 }
 
 function edit(id){
@@ -321,7 +356,7 @@ function edit(id){
             str = 
             `<h3>Edit</h3>
                             
-            <!-- <form> -->
+            <form>
                 <input type="hidden" id="id" value="${result.id}" disabled>
                 <div class="row">
                     <div class="form-group form-row col-md-6">
@@ -334,7 +369,7 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="bank" class="col-sm-4 col-form-label">Bank</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="bank" value="${result.bank}">
+                            <input type="text" class="form-control" id="bank" value="${result.bank}" required>
                         </div>
                     </div>
                 </div>
@@ -343,13 +378,13 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="jumlah" class="col-sm-4 col-form-label">Penempatan Baru</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="jumlah" value="${formatAngka(result.nominal)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)">
+                            <input type="text" class="form-control" id="jumlah" value="${formatAngka(result.nominal)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" required>
                         </div>
                     </div>
                     <div class="form-group form-row col-md-6">
                         <label for="tanggalpenempatan" class="col-sm-4 col-form-label">Tanggal Penempatan</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control" id="tanggalpenempatan" value="${tanggalpenempatan}">
+                            <input type="date" class="form-control" id="tanggalpenempatan" value="${tanggalpenempatan}" required>
                         </div>
                     </div>
                 </div>
@@ -358,13 +393,13 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="jatuhtempo" class="col-sm-4 col-form-label">Tanggal Jatuh Tempo</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control" id="jatuhtempo" value="${jatuhtempo}">
+                            <input type="date" class="form-control" id="jatuhtempo" value="${jatuhtempo}" required>
                         </div>
                     </div>
                     <div class="form-group form-row col-md-6">
                         <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="transferdana" value="${formatAngka(result.bungatransfer)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)">
+                            <input type="text" class="form-control" id="transferdana" value="${formatAngka(result.bungatransfer)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" required>
                         </div>
                     </div>
                 </div>
@@ -373,7 +408,7 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="sukubunga" class="col-sm-4 col-form-label">Suku Bunga</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="sukubunga" value="${formatAngka(result.sukubunga)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcInterest();">
+                            <input type="text" class="form-control" id="sukubunga" value="${formatAngka(result.sukubunga)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcInterest();" required>
                         </div>
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="bunga" readonly>
@@ -382,7 +417,7 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="adjustment" class="col-sm-4 col-form-label">Adjustment Bunga</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="adjustment" value="${formatAngka(result.adjustment)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcAdjustment();">
+                            <input type="text" class="form-control" id="adjustment" value="${formatAngka(result.adjustment)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id);calcAdjustment();" required>
                         </div>
                     </div>
                 </div>
@@ -398,8 +433,8 @@ function edit(id){
                         <label for="aro" class="col-sm-4 col-form-label">ARO</label>
                         <div class="col-sm-8">
                             <select id="aro" class="form-control">
-                                <option value="T" ${result.multiple != null ? result.aro.toUpperCase() == "T" ? "Selected" : "" : ""}>True</option>
-                                <option value="F" ${result.multiple != null ? result.aro.toUpperCase() == "F" ? "Selected" : "" : ""}>False</option>
+                                <option value="T" ${result.aro != null ? result.aro.toUpperCase() == "T" ? "Selected" : "" : ""}>True</option>
+                                <option value="F" ${result.aro != null ? result.aro.toUpperCase() == "F" ? "Selected" : "" : ""}>False</option>
                             </select>
                         </div>
                     </div>
@@ -418,14 +453,26 @@ function edit(id){
                     <div class="form-group form-row col-md-6">
                         <label for="sequence" class="col-sm-4 col-form-label">Sequence</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="sequence" value="${result.sequence}">
+                            <input type="number" class="form-control" id="sequence" value="${result.sequence}" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row"> 
+                    <div class="form-group form-row col-md-6">
+                        <label for="flagBunga" class="col-sm-4 col-form-label">Bunga</label>
+                        <div class="col-sm-8">
+                            <select id="flagBunga" class="form-control">
+                                <option value="T" ${result.flag_bunga != null ? result.flag_bunga.toUpperCase() == "T" ? "Selected" : "" : ""}>Transfer</option>
+                                <option value="F" ${result.flag_bunga != null ? result.flag_bunga.toUpperCase() == "F" ? "Selected" : "" : ""}>Tambah</option>
+                            </select>
                         </div>
                     </div>
                 </div>
                 
                 <button type="submit" class="btn btn-sm btn-primary" onclick="update()">Simpan</button>
-                <button type="submit" class="btn btn-sm btn-primary" onclick="javascript:window.open('/danacollateral', '_self')">Batal</button>
-            <!-- </form> -->`
+                <button type="reset" class="btn btn-sm btn-dark">Batal</button>
+            </form>`
 
             $.ajax({
                 url: '/api/anggotakliring/',
@@ -465,6 +512,8 @@ function update(){
     var penempatan = (parseFloat(reformatAngka($('#jumlah').val())) + parseFloat(afterAdjustment) - parseFloat(reformatAngka($('#transferdana').val())).toFixed(2))
     var flag = 0
     var admin = 0
+    var modified_by = "admin"
+    var modified_on = (today.getMonth()+1) + "/" + today.getDate() + "/" + today.getFullYear()
 
     var submitted_data =
     `{
@@ -487,18 +536,37 @@ function update(){
         "multiple":"`+ $('#multiple').val() +`",
         "sequence":"`+ $('#sequence').val() +`",
         "flag":"`+ flag +`",
-        "admin":"`+ admin +`"
+        "admin":"`+ admin +`",
+        "flag_bunga:"` + $('flagBunga') + `",
+        "modified_by:"` + modified_by + `",
+        "modified_on:"` + modified_on + `"
     }`;
 
     // console.log(submitted_data)
 
-    $.ajax({
-        url: "/api/danacollateral",
-        type: "put",
-        contentType: "application/json",
-        data : submitted_data,
-        success: function(){
-            window.location.reload();
+    if($('flagBunga').val() == "T"){
+        if(reformatAngka($('#transferdana').val()) == afterAdjustment && reformatAngka($('#transferdana').val()) != 0){
+            $.ajax({
+                url: "/api/danacollateral",
+                type: "put",
+                contentType: "application/json",
+                data : submitted_data,
+                success: function(){
+                    window.location.reload();
+                }
+            })
+        } else {
+            alert("[TEMP] Transfer is not valid")
         }
-    })
+    } else if($('flagBunga').val() == "F"){
+        $.ajax({
+            url: "/api/danacollateral",
+            type: "put",
+            contentType: "application/json",
+            data : submitted_data,
+            success: function(){
+                window.location.reload();
+            }
+        })
+    }
 }
