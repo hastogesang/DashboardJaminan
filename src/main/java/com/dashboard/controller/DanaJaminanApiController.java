@@ -1,9 +1,11 @@
 package com.dashboard.controller;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,6 +13,7 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -20,12 +23,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dashboard.excel.DanaJaminanExcelExporter;
 import com.dashboard.model.DanaCollateralParam;
 import com.dashboard.model.DanaJaminan;
+import com.dashboard.pdf.JasperPdfReport;
+import com.dashboard.pdf.PdfExportDanaJaminan;
 import com.dashboard.repository.DanaJaminanRepo;
+import com.dashboard.service.SendEmail;
+import com.lowagie.text.DocumentException;
 
 import org.apache.poi.ss.formula.functions.Days360;
 import org.slf4j.Logger;
@@ -46,6 +54,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.sf.jasperreports.engine.JRException;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api")
@@ -53,6 +63,12 @@ public class DanaJaminanApiController {
     
     @Autowired
     private DanaJaminanRepo danaJaminanRepo;
+
+    @Autowired
+    private SendEmail sendEmail;
+
+    @Autowired
+    private JasperPdfReport jasperPdfReport;
 
     @GetMapping(value = "/danajaminan")
     public ResponseEntity<List<DanaJaminan>> GetAllDanaJaminan() {
@@ -104,7 +120,7 @@ public class DanaJaminanApiController {
     {
         try {
             danaJaminan.setCreatedBy("admin");
-            danaJaminan.setCreatedOn(new Date());
+            danaJaminan.setCreatedOn(LocalDateTime.now());
             this.danaJaminanRepo.save(danaJaminan);
             return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception ex) {
@@ -141,7 +157,7 @@ public class DanaJaminanApiController {
                 danaJaminanData.get().setFlag(danaJaminan.getFlag());
                 danaJaminanData.get().setFlag_bunga(danaJaminan.getFlag_bunga());
                 danaJaminanData.get().setModifiedBy("admin");
-                danaJaminanData.get().setModifiedOn(new Date());
+                danaJaminanData.get().setModifiedOn(LocalDateTime.now());
                 this.danaJaminanRepo.save(danaJaminanData.get());
                 ResponseEntity rest = new ResponseEntity<>("Success", HttpStatus.OK);
                 return rest;
@@ -193,86 +209,116 @@ public class DanaJaminanApiController {
 
 
     // @Scheduled(fixedRate = 5000)
-    @Scheduled(cron = "00 08 10 * * *")
+    @Scheduled(cron = "00 13 10 * * *")
     public void fetchDBJob() throws ParseException{
-        // get data
-        List<DanaJaminan> danajaminan = danaJaminanRepo.findTop1000ByOrderByIdDesc();
-
+        
         // ambil tanggal hari ini
-        LocalDate today = LocalDate.now();
+        // LocalDate today = LocalDate.now();
 
-        for (int i = 0; i < danajaminan.size(); i++) {
-            Optional<DanaJaminan> danaJaminan = danaJaminanRepo.findById(danajaminan.get(i).getId());
-            String jatuhtempo = danajaminan.get(i).getJatuhtempo().toString();
+        // get data
+        List<DanaJaminan> danajaminans = danaJaminanRepo.findByjatuhtempo(new Date());
+        System.out.println(danajaminans.size());
+
+        for (int i = 0; i < danajaminans.size(); i++) {
+            DanaJaminan danaJaminan = danajaminans.get(i);
+            String jatuhtempo = danaJaminan.getJatuhtempo().toString();
             LocalDate jatuhtempoparse = LocalDate.parse(jatuhtempo);
             // System.out.println(jatuhtempoparse);
 
-            if(danaJaminan.get().getAro() != null && danaJaminan.get().getFlag_bunga() != null){
-                if(today.isEqual(jatuhtempoparse)){
-                    if(danaJaminan.get().getAro().equalsIgnoreCase("T")){
-                        Integer tambahBulan = 30;
-                        Long adjustment = 0L;
-                        LocalDate jatuhTempoBaru = jatuhtempoparse.plusDays(tambahBulan);
-                        System.out.println(jatuhTempoBaru);
-                        System.out.println(jatuhtempoparse);
+            if(danaJaminan.getFlag_bunga() != null){
+                Integer tambahBulan = 30;
+                Long adjustment = 0L;
+                LocalDate jatuhTempoBaru = jatuhtempoparse.plusDays(tambahBulan);
+                System.out.println(jatuhTempoBaru);
+                System.out.println(jatuhtempoparse);
 
-                        if(isWeekend(jatuhTempoBaru) == DayOfWeek.SATURDAY){
-                            System.out.println("sabtu");
-                            jatuhTempoBaru = jatuhTempoBaru.plusDays(2);
-                        } else if(isWeekend(jatuhTempoBaru) == DayOfWeek.SUNDAY){
-                            System.out.println("minggu");
-                            jatuhTempoBaru = jatuhTempoBaru.plusDays(1);
-                        }
-
-                        // System.out.println(jatuhTempoBaru +" "+isWeekend(jatuhTempoBaru));
-                        Date jatuhTempoDate = Date.from(jatuhTempoBaru.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-                        long daysBetween = Duration.between(jatuhtempoparse.atStartOfDay(), jatuhTempoBaru.atStartOfDay()).toDays();
-                        BigDecimal jumlah = danaJaminan.get().getJumlah();
-                        // if(danaJaminan.get().getFlag_bunga() != null){
-                        if(danaJaminan.get().getFlag_bunga().equalsIgnoreCase("F")){
-                            jumlah = danaJaminan.get().getPenempatan();
-                        }
-                        // }
-                        BigDecimal bungaBruto =  (jumlah.multiply(danaJaminan.get().getSukubunga()).divide(new BigDecimal("100"), 2)).divide(BigDecimal.valueOf(365), 2).multiply(BigDecimal.valueOf(daysBetween));
-                        // BigDecimal bungaBruto = (jumlah * danaJaminan.get().getSukubunga() / 100) / 365 * daysBetween;
-                        BigDecimal bungaNeto = bungaBruto.subtract(bungaBruto.multiply(BigDecimal.valueOf(20)).divide(new BigDecimal("100"), 2));
-                        // // BigDecimal bungaNeto = bungaBruto - (bungaBruto * 20 / 100);
-                        BigDecimal pph = bungaBruto.multiply(new BigDecimal("20").divide(new BigDecimal("100")));
-                        BigDecimal afterAdjustment = bungaNeto.add(BigDecimal.valueOf(adjustment));
-                        BigDecimal penempatan = jumlah.add(afterAdjustment).subtract(danaJaminan.get().getTransferdana()).subtract(danaJaminan.get().getTransferdanakbi());
-                        // var penempatan = parseFloat(jumlah) + parseFloat(afterAdjustment) - parseFloat(transferDana) - parseFloat(transferDanaKbi);
-                        // System.out.println(pph.setScale(4, RoundingMode.DOWN));
-                        
-                        DanaJaminan danaJaminan2 = new DanaJaminan();
-                        danaJaminan2.setBusinessdate(danaJaminan.get().getJatuhtempo());
-                        danaJaminan2.setCode(danaJaminan.get().getCode());
-                        danaJaminan2.setBank(danaJaminan.get().getBank());
-                        danaJaminan2.setJumlah(jumlah);
-                        danaJaminan2.setJangkawaktu((int) daysBetween);
-                        danaJaminan2.setTanggalpenempatan(danaJaminan.get().getJatuhtempo());
-                        danaJaminan2.setJatuhtempo(jatuhTempoDate);
-                        danaJaminan2.setSukubunga(danaJaminan.get().getSukubunga());
-                        danaJaminan2.setBungabruto(bungaBruto.setScale(4, RoundingMode.DOWN));
-                        danaJaminan2.setPph(pph.setScale(4, RoundingMode.DOWN));
-                        danaJaminan2.setBunga(afterAdjustment.setScale(4, RoundingMode.DOWN));
-                        danaJaminan2.setAdjustment(BigDecimal.valueOf(adjustment));
-                        danaJaminan2.setAdmin(danaJaminan.get().getAdmin());
-                        danaJaminan2.setTransferdana(danaJaminan.get().getTransferdana());
-                        danaJaminan2.setTransferdanakbi(danaJaminan.get().getTransferdanakbi());
-                        danaJaminan2.setPenempatan(penempatan.setScale(4, RoundingMode.DOWN));
-                        danaJaminan2.setAro(danaJaminan.get().getAro());
-                        danaJaminan2.setMultiple(danaJaminan.get().getMultiple());
-                        danaJaminan2.setSequence(danaJaminan.get().getSequence());
-                        danaJaminan2.setFlag(danaJaminan.get().getFlag());
-                        danaJaminan2.setFlag_bunga(danaJaminan.get().getFlag_bunga());
-                        danaJaminanRepo.save(danaJaminan2);
-                        System.out.println("oke");
-                    }
+                if(isWeekend(jatuhTempoBaru) == DayOfWeek.SATURDAY){
+                    System.out.println("sabtu");
+                    jatuhTempoBaru = jatuhTempoBaru.plusDays(2);
+                } else if(isWeekend(jatuhTempoBaru) == DayOfWeek.SUNDAY){
+                    System.out.println("minggu");
+                    jatuhTempoBaru = jatuhTempoBaru.plusDays(1);
                 }
+
+                // System.out.println(jatuhTempoBaru +" "+isWeekend(jatuhTempoBaru));
+                Date jatuhTempoDate = Date.from(jatuhTempoBaru.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+                long daysBetween = Duration.between(jatuhtempoparse.atStartOfDay(), jatuhTempoBaru.atStartOfDay()).toDays();
+                BigDecimal jumlah = danaJaminan.getJumlah();
+                // if(danaJaminan.get().getFlag_bunga() != null){
+                if(danaJaminan.getFlag_bunga().equalsIgnoreCase("F")){
+                    jumlah = danaJaminan.getPenempatan();
+                }
+                // }
+                BigDecimal bungaBruto =  (jumlah.multiply(danaJaminan.getSukubunga()).divide(new BigDecimal("100"), 2)).divide(BigDecimal.valueOf(365), 2).multiply(BigDecimal.valueOf(daysBetween));
+                // BigDecimal bungaBruto = (jumlah * danaJaminan.get().getSukubunga() / 100) / 365 * daysBetween;
+                BigDecimal bungaNeto = bungaBruto.subtract(bungaBruto.multiply(BigDecimal.valueOf(20)).divide(new BigDecimal("100"), 2));
+                // // BigDecimal bungaNeto = bungaBruto - (bungaBruto * 20 / 100);
+                BigDecimal pph = bungaBruto.multiply(new BigDecimal("20").divide(new BigDecimal("100")));
+                BigDecimal afterAdjustment = bungaNeto.add(BigDecimal.valueOf(adjustment));
+                BigDecimal penempatan = jumlah.add(afterAdjustment).subtract(danaJaminan.getTransferdana()).subtract(danaJaminan.getTransferdanakbi());
+                // var penempatan = parseFloat(jumlah) + parseFloat(afterAdjustment) - parseFloat(transferDana) - parseFloat(transferDanaKbi);
+                // System.out.println(pph.setScale(4, RoundingMode.DOWN));
+                
+                // DanaJaminan danaJaminan2 = new DanaJaminan();
+                // danaJaminan2.setBusinessdate(danaJaminan.getJatuhtempo());
+                // danaJaminan2.setCode(danaJaminan.getCode());
+                // danaJaminan2.setBank(danaJaminan.getBank());
+                // danaJaminan2.setJumlah(jumlah.setScale(2, RoundingMode.DOWN));
+                // danaJaminan2.setJangkawaktu((int) daysBetween);
+                // danaJaminan2.setTanggalpenempatan(danaJaminan.getJatuhtempo());
+                // danaJaminan2.setJatuhtempo(jatuhTempoDate);
+                // danaJaminan2.setSukubunga(danaJaminan.getSukubunga());
+                // danaJaminan2.setBungabruto(bungaBruto.setScale(4, RoundingMode.DOWN));
+                // danaJaminan2.setPph(pph.setScale(4, RoundingMode.DOWN));
+                // danaJaminan2.setBunga(afterAdjustment.setScale(4, RoundingMode.DOWN));
+                // danaJaminan2.setAdjustment(BigDecimal.valueOf(adjustment));
+                // danaJaminan2.setAdmin(danaJaminan.getAdmin());
+                // danaJaminan2.setTransferdana(danaJaminan.getTransferdana());
+                // danaJaminan2.setTransferdanakbi(danaJaminan.getTransferdanakbi());
+                // danaJaminan2.setPenempatan(penempatan.setScale(4, RoundingMode.DOWN));
+                // danaJaminan2.setAro(danaJaminan.getAro());
+                // danaJaminan2.setMultiple(danaJaminan.getMultiple());
+                // danaJaminan2.setSequence(danaJaminan.getSequence());
+                // danaJaminan2.setFlag(danaJaminan.getFlag());
+                // danaJaminan2.setFlag_bunga(danaJaminan.getFlag_bunga());
+                // danaJaminan2.setCreatedBy("scheduled");
+                // danaJaminan2.setCreatedOn(LocalDateTime.now());
+                // danaJaminanRepo.save(danaJaminan2);
+                // System.out.println("data baru berhasil ditambahkan");
+
+                // generate pdf
+                try {
+                    // PdfExportDanaJaminan exporter = new PdfExportDanaJaminan(danajaminans);
+                    // exporter.export("report.pdf");
+                    // exportToPDF("D:\\report.pdf");
+                    jasperPdfReport.exportPdf();
+                    System.out.println("pdf berhasil di generate...");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JRException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                
+                // send email
+                // try {
+                //     sendEmail.SendMail("markuskurniawan78@gmail.com",
+                //             "<p>Berikut adalah :</p><h1>Test</h1><br><p>file report pdf</p>",
+                //             "test reportpdf", "reportfromjasper.pdf");
+                // } catch (MessagingException e) {
+                //     e.printStackTrace();
+                // }
+
+                // // delete file
+                // File fileReport = new File("reportfromjasper.pdf");
+                // fileReport.delete();
+                // System.out.println("file berhasil dihapus");
             }
 
         }
+
     }
 
     public static DayOfWeek isWeekend(final LocalDate ld) 
@@ -280,5 +326,21 @@ public class DanaJaminanApiController {
         DayOfWeek day = DayOfWeek.of(ld.get(ChronoField.DAY_OF_WEEK));
         return day;
     }
+
+    // public void exportToPDF(String pdfPath) throws DocumentException, IOException {
+        // response.setContentType("application/pdf");
+        // DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        // String currentDateTime = dateFormatter.format(new Date());
+         
+        // String headerKey = "Content-Disposition";
+        // String headerValue = "attachment; filename=report.pdf";
+        // response.setHeader(headerKey, headerValue);
+         
+        // List<DanaJaminan> danaJaminans = danaJaminanRepo.findTop1000ByOrderByIdDesc();
+         
+        // PdfExportDanaJaminan exporter = new PdfExportDanaJaminan(danaJaminans);
+        // exporter.export(pdfPath);
+         
+    // }
 
 }

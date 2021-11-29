@@ -1,6 +1,7 @@
 package com.dashboard.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -17,17 +18,17 @@ import lombok.Data;
 public class Common{
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "id", timezone = "Asia/Jakarta")
-    @Temporal(TemporalType.DATE)
+    // @Temporal(TemporalType.DATE)
     @Column(name = "created_on")
-    private Date createdOn;
+    private LocalDateTime createdOn;
 
     @Column(name = "created_by")
     private String createdBy;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "id", timezone = "Asia/Jakarta")
-    @Temporal(TemporalType.DATE)
+    // @Temporal(TemporalType.DATE)
     @Column(name = "modified_on")
-    private Date modifiedOn;
+    private LocalDateTime modifiedOn;
 
     @Column(name = "modified_by")
     private String modifiedBy;

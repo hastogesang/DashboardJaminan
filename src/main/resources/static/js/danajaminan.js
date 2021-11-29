@@ -107,7 +107,7 @@
                   <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                   <div class="col-sm-8">
                     <input type="text" class="form-control" id="transferdana" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
-                    <span id="alerttransfer" class="text-danger d-none">transfer dana tidak boleh lebih dari after adjustment dan tidak boleh 0</span> 
+                    <span id="alerttransfer" class="text-danger d-none">transfer dana tidak boleh lebih dari bunga after adjustment dan tidak boleh 0</span> 
                   </div>
                 </div>
                 <div class="form-group form-row col-md-6">
@@ -275,7 +275,7 @@
                 <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                 <div class="col-sm-8">
                   <input type="text" class="form-control" id="transferdana" value="${formatRupiah(data.transferdana)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
-                  <span id="alerttransfer" class="text-danger d-none">transfer dana tidak boleh lebih dari after adjustment dan tidak boleh 0</span>
+                  <span id="alerttransfer" class="text-danger d-none">transfer dana tidak boleh lebih dari bunga after adjustment dan tidak boleh 0</span>
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
@@ -327,7 +327,6 @@
                 <label for="flag_bunga" class="col-sm-4 col-form-label">Bunga</label>
                 <div class="col-sm-8">
                   <select id="flag_bunga" class="form-control">
-                    <option selected>-- Pilih --</option>
                     <option value="T" ${data.flag_bunga == "T" ? "Selected" : ""}>Transfer</option>
                     <option value="F" ${data.flag_bunga == "F" ? "Selected" : ""}>Tambah</option>
                   </select>
