@@ -1,5 +1,6 @@
 package com.dashboard.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class AnggotaKliringApiController {
     @GetMapping("")
     public ResponseEntity<List<AnggotaKliring>> GetAllAnggotaKliring(){
         try {
-            List<AnggotaKliring> anggotaKliring = this.anggotaKliringRepo.findAll();
+            List<AnggotaKliring> anggotaKliring = this.anggotaKliringRepo.findTop1000ByOrderByIdDesc();
 
             return new ResponseEntity<>(anggotaKliring, HttpStatus.OK);
         } catch (Exception e) {
@@ -50,28 +51,20 @@ public class AnggotaKliringApiController {
         }
     }
 
-    @GetMapping("code/{code}")
-    public ResponseEntity<Boolean> IsCodeExist(@PathVariable("code") String code)
-    {
-        try
-        {
-            Optional<String> anggotaKliring = this.anggotaKliringRepo.isCodeExist(code);
-            if(anggotaKliring.isPresent())
-                return new ResponseEntity<>(true, HttpStatus.OK);
-            else
-                return new ResponseEntity<>(false, HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-    }
-
     @PostMapping("")
     public ResponseEntity<Object> CreateAnggotaKliring(@RequestBody AnggotaKliring anggotaKliring)
     {
         try {
-            this.anggotaKliringRepo.save(anggotaKliring);
-            return new ResponseEntity<>("success", HttpStatus.OK);
+            Optional<String> anggotaKliringOpt = this.anggotaKliringRepo.isCodeExist(anggotaKliring.getCode());
+            if(anggotaKliringOpt.isPresent())
+                return new ResponseEntity<>("code already exists", HttpStatus.BAD_REQUEST);
+            else {
+                anggotaKliring.setCreatedBy("admin");
+                anggotaKliring.setCreatedOn(LocalDateTime.now());
+                this.anggotaKliringRepo.save(anggotaKliring);
+                return new ResponseEntity<>("success", HttpStatus.OK);
+            }
+
         } catch (Exception ex) {
             return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
         }
@@ -87,6 +80,8 @@ public class AnggotaKliringApiController {
                 anggotaKliringData.get().setName(anggotaKliring.getName());
                 anggotaKliringData.get().setAddress(anggotaKliring.getAddress());
                 anggotaKliringData.get().setType(anggotaKliring.getType());
+                anggotaKliringData.get().setModifiedBy("admin");
+                anggotaKliringData.get().setModifiedOn(LocalDateTime.now());
                 
                 this.anggotaKliringRepo.save(anggotaKliringData.get());
 

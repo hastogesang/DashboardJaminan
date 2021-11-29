@@ -1,13 +1,16 @@
 package com.dashboard.controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 import java.util.Date;
@@ -19,7 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.dashboard.excel.DanaCollateralExcelExporter;
 import com.dashboard.model.DanaCollateral;
 import com.dashboard.model.DanaCollateralParam;
+import com.dashboard.pdf.JasperPdfReport;
 import com.dashboard.repository.DanaCollateralRepo;
+// import com.dashboard.service.GoogleDriveService;
+// import com.dashboard.service.TelegramService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -36,6 +42,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.sf.jasperreports.engine.JRException;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/danacollateral")
@@ -43,6 +51,14 @@ public class DanaCollateralApiController {
     
     @Autowired
     private DanaCollateralRepo danaCollateralRepo;
+
+    @Autowired
+    private JasperPdfReport jasperPdfReport;
+
+    // @Autowired
+    // private GoogleDriveService googleDriveService;
+    // @Autowired
+    // private TelegramService telegramService;
 
     @GetMapping("")
     public ResponseEntity<List<DanaCollateral>> GetAllDanaCollateral(){
@@ -98,6 +114,8 @@ public class DanaCollateralApiController {
     public ResponseEntity<Object> CreateDanaCollateral(@RequestBody DanaCollateral danaCollateral)
     {
         try {
+            danaCollateral.setCreatedBy("admin");
+            danaCollateral.setCreatedOn(LocalDateTime.now());
             this.danaCollateralRepo.save(danaCollateral);
             return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception ex) {
@@ -131,8 +149,8 @@ public class DanaCollateralApiController {
                 danaCollateralData.get().setFlag(danaCollateral.getFlag());
                 danaCollateralData.get().setAdmin(danaCollateral.getAdmin());
                 danaCollateralData.get().setFlag_bunga(danaCollateral.getFlag_bunga());
-                danaCollateralData.get().setModifiedBy(danaCollateral.getModifiedBy());
-                danaCollateralData.get().setModifiedOn(danaCollateral.getModifiedOn());
+                danaCollateralData.get().setModifiedBy("admin");
+                danaCollateralData.get().setModifiedOn(LocalDateTime.now());
                 this.danaCollateralRepo.save(danaCollateralData.get());
 
                 return new ResponseEntity<>("success", HttpStatus.OK);
@@ -163,70 +181,67 @@ public class DanaCollateralApiController {
 
     // @Scheduled(fixedRate = 10000)
     @Scheduled(cron = "00 00 08 * * *")
-    public void fetchDBJob() throws ParseException{
-        List<DanaCollateral> danaCollaterals = danaCollateralRepo.findTop1000ByOrderByIdDesc();
-
-        LocalDate today = LocalDate.now();
+    public void fetchDBJob() throws ParseException, FileNotFoundException, JRException, SQLException{
+        List<DanaCollateral> danaCollaterals = danaCollateralRepo.findDanaCollateralsByJatuhTempo(new Date());
 
         for (int i = 0; i < danaCollaterals.size(); i++) {
-            Optional<DanaCollateral> danaCollateral = danaCollateralRepo.findById(danaCollaterals.get(i).getId());
-            String jatuhtempo = danaCollaterals.get(i).getJatuhtempo().toString();
+            DanaCollateral danaCollateral = danaCollaterals.get(i);
+            String jatuhtempo = danaCollateral.getJatuhtempo().toString();
             LocalDate jatuhtempoparse = LocalDate.parse(jatuhtempo);
 
-            if(danaCollateral.isPresent()){
-                if(today.isEqual(jatuhtempoparse)){
-                    if(danaCollateral.get().getAro() != null && danaCollateral.get().getFlag_bunga() != null){
-                        if(danaCollateral.get().getAro().equalsIgnoreCase("T")){
-                            Integer tambahBulan = 30;
-                            Long adjustment = 0L;
-                            LocalDate jatuhTempoBaru = jatuhtempoparse.plusDays(tambahBulan);
+            if(danaCollateral.getFlag_bunga() != null){
+                Integer tambahBulan = 30;
+                Long adjustment = 0L;
+                LocalDate jatuhTempoBaru = jatuhtempoparse.plusDays(tambahBulan);
 
-                            if(isWeekend(jatuhTempoBaru) == DayOfWeek.SATURDAY){
-                                jatuhTempoBaru = jatuhTempoBaru.plusDays(2);
-                            } else if(isWeekend(jatuhTempoBaru) == DayOfWeek.SUNDAY){
-                                jatuhTempoBaru = jatuhTempoBaru.plusDays(1);
-                            }
-
-                            Date jatuhTempoDate = Date.from(jatuhTempoBaru.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                            long daysBetween = Duration.between(jatuhtempoparse.atStartOfDay(), jatuhTempoBaru.atStartOfDay()).toDays();
-
-                            BigDecimal nominal = danaCollateral.get().getNominal();
-                            if(danaCollateral.get().getFlag_bunga().equalsIgnoreCase("F")){
-                                nominal = danaCollateral.get().getPenempatan();
-                            }
-                            
-                            BigDecimal bungaBruto = (nominal.multiply(danaCollateral.get().getSukubunga()).divide(BigDecimal.valueOf(100), 2)).divide(BigDecimal.valueOf(365), 2).multiply(BigDecimal.valueOf(daysBetween));
-                            BigDecimal pph = bungaBruto.multiply(BigDecimal.valueOf(20)).divide(BigDecimal.valueOf(100), 2);
-                            BigDecimal bungaNeto = bungaBruto.subtract(pph);
-                            BigDecimal afterAdjustment = bungaNeto.add(BigDecimal.valueOf(adjustment));
-                            BigDecimal penempatan = nominal.add(afterAdjustment).subtract(danaCollateral.get().getBungatransfer());
-
-                            DanaCollateral danaCollateralData = new DanaCollateral();
-                            danaCollateralData.setBusinessdate(danaCollateral.get().getJatuhtempo());
-                            danaCollateralData.setCode(danaCollateral.get().getCode());
-                            danaCollateralData.setBank(danaCollateral.get().getBank());
-                            danaCollateralData.setNominal(danaCollateral.get().getNominal());
-                            danaCollateralData.setTanggalpenempatan(danaCollateral.get().getJatuhtempo());
-                            danaCollateralData.setJatuhtempo(jatuhTempoDate);
-                            danaCollateralData.setJangkawaktu((int) daysBetween);
-                            danaCollateralData.setSukubunga(danaCollateral.get().getSukubunga());
-                            danaCollateralData.setBungabruto(bungaBruto.setScale(4, RoundingMode.DOWN));
-                            danaCollateralData.setPph(pph.setScale(4, RoundingMode.DOWN));
-                            danaCollateralData.setAdjustment(BigDecimal.valueOf(adjustment));
-                            danaCollateralData.setBunganetto(afterAdjustment.setScale(4, RoundingMode.DOWN));
-                            danaCollateralData.setBungatransfer(danaCollateral.get().getBungatransfer());
-                            danaCollateralData.setPenempatan(penempatan.setScale(4, RoundingMode.DOWN));
-                            danaCollateralData.setAro(danaCollateral.get().getAro());
-                            danaCollateralData.setMultiple(danaCollateral.get().getMultiple());
-                            danaCollateralData.setSequence(danaCollateral.get().getSequence());
-                            danaCollateralData.setFlag(danaCollateral.get().getFlag());
-                            danaCollateralData.setAdmin(danaCollateral.get().getAdmin());
-                            danaCollateralRepo.save(danaCollateralData);
-                            // System.out.println(today + " IS EQUAL");
-                        }
-                    }
+                if(isWeekend(jatuhTempoBaru) == DayOfWeek.SATURDAY){
+                    jatuhTempoBaru = jatuhTempoBaru.plusDays(2);
+                } else if(isWeekend(jatuhTempoBaru) == DayOfWeek.SUNDAY){
+                    jatuhTempoBaru = jatuhTempoBaru.plusDays(1);
                 }
-            }
+
+                Date jatuhTempoDate = Date.from(jatuhTempoBaru.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                long daysBetween = Duration.between(jatuhtempoparse.atStartOfDay(), jatuhTempoBaru.atStartOfDay()).toDays();
+
+                BigDecimal nominal = danaCollateral.getNominal();
+                if(danaCollateral.getFlag_bunga().equalsIgnoreCase("F")){
+                    nominal = danaCollateral.getPenempatan();
+                }
+                
+                BigDecimal bungaBruto = (nominal.multiply(danaCollateral.getSukubunga()).divide(BigDecimal.valueOf(100), 2)).divide(BigDecimal.valueOf(365), 2).multiply(BigDecimal.valueOf(daysBetween));
+                BigDecimal pph = bungaBruto.multiply(BigDecimal.valueOf(20)).divide(BigDecimal.valueOf(100), 2);
+                BigDecimal bungaNeto = bungaBruto.subtract(pph);
+                BigDecimal afterAdjustment = bungaNeto.add(BigDecimal.valueOf(adjustment));
+                BigDecimal penempatan = nominal.add(afterAdjustment).subtract(danaCollateral.getBungatransfer());
+
+                DanaCollateral danaCollateralData = new DanaCollateral();
+                danaCollateralData.setBusinessdate(danaCollateral.getJatuhtempo());
+                danaCollateralData.setCode(danaCollateral.getCode());
+                danaCollateralData.setBank(danaCollateral.getBank());
+                danaCollateralData.setNominal(danaCollateral.getNominal());
+                danaCollateralData.setTanggalpenempatan(danaCollateral.getJatuhtempo());
+                danaCollateralData.setJatuhtempo(jatuhTempoDate);
+                danaCollateralData.setJangkawaktu((int) daysBetween);
+                danaCollateralData.setSukubunga(danaCollateral.getSukubunga());
+                danaCollateralData.setBungabruto(bungaBruto.setScale(4, RoundingMode.DOWN));
+                danaCollateralData.setPph(pph.setScale(4, RoundingMode.DOWN));
+                danaCollateralData.setAdjustment(BigDecimal.valueOf(adjustment));
+                danaCollateralData.setBunganetto(afterAdjustment.setScale(4, RoundingMode.DOWN));
+                danaCollateralData.setBungatransfer(danaCollateral.getBungatransfer());
+                danaCollateralData.setPenempatan(penempatan.setScale(4, RoundingMode.DOWN));
+                danaCollateralData.setAro(danaCollateral.getAro());
+                danaCollateralData.setMultiple(danaCollateral.getMultiple());
+                danaCollateralData.setSequence(danaCollateral.getSequence());
+                danaCollateralData.setFlag(danaCollateral.getFlag());
+                danaCollateralData.setAdmin(danaCollateral.getAdmin());
+                danaCollateralRepo.save(danaCollateralData);
+
+
+                jasperPdfReport.exportPdf();
+                //     String fileId = googleDriveService.uploadFileInFolder("D:/practice/sbt-gd/dana.pdf");
+                //     String shareableLink = googleDriveService.getShareableLink(fileId);
+                //     telegramService.sendMessage("1596642611", shareableLink);
+            }            
         }
     }
 
@@ -234,6 +249,6 @@ public class DanaCollateralApiController {
     {
         DayOfWeek day = DayOfWeek.of(ld.get(ChronoField.DAY_OF_WEEK));
         return day;
-    }
+    }    
 }
  

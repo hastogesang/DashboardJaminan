@@ -100,7 +100,7 @@ function calcInterest() {
     var bungaBruto = (jumlah * sukuBunga / 100) / 365 * datediff
     var bungaNeto = parseFloat(bungaBruto) - parseFloat(bungaBruto * 20 / 100)
 
-    console.log(bungaNeto)
+    // console.log(bungaNeto)
     $("#bunga").val(formatAngka(bungaNeto.toFixed(2)));
 }
 
@@ -116,8 +116,8 @@ function calcDatediff() {
 function calcAdjustment() {
     var adjustment = reformatAngka($("#adjustment").val())
     var bunga = reformatAngka($("#bunga").val())
-    console.log(adjustment)
-    console.log(bunga)
+    // console.log(adjustment)
+    // console.log(bunga)
 
     var afterAdjustment = parseFloat(bunga) + parseFloat(adjustment)
 
@@ -130,7 +130,7 @@ function add(){
     str = 
     `<h3>Create</h3>
                     
-    <form onsubmit="preventDefault()";>
+    <form onsubmit="event.preventDefault();">
         <div class="row">
             <div class="form-group form-row col-md-6">
                 <label for="code" class="col-sm-4 col-form-label">Anggota Kliring</label>
@@ -247,7 +247,6 @@ function add(){
         </div>
         
         <button type="submit" class="btn btn-sm btn-primary" onclick="save()">Simpan</button>
-        <!-- <button type="button" class="btn btn-sm btn-primary" onclick="javascript:window.open('/danacollateral', '_self')">Batal</button> -->
         <button type="reset" class="btn btn-sm btn-dark">Batal</button>
     </form>`
 
@@ -285,8 +284,6 @@ function save(){
     var penempatan = (parseFloat(reformatAngka($('#jumlah').val())) + parseFloat(afterAdjustment) - parseFloat(reformatAngka($('#transferdana').val())).toFixed(2))
     var flag = 0
     var admin = 0
-    var created_by = "admin"
-    var created_on = (today.getMonth()+1) + "/" + today.getDate() + "/" + today.getFullYear()
     var submitted_data =
     `{
         "businessdate":"`+ businessDate +`",
@@ -308,14 +305,12 @@ function save(){
         "sequence":"`+ $('#sequence').val() +`",
         "flag":"`+ flag +`",
         "admin":"`+ admin +`",
-        "flag_bunga:"` + $('flagBunga') + `",
-        "created_by:"` + created_by + `",
-        "created_on:"` + created_on + `"
+        "flag_bunga:"` + $('#flagBunga').val() + `"
     }`
 
     // console.log(submitted_data)
 
-    if($('flagBunga').val() == "T"){
+    if($('#flagBunga').val() == "T"){
         if(reformatAngka($('#transferdana').val()) == afterAdjustment && reformatAngka($('#transferdana').val()) != 0){
             $.ajax({
                 url: "/api/danacollateral",
@@ -329,7 +324,7 @@ function save(){
         } else {
             alert("[TEMP] Transfer is not valid")
         }
-    } else if($('flagBunga').val() == "F"){
+    } else if($('#flagBunga').val() == "F"){
         $.ajax({
             url: "/api/danacollateral",
             type: "post",
@@ -356,7 +351,7 @@ function edit(id){
             str = 
             `<h3>Edit</h3>
                             
-            <form>
+            <form onsubmit="event.preventDefault();">
                 <input type="hidden" id="id" value="${result.id}" disabled>
                 <div class="row">
                     <div class="form-group form-row col-md-6">
@@ -522,7 +517,7 @@ function update(){
         "code":"`+ $('#code').val() +`",
         "bank":"`+ $('#bank').val() +`",
         "nominal":"`+ reformatAngka($('#jumlah').val()) +`",
-        "tanggalpenempatan":"`+ tanggalPenempatan +`",
+        "tanggalpenempaetan":"`+ tanggalPenempatan +`",
         "jatuhtempo":"`+ jatuhTempo +`",
         "jangkawaktu":"`+ datediff +`",
         "sukubunga":"`+ reformatAngka($('#sukubunga').val()) +`",
@@ -537,14 +532,12 @@ function update(){
         "sequence":"`+ $('#sequence').val() +`",
         "flag":"`+ flag +`",
         "admin":"`+ admin +`",
-        "flag_bunga:"` + $('flagBunga') + `",
-        "modified_by:"` + modified_by + `",
-        "modified_on:"` + modified_on + `"
+        "flag_bunga:"` + $('#flagBunga') + `"
     }`;
 
     // console.log(submitted_data)
 
-    if($('flagBunga').val() == "T"){
+    if($('#flagBunga').val() == "T"){
         if(reformatAngka($('#transferdana').val()) == afterAdjustment && reformatAngka($('#transferdana').val()) != 0){
             $.ajax({
                 url: "/api/danacollateral",
