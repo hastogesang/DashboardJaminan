@@ -24,7 +24,7 @@ import com.dashboard.model.DanaCollateral;
 import com.dashboard.model.DanaCollateralParam;
 import com.dashboard.pdf.JasperPdfReport;
 import com.dashboard.repository.DanaCollateralRepo;
-// import com.dashboard.service.GoogleDriveService;
+import com.dashboard.service.GoogleDriveService;
 // import com.dashboard.service.TelegramService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +55,8 @@ public class DanaCollateralApiController {
     @Autowired
     private JasperPdfReport jasperPdfReport;
 
-    // @Autowired
-    // private GoogleDriveService googleDriveService;
+    @Autowired
+    private GoogleDriveService googleDriveService;
     // @Autowired
     // private TelegramService telegramService;
 
@@ -238,7 +238,7 @@ public class DanaCollateralApiController {
 
 
                 jasperPdfReport.exportPdf();
-                //     String fileId = googleDriveService.uploadFileInFolder("D:/practice/sbt-gd/dana.pdf");
+                //     String fileId = googleDriveService.uploadFileInFolder("D:/practice/dana.pdf");
                 //     String shareableLink = googleDriveService.getShareableLink(fileId);
                 //     telegramService.sendMessage("1596642611", shareableLink);
             }            
@@ -249,6 +249,14 @@ public class DanaCollateralApiController {
     {
         DayOfWeek day = DayOfWeek.of(ld.get(ChronoField.DAY_OF_WEEK));
         return day;
-    }    
+    }
+    
+    // @Scheduled(fixedRate = 100000)
+    // public void doGoogleSignIn() throws Exception {
+    //     String fileId = googleDriveService.uploadFileInFolder("D:/practice/dana.pdf");
+    //     String shareableLink = googleDriveService.getShareableLink(fileId);
+    //     System.out.println(shareableLink);
+    // }
+
 }
  

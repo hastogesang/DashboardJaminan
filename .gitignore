@@ -34,3 +34,7 @@ build/
 
 ### properties ###
 /src/main/resources/application.properties
+
+### Google Drive ###
+/src/main/resources/credentials.json
+tokens/*
