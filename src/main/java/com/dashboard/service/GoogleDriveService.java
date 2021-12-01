@@ -57,17 +57,17 @@ public class GoogleDriveService {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public String uploadFileInFolder(String path) throws Exception {
+    public String uploadFileInFolder(String path, String fileType, String fileName, String folderId) throws Exception {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Drive drive = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
 
 		File file = new File();
-		file.setName("dana.pdf");
-		file.setParents(Arrays.asList("1HiaV3sgfj3U_x0-PmfDpIGPpkJ2qasYF")); //folderId
+		file.setName(fileName);
+		file.setParents(Arrays.asList(folderId));
 
-		FileContent content = new FileContent("application/pdf", new java.io.File(path));
+		FileContent content = new FileContent(fileType, new java.io.File(path));
 		File uploadedFile = drive.files().create(file, content).setFields("id").execute();
 
         return uploadedFile.getId();

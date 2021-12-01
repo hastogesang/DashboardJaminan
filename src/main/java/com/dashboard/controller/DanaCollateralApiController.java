@@ -238,7 +238,7 @@ public class DanaCollateralApiController {
 
 
                 jasperPdfReport.exportPdf();
-                //     String fileId = googleDriveService.uploadFileInFolder("D:/practice/dana.pdf");
+                //     String fileId = googleDriveService.uploadFileInFolder("reportfromjasper.pdf", "reportfromjasper.pdf");
                 //     String shareableLink = googleDriveService.getShareableLink(fileId);
                 //     telegramService.sendMessage("1596642611", shareableLink);
             }            
@@ -253,7 +253,7 @@ public class DanaCollateralApiController {
     
     // @Scheduled(fixedRate = 100000)
     // public void doGoogleSignIn() throws Exception {
-    //     String fileId = googleDriveService.uploadFileInFolder("D:/practice/dana.pdf");
+    //     String fileId = googleDriveService.uploadFileInFolder("reportfromjasper.pdf", "application/pdf", "reportfromjasper.pdf", "1HiaV3sgfj3U_x0-PmfDpIGPpkJ2qasYF");
     //     String shareableLink = googleDriveService.getShareableLink(fileId);
     //     System.out.println(shareableLink);
     // }
