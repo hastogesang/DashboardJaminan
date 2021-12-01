@@ -237,7 +237,7 @@ public class DanaCollateralApiController {
                 danaCollateralRepo.save(danaCollateralData);
 
 
-                jasperPdfReport.exportPdf();
+                // jasperPdfReport.exportPdf();
                 //     String fileId = googleDriveService.uploadFileInFolder("reportfromjasper.pdf", "reportfromjasper.pdf");
                 //     String shareableLink = googleDriveService.getShareableLink(fileId);
                 //     telegramService.sendMessage("1596642611", shareableLink);

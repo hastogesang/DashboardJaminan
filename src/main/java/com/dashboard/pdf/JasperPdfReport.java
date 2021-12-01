@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.dashboard.model.DanaJaminan;
+import com.dashboard.model.GetDanaJaminanView;
 import com.dashboard.repository.DanaJaminanRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,19 +40,17 @@ public class JasperPdfReport {
     @Autowired
     private DanaJaminanRepo danaJaminanRepo;
 
-    private JdbcTemplate jdbcTemplate;
-
-    public void exportPdf() throws FileNotFoundException, JRException, SQLException{
+    public void exportPdf(List<GetDanaJaminanView> danajaminans) throws FileNotFoundException, JRException, SQLException{
         // List<DanaJaminan> danajaminans = danaJaminanRepo.findTop1000ByOrderByIdDesc();
         // JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(danajaminans);
         File file = ResourceUtils.getFile("Blank_A4.jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-        // Connection conn = jdbcTemplate.getDataSource().getConnection();
 
         Map<String, Object> parameters = new HashMap<>();
 
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
-        JasperExportManager.exportReportToPdfFile(jasperPrint, "reportfromjasper.pdf");
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JRBeanCollectionDataSource(danajaminans));
+        LocalDate today = LocalDate.now();
+        JasperExportManager.exportReportToPdfFile(jasperPrint, danajaminans.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf");
         // JRPdfExporter exporter = new JRPdfExporter();
         // exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
         // exporter.setExporterOutput(new SimpleOutputStreamExporterOutput("testing.pdf"));

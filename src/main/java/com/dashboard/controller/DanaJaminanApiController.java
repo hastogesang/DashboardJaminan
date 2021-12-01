@@ -19,6 +19,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +30,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.dashboard.excel.DanaJaminanExcelExporter;
 import com.dashboard.model.DanaCollateralParam;
 import com.dashboard.model.DanaJaminan;
+import com.dashboard.model.GetDanaJaminanView;
 import com.dashboard.pdf.JasperPdfReport;
 import com.dashboard.pdf.PdfExportDanaJaminan;
 import com.dashboard.repository.DanaJaminanRepo;
+import com.dashboard.repository.GetDanaJaminanViewRepo;
 import com.dashboard.service.SendEmail;
 import com.lowagie.text.DocumentException;
 
@@ -63,6 +66,9 @@ public class DanaJaminanApiController {
     
     @Autowired
     private DanaJaminanRepo danaJaminanRepo;
+    
+    @Autowired
+    private GetDanaJaminanViewRepo getDanaJaminanViewRepo;
 
     @Autowired
     private SendEmail sendEmail;
@@ -208,54 +214,51 @@ public class DanaJaminanApiController {
     }
 
 
-    // @Scheduled(fixedRate = 5000)
-    @Scheduled(cron = "00 13 10 * * *")
+    // @Scheduled(cron = "00 03 16 * * *")
+    @Scheduled(fixedRate = 15000)
     public void fetchDBJob() throws ParseException{
-        
-        // ambil tanggal hari ini
-        // LocalDate today = LocalDate.now();
 
         // get data
-        List<DanaJaminan> danajaminans = danaJaminanRepo.findByjatuhtempo(new Date());
-        System.out.println(danajaminans.size());
-
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(sdf.format(new Date()));
+        List<GetDanaJaminanView> danajaminans = getDanaJaminanViewRepo.findByjatuhtempo(sdf.format(new Date()));
+        
         for (int i = 0; i < danajaminans.size(); i++) {
-            DanaJaminan danaJaminan = danajaminans.get(i);
+            GetDanaJaminanView danaJaminan = danajaminans.get(i);
+            List<GetDanaJaminanView> view = new ArrayList<>();
+            view.add(danaJaminan);
             String jatuhtempo = danaJaminan.getJatuhtempo().toString();
             LocalDate jatuhtempoparse = LocalDate.parse(jatuhtempo);
-            // System.out.println(jatuhtempoparse);
 
             if(danaJaminan.getFlag_bunga() != null){
                 Integer tambahBulan = 30;
-                Long adjustment = 0L;
                 LocalDate jatuhTempoBaru = jatuhtempoparse.plusDays(tambahBulan);
-                System.out.println(jatuhTempoBaru);
-                System.out.println(jatuhtempoparse);
+                System.out.println("jatuhTempoBaru"+jatuhTempoBaru);
+                System.out.println("jatuhtempoparse"+jatuhtempoparse);
 
                 if(isWeekend(jatuhTempoBaru) == DayOfWeek.SATURDAY){
-                    System.out.println("sabtu");
+                    // System.out.println("sabtu");
                     jatuhTempoBaru = jatuhTempoBaru.plusDays(2);
                 } else if(isWeekend(jatuhTempoBaru) == DayOfWeek.SUNDAY){
-                    System.out.println("minggu");
+                    // System.out.println("minggu");
                     jatuhTempoBaru = jatuhTempoBaru.plusDays(1);
                 }
 
-                // System.out.println(jatuhTempoBaru +" "+isWeekend(jatuhTempoBaru));
                 Date jatuhTempoDate = Date.from(jatuhTempoBaru.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
                 long daysBetween = Duration.between(jatuhtempoparse.atStartOfDay(), jatuhTempoBaru.atStartOfDay()).toDays();
                 BigDecimal jumlah = danaJaminan.getJumlah();
-                // if(danaJaminan.get().getFlag_bunga() != null){
+                
                 if(danaJaminan.getFlag_bunga().equalsIgnoreCase("F")){
                     jumlah = danaJaminan.getPenempatan();
                 }
-                // }
+                
                 BigDecimal bungaBruto =  (jumlah.multiply(danaJaminan.getSukubunga()).divide(new BigDecimal("100"), 2)).divide(BigDecimal.valueOf(365), 2).multiply(BigDecimal.valueOf(daysBetween));
                 // BigDecimal bungaBruto = (jumlah * danaJaminan.get().getSukubunga() / 100) / 365 * daysBetween;
                 BigDecimal bungaNeto = bungaBruto.subtract(bungaBruto.multiply(BigDecimal.valueOf(20)).divide(new BigDecimal("100"), 2));
                 // // BigDecimal bungaNeto = bungaBruto - (bungaBruto * 20 / 100);
                 BigDecimal pph = bungaBruto.multiply(new BigDecimal("20").divide(new BigDecimal("100")));
-                BigDecimal afterAdjustment = bungaNeto.add(BigDecimal.valueOf(adjustment));
+                BigDecimal afterAdjustment = bungaNeto.add(danaJaminan.getAdjustment());
                 BigDecimal penempatan = jumlah.add(afterAdjustment).subtract(danaJaminan.getTransferdana()).subtract(danaJaminan.getTransferdanakbi());
                 // var penempatan = parseFloat(jumlah) + parseFloat(afterAdjustment) - parseFloat(transferDana) - parseFloat(transferDanaKbi);
                 // System.out.println(pph.setScale(4, RoundingMode.DOWN));
@@ -272,7 +275,7 @@ public class DanaJaminanApiController {
                 // danaJaminan2.setBungabruto(bungaBruto.setScale(4, RoundingMode.DOWN));
                 // danaJaminan2.setPph(pph.setScale(4, RoundingMode.DOWN));
                 // danaJaminan2.setBunga(afterAdjustment.setScale(4, RoundingMode.DOWN));
-                // danaJaminan2.setAdjustment(BigDecimal.valueOf(adjustment));
+                // danaJaminan2.setAdjustment(danaJaminan.getAdjustment());
                 // danaJaminan2.setAdmin(danaJaminan.getAdmin());
                 // danaJaminan2.setTransferdana(danaJaminan.getTransferdana());
                 // danaJaminan2.setTransferdanakbi(danaJaminan.getTransferdanakbi());
@@ -289,10 +292,7 @@ public class DanaJaminanApiController {
 
                 // generate pdf
                 try {
-                    // PdfExportDanaJaminan exporter = new PdfExportDanaJaminan(danajaminans);
-                    // exporter.export("report.pdf");
-                    // exportToPDF("D:\\report.pdf");
-                    jasperPdfReport.exportPdf();
+                    jasperPdfReport.exportPdf(view);
                     System.out.println("pdf berhasil di generate...");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -311,7 +311,7 @@ public class DanaJaminanApiController {
                 //     e.printStackTrace();
                 // }
 
-                // // delete file
+                // delete file
                 // File fileReport = new File("reportfromjasper.pdf");
                 // fileReport.delete();
                 // System.out.println("file berhasil dihapus");
@@ -326,21 +326,5 @@ public class DanaJaminanApiController {
         DayOfWeek day = DayOfWeek.of(ld.get(ChronoField.DAY_OF_WEEK));
         return day;
     }
-
-    // public void exportToPDF(String pdfPath) throws DocumentException, IOException {
-        // response.setContentType("application/pdf");
-        // DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        // String currentDateTime = dateFormatter.format(new Date());
-         
-        // String headerKey = "Content-Disposition";
-        // String headerValue = "attachment; filename=report.pdf";
-        // response.setHeader(headerKey, headerValue);
-         
-        // List<DanaJaminan> danaJaminans = danaJaminanRepo.findTop1000ByOrderByIdDesc();
-         
-        // PdfExportDanaJaminan exporter = new PdfExportDanaJaminan(danaJaminans);
-        // exporter.export(pdfPath);
-         
-    // }
 
 }
