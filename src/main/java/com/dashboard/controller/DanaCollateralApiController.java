@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,10 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.dashboard.excel.DanaCollateralExcelExporter;
 import com.dashboard.model.DanaCollateral;
 import com.dashboard.model.DanaCollateralParam;
-import com.dashboard.pdf.JasperPdfReport;
+import com.dashboard.model.GetDanaCollateralView;
+import com.dashboard.pdf.JasperPdfReportDanaCollateral;
 import com.dashboard.repository.DanaCollateralRepo;
+import com.dashboard.repository.GetDanaCollateralViewRepo;
 import com.dashboard.service.GoogleDriveService;
-// import com.dashboard.service.TelegramService;
+import com.dashboard.service.TelegramService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -51,9 +54,12 @@ public class DanaCollateralApiController {
     
     @Autowired
     private DanaCollateralRepo danaCollateralRepo;
+    
+    @Autowired
+    private GetDanaCollateralViewRepo getDanaCollateralViewRepo;
 
     @Autowired
-    private JasperPdfReport jasperPdfReport;
+    private JasperPdfReportDanaCollateral jasperPdfReport;
 
     @Autowired
     private GoogleDriveService googleDriveService;
@@ -182,16 +188,18 @@ public class DanaCollateralApiController {
     // @Scheduled(fixedRate = 10000)
     @Scheduled(cron = "00 00 08 * * *")
     public void fetchDBJob() throws ParseException, FileNotFoundException, JRException, SQLException{
-        List<DanaCollateral> danaCollaterals = danaCollateralRepo.findDanaCollateralsByJatuhTempo(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<GetDanaCollateralView> danaCollaterals = getDanaCollateralViewRepo.findDanaCollateralViewByjatuhtempo(sdf.format(new Date()));
 
         for (int i = 0; i < danaCollaterals.size(); i++) {
-            DanaCollateral danaCollateral = danaCollaterals.get(i);
+            GetDanaCollateralView danaCollateral = danaCollaterals.get(i);
+            List<GetDanaCollateralView> danaCollateralViews = new ArrayList<>();
+            danaCollateralViews.add(danaCollateral);
             String jatuhtempo = danaCollateral.getJatuhtempo().toString();
             LocalDate jatuhtempoparse = LocalDate.parse(jatuhtempo);
 
             if(danaCollateral.getFlag_bunga() != null){
                 Integer tambahBulan = 30;
-                Long adjustment = 0L;
                 LocalDate jatuhTempoBaru = jatuhtempoparse.plusDays(tambahBulan);
 
                 if(isWeekend(jatuhTempoBaru) == DayOfWeek.SATURDAY){
@@ -211,7 +219,7 @@ public class DanaCollateralApiController {
                 BigDecimal bungaBruto = (nominal.multiply(danaCollateral.getSukubunga()).divide(BigDecimal.valueOf(100), 2)).divide(BigDecimal.valueOf(365), 2).multiply(BigDecimal.valueOf(daysBetween));
                 BigDecimal pph = bungaBruto.multiply(BigDecimal.valueOf(20)).divide(BigDecimal.valueOf(100), 2);
                 BigDecimal bungaNeto = bungaBruto.subtract(pph);
-                BigDecimal afterAdjustment = bungaNeto.add(BigDecimal.valueOf(adjustment));
+                BigDecimal afterAdjustment = bungaNeto.add(danaCollateral.getAdjustment());
                 BigDecimal penempatan = nominal.add(afterAdjustment).subtract(danaCollateral.getBungatransfer());
 
                 DanaCollateral danaCollateralData = new DanaCollateral();
@@ -225,7 +233,7 @@ public class DanaCollateralApiController {
                 danaCollateralData.setSukubunga(danaCollateral.getSukubunga());
                 danaCollateralData.setBungabruto(bungaBruto.setScale(4, RoundingMode.DOWN));
                 danaCollateralData.setPph(pph.setScale(4, RoundingMode.DOWN));
-                danaCollateralData.setAdjustment(BigDecimal.valueOf(adjustment));
+                danaCollateralData.setAdjustment(danaCollateral.getAdjustment());
                 danaCollateralData.setBunganetto(afterAdjustment.setScale(4, RoundingMode.DOWN));
                 danaCollateralData.setBungatransfer(danaCollateral.getBungatransfer());
                 danaCollateralData.setPenempatan(penempatan.setScale(4, RoundingMode.DOWN));
@@ -234,10 +242,9 @@ public class DanaCollateralApiController {
                 danaCollateralData.setSequence(danaCollateral.getSequence());
                 danaCollateralData.setFlag(danaCollateral.getFlag());
                 danaCollateralData.setAdmin(danaCollateral.getAdmin());
-                danaCollateralRepo.save(danaCollateralData);
+                // danaCollateralRepo.save(danaCollateralData);
 
-
-                // jasperPdfReport.exportPdf();
+                jasperPdfReport.exportPdf(danaCollateralViews);
                 //     String fileId = googleDriveService.uploadFileInFolder("reportfromjasper.pdf", "reportfromjasper.pdf");
                 //     String shareableLink = googleDriveService.getShareableLink(fileId);
                 //     telegramService.sendMessage("1596642611", shareableLink);
