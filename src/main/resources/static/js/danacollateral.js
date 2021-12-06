@@ -305,10 +305,10 @@ function save(){
         "sequence":"`+ $('#sequence').val() +`",
         "flag":"`+ flag +`",
         "admin":"`+ admin +`",
-        "flag_bunga:"` + $('#flagBunga').val() + `"
+        "flag_bunga":"` + $('#flagBunga').val() + `"
     }`
 
-    // console.log(submitted_data)
+    console.log(submitted_data)
 
     if($('#flagBunga').val() == "T"){
         if(reformatAngka($('#transferdana').val()) == afterAdjustment && reformatAngka($('#transferdana').val()) != 0){
@@ -488,6 +488,7 @@ function edit(id){
 }
 
 function update(){
+    console.log("test")
     calcInterest()
     calcAdjustment()
     var today = new Date()
@@ -517,7 +518,7 @@ function update(){
         "code":"`+ $('#code').val() +`",
         "bank":"`+ $('#bank').val() +`",
         "nominal":"`+ reformatAngka($('#jumlah').val()) +`",
-        "tanggalpenempaetan":"`+ tanggalPenempatan +`",
+        "tanggalpenempatan":"`+ tanggalPenempatan +`",
         "jatuhtempo":"`+ jatuhTempo +`",
         "jangkawaktu":"`+ datediff +`",
         "sukubunga":"`+ reformatAngka($('#sukubunga').val()) +`",
@@ -532,7 +533,7 @@ function update(){
         "sequence":"`+ $('#sequence').val() +`",
         "flag":"`+ flag +`",
         "admin":"`+ admin +`",
-        "flag_bunga:"` + $('#flagBunga') + `"
+        "flag_bunga":"` + $('#flagBunga').val() + `"
     }`;
 
     // console.log(submitted_data)
@@ -551,7 +552,7 @@ function update(){
         } else {
             alert("[TEMP] Transfer is not valid")
         }
-    } else if($('flagBunga').val() == "F"){
+    } else if($('#flagBunga').val() == "F"){
         $.ajax({
             url: "/api/danacollateral",
             type: "put",
