@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.Principal;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dashboard.excel.DanaJaminanExcelExporter;
@@ -32,7 +34,6 @@ import com.dashboard.model.DanaCollateralParam;
 import com.dashboard.model.DanaJaminan;
 import com.dashboard.model.GetDanaJaminanView;
 import com.dashboard.pdf.JasperPdfReport;
-import com.dashboard.pdf.PdfExportDanaJaminan;
 import com.dashboard.repository.DanaJaminanRepo;
 import com.dashboard.repository.GetDanaJaminanViewRepo;
 import com.dashboard.service.SendEmail;
@@ -122,10 +123,11 @@ public class DanaJaminanApiController {
     }
 
     @PostMapping("/danajaminan")
-    public ResponseEntity<Object> CreateDanaJaminan(@RequestBody DanaJaminan danaJaminan)
+    public ResponseEntity<Object> CreateDanaJaminan(@RequestBody DanaJaminan danaJaminan, HttpServletRequest request)
     {
+        String username = request.getUserPrincipal().getName();
         try {
-            danaJaminan.setCreatedBy("admin");
+            danaJaminan.setCreatedBy(username);
             danaJaminan.setCreatedOn(LocalDateTime.now());
             this.danaJaminanRepo.save(danaJaminan);
             return new ResponseEntity<>("success", HttpStatus.OK);
@@ -135,36 +137,40 @@ public class DanaJaminanApiController {
     }
 
     @PutMapping("/danajaminan/{id}")
-    public ResponseEntity<Object> UpdateDanaJaminan(@RequestBody DanaJaminan danaJaminan, @PathVariable("id") Integer id){
+    public ResponseEntity<Object> UpdateDanaJaminan(@RequestBody DanaJaminan danaJaminan, @PathVariable("id") Integer id, HttpServletRequest request){
+        String username = request.getUserPrincipal().getName();
         try {
             Optional<DanaJaminan> danaJaminanData = this.danaJaminanRepo.findById(id);
 
             if(danaJaminanData.isPresent()){
-                // danaJaminanData.get().setId(danaJaminan.getId());
-                danaJaminanData.get().setBusinessdate(danaJaminan.getBusinessdate());
-                danaJaminanData.get().setCode(danaJaminan.getCode());
-                danaJaminanData.get().setBank(danaJaminan.getBank());
-                danaJaminanData.get().setJumlah(danaJaminan.getJumlah());
-                danaJaminanData.get().setJangkawaktu(danaJaminan.getJangkawaktu());
-                danaJaminanData.get().setTanggalpenempatan(danaJaminan.getTanggalpenempatan());
-                danaJaminanData.get().setJatuhtempo(danaJaminan.getJatuhtempo());
-                danaJaminanData.get().setSukubunga(danaJaminan.getSukubunga());
-                danaJaminanData.get().setBungabruto(danaJaminan.getBungabruto());
-                danaJaminanData.get().setPph(danaJaminan.getPph());
-                danaJaminanData.get().setBunga(danaJaminan.getBunga());
-                danaJaminanData.get().setAdjustment(danaJaminan.getAdjustment());
-                danaJaminanData.get().setAdmin(danaJaminan.getAdmin());
-                danaJaminanData.get().setTransferdana(danaJaminan.getTransferdana());
-                danaJaminanData.get().setTransferdanakbi(danaJaminan.getTransferdanakbi());
-                danaJaminanData.get().setPenempatan(danaJaminan.getPenempatan());
-                danaJaminanData.get().setAro(danaJaminan.getAro());
-                danaJaminanData.get().setMultiple(danaJaminan.getMultiple());
-                danaJaminanData.get().setSequence(danaJaminan.getSequence());
-                danaJaminanData.get().setFlag(danaJaminan.getFlag());
-                danaJaminanData.get().setFlag_bunga(danaJaminan.getFlag_bunga());
-                danaJaminanData.get().setModifiedBy("admin");
-                danaJaminanData.get().setModifiedOn(LocalDateTime.now());
-                this.danaJaminanRepo.save(danaJaminanData.get());
+                danaJaminan.setId(id);
+                danaJaminan.setAnggotaKliring(danaJaminanData.get().getAnggotaKliring());
+                // danaJaminanData.get().setBusinessdate(danaJaminan.getBusinessdate());
+                // danaJaminanData.get().setCode(danaJaminan.getCode());
+                // danaJaminanData.get().setBank(danaJaminan.getBank());
+                // danaJaminanData.get().setJumlah(danaJaminan.getJumlah());
+                // danaJaminanData.get().setJangkawaktu(danaJaminan.getJangkawaktu());
+                // danaJaminanData.get().setTanggalpenempatan(danaJaminan.getTanggalpenempatan());
+                // danaJaminanData.get().setJatuhtempo(danaJaminan.getJatuhtempo());
+                // danaJaminanData.get().setSukubunga(danaJaminan.getSukubunga());
+                // danaJaminanData.get().setBungabruto(danaJaminan.getBungabruto());
+                // danaJaminanData.get().setPph(danaJaminan.getPph());
+                // danaJaminanData.get().setBunga(danaJaminan.getBunga());
+                // danaJaminanData.get().setAdjustment(danaJaminan.getAdjustment());
+                // danaJaminanData.get().setAdmin(danaJaminan.getAdmin());
+                // danaJaminanData.get().setTransferdana(danaJaminan.getTransferdana());
+                // danaJaminanData.get().setTransferdanakbi(danaJaminan.getTransferdanakbi());
+                // danaJaminanData.get().setPenempatan(danaJaminan.getPenempatan());
+                // danaJaminanData.get().setAro(danaJaminan.getAro());
+                // danaJaminanData.get().setMultiple(danaJaminan.getMultiple());
+                // danaJaminanData.get().setSequence(danaJaminan.getSequence());
+                // danaJaminanData.get().setFlag(danaJaminan.getFlag());
+                // danaJaminanData.get().setFlag_bunga(danaJaminan.getFlag_bunga());
+                danaJaminan.setCreatedBy(danaJaminanData.get().getCreatedBy());
+                danaJaminan.setCreatedOn(danaJaminanData.get().getCreatedOn());
+                danaJaminan.setModifiedBy(username);
+                danaJaminan.setModifiedOn(LocalDateTime.now());
+                this.danaJaminanRepo.save(danaJaminan);
                 ResponseEntity rest = new ResponseEntity<>("Success", HttpStatus.OK);
                 return rest;
             }else{
@@ -214,13 +220,12 @@ public class DanaJaminanApiController {
     }
 
 
-    // @Scheduled(cron = "00 03 16 * * *")
-    @Scheduled(fixedRate = 15000)
+    // @Scheduled(fixedRate = 15000)
+    @Scheduled(cron = "00 12 14 * * *")
     public void fetchDBJob() throws ParseException{
 
         // get data
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        System.out.println(sdf.format(new Date()));
         List<GetDanaJaminanView> danajaminans = getDanaJaminanViewRepo.findByjatuhtempo(sdf.format(new Date()));
         
         for (int i = 0; i < danajaminans.size(); i++) {
@@ -303,16 +308,17 @@ public class DanaJaminanApiController {
                 }
                 
                 // send email
+                // LocalDate today = LocalDate.now();
                 // try {
                 //     sendEmail.SendMail("markuskurniawan78@gmail.com",
                 //             "<p>Berikut adalah :</p><h1>Test</h1><br><p>file report pdf</p>",
-                //             "test reportpdf", "reportfromjasper.pdf");
+                //             "test reportpdf", view.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf");
                 // } catch (MessagingException e) {
                 //     e.printStackTrace();
                 // }
 
                 // delete file
-                // File fileReport = new File("reportfromjasper.pdf");
+                // File fileReport = new File(view.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf");
                 // fileReport.delete();
                 // System.out.println("file berhasil dihapus");
             }

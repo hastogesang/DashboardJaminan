@@ -120,14 +120,14 @@ LIMIT 10]]>
 			<staticText>
 				<reportElement x="0" y="56" width="100" height="16" uuid="39fe173e-5c05-4ef9-9d01-b9f2ec57e33a"/>
 				<textElement>
-					<font fontName="SansSerif" size="10"/>
+					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Lampiran:--]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="72" width="40" height="20" uuid="52d962c9-f331-4a96-9595-1ff583c312fa"/>
 				<textElement>
-					<font fontName="SansSerif" size="10"/>
+					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Perihal:]]></text>
 			</staticText>
@@ -141,14 +141,14 @@ LIMIT 10]]>
 			<textField pattern="d, MMMM yyyy">
 				<reportElement x="413" y="42" width="142" height="59" uuid="32160f4a-3ac5-469f-af59-7bf2b5bca860"/>
 				<textElement>
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<textFieldExpression><![CDATA["Jakarta " + new SimpleDateFormat("dd MMMM yyyy").format(new java.util.Date())]]></textFieldExpression>
 			</textField>
 			<textField pattern="d, MMMM yyyy">
 				<reportElement x="0" y="42" width="399" height="14" uuid="5466931e-9654-48be-b038-e7fbf19a3444"/>
 				<textElement>
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<textFieldExpression><![CDATA["Nomor: 	/Sekr-KBI/"+(new java.util.Date().getMonth()+1)+"/"+(new java.util.Date().getYear()+1900)]]></textFieldExpression>
 			</textField>
@@ -159,12 +159,12 @@ LIMIT 10]]>
 			<staticText>
 				<reportElement x="0" y="0" width="80" height="20" uuid="f4af5e43-839b-4ef7-ac2d-c1df8c5f7a58"/>
 				<textElement>
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Kepada Yth.]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="14" width="120" height="20" uuid="da542089-8ab7-4286-974c-fda959fe5ca2"/>
+				<reportElement x="0" y="14" width="200" height="20" uuid="da542089-8ab7-4286-974c-fda959fe5ca2"/>
 				<textElement>
 					<font pdfFontName="Helvetica-Bold" isBold="true"/>
 				</textElement>
@@ -181,7 +181,7 @@ LIMIT 10]]>
 			<staticText>
 				<reportElement x="0" y="0" width="550" height="30" uuid="53d3f1c8-d51f-4360-a24f-a17a84022a37"/>
 				<textElement>
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[	Bersama ini dapat kami sampaikan bahwa saldo Dana Perusahaan Saudara yang ada di PT Kliring Berjangka
 Indonesia (Persero) adalah sebagai Berikut :]]></text>
@@ -198,7 +198,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tanggalpenempatan}]]></textFieldExpression>
 			</textField>
@@ -210,7 +210,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Tanggal Penempatan]]></text>
 			</staticText>
@@ -222,7 +222,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Jatuh Tempo]]></text>
 			</staticText>
@@ -234,7 +234,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{jatuhtempo}]]></textFieldExpression>
 			</textField>
@@ -246,7 +246,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Nominal Penempatan]]></text>
 			</staticText>
@@ -258,7 +258,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{jumlah}]]></textFieldExpression>
 			</textField>
@@ -270,7 +270,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Suku Bunga]]></text>
 			</staticText>
@@ -282,7 +282,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sukubunga}]]></textFieldExpression>
 			</textField>
@@ -294,7 +294,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Bunga Netto]]></text>
 			</staticText>
@@ -306,7 +306,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{bungabruto}.subtract($F{bungabruto}.multiply(BigDecimal.valueOf(20)).divide(new BigDecimal("100"), 2))]]></textFieldExpression>
 			</textField>
@@ -318,7 +318,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Adjustment]]></text>
 			</staticText>
@@ -330,7 +330,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{adjustment}]]></textFieldExpression>
 			</textField>
@@ -342,7 +342,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Bunga yang ditransfer]]></text>
 			</staticText>
@@ -354,7 +354,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transferdana}]]></textFieldExpression>
 			</textField>
@@ -366,7 +366,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Bunga yang ditransfer ke KBI]]></text>
 			</staticText>
@@ -378,7 +378,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transferdanakbi}]]></textFieldExpression>
 			</textField>
@@ -390,7 +390,7 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Penempatan Deposito baru]]></text>
 			</staticText>
@@ -402,63 +402,63 @@ Indonesia (Persero) adalah sebagai Berikut :]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{flag_bunga}.equalsIgnoreCase("T") ? $F{jumlah} : $F{jumlah}.add($F{bunga}).subtract($F{transferdana}).subtract($F{transferdanakbi}))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{flag_bunga}.equalsIgnoreCase("T") ? $F{jumlah} : $F{penempatan})]]></textFieldExpression>
 			</textField>
 			<textField pattern="MMMM d, yyyy">
 				<reportElement x="0" y="0" width="550" height="20" uuid="5e0b9c0c-2bff-42dc-bf5c-fe66a45a17c5"/>
 				<textElement>
-					<font pdfFontName="Helvetica-Bold" fontName="SansSerif" isBold="true"/>
+					<font pdfFontName="Helvetica-Bold" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["1. Saldo Dana Jaminan per "  + new SimpleDateFormat("dd MMMM yyyy").format(new java.util.Date()) + " pada Bank " + $F{bank} + " adalah sebagai berikut:"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="249" y="60" width="21" height="20" uuid="fd6ed9a8-a53d-4c37-86af-fd9b3a5e6be2"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Rp]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="249" y="100" width="21" height="20" uuid="978ac350-b17e-4101-a64c-4fcef5e30fae"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Rp]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="249" y="142" width="21" height="20" uuid="c71f6a02-58e5-41db-9c1b-b4b9a7930ab6"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Rp]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="249" y="162" width="21" height="20" uuid="877b0ae9-8159-4424-8d14-58cfdac6e0de"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Rp]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="249" y="182" width="21" height="20" uuid="d16db3db-29a8-466d-91a5-5e4c19d71a79"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Rp]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="249" y="202" width="21" height="20" uuid="5335da04-e853-4edf-87dd-ca98a7992774"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Rp]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="244" width="552" height="30" uuid="76348fa8-20bf-4f0e-b924-402d7e2544be"/>
 				<textElement>
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[	Apabila dalam 1 (satu) minggu setelah tanggal surat tidak terdapat tanggapan, kami anggap telah sesuai. Demikian
 kami sampaikan, agar menjadi maklum.]]></text>
@@ -466,28 +466,28 @@ kami sampaikan, agar menjadi maklum.]]></text>
 			<staticText>
 				<reportElement x="388" y="411" width="153" height="18" uuid="2e64c5b9-0dc4-402f-b752-15af2c048ee2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font pdfFontName="Helvetica-Bold" fontName="SansSerif" isBold="true" isUnderline="true"/>
+					<font pdfFontName="Helvetica-Bold" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Rohimah]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="358" y="310" width="192" height="17" uuid="7ac3334b-7406-440d-b287-39dac0eb9ef1"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[PT Kliring Berjangka Indonesia (Persero)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="388" y="429" width="153" height="17" uuid="20e59656-ffa7-4c59-86a7-6f3aee4ee624"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Ka. Div. Keuangan dan Akuntansi]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="3" y="419" width="361" height="27" uuid="310b4271-15a0-41d1-ad49-638f57e31490"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8"/>
+					<font size="8"/>
 				</textElement>
 				<text><![CDATA[NB : konfirmasi perpanjangan deposito dana jaminan ini telah dicetak secara otomatis oleh komputer
 kami, tanda tangan pejabat tidak dibutuhkan]]></text>
@@ -495,7 +495,7 @@ kami, tanda tangan pejabat tidak dibutuhkan]]></text>
 			<staticText>
 				<reportElement x="249" y="120" width="21" height="20" uuid="f7521cfd-42fd-4ef2-a9ec-100fe628a646"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Rp]]></text>
 			</staticText>
@@ -507,7 +507,7 @@ kami, tanda tangan pejabat tidak dibutuhkan]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{admin}]]></textFieldExpression>
 			</textField>
@@ -519,7 +519,7 @@ kami, tanda tangan pejabat tidak dibutuhkan]]></text>
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="SansSerif"/>
+					<font/>
 				</textElement>
 				<text><![CDATA[Biaya Admin]]></text>
 			</staticText>

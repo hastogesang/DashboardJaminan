@@ -51,23 +51,6 @@ public class JasperPdfReport {
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JRBeanCollectionDataSource(danajaminans));
         LocalDate today = LocalDate.now();
         JasperExportManager.exportReportToPdfFile(jasperPrint, danajaminans.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf");
-        // JRPdfExporter exporter = new JRPdfExporter();
-        // exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-        // exporter.setExporterOutput(new SimpleOutputStreamExporterOutput("testing.pdf"));
-
-        // SimplePdfReportConfiguration reportConfig = new SimplePdfReportConfiguration();
-        // reportConfig.setSizePageToContent(true);
-        // reportConfig.setForceLineBreakPolicy(false);
-
-        // SimplePdfExporterConfiguration exportConfig = new SimplePdfExporterConfiguration();
-        // exportConfig.setMetadataAuthor("markus");
-        // exportConfig.setEncrypted(true);
-        // exportConfig.setAllowedPermissionsHint("PRINTING");
-
-        // exporter.setConfiguration(reportConfig);
-        // exporter.setConfiguration(exportConfig);
-
-        // exporter.exportReport();
     }
 }
 

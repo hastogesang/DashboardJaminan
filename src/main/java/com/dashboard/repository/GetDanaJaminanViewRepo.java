@@ -10,5 +10,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface GetDanaJaminanViewRepo extends JpaRepository<GetDanaJaminanView, Integer> {
     @Query(value = " SELECT * FROM GetDanaJaminanView" + " WHERE jatuhtempo = ?1 and aro='T'", nativeQuery = true)
-    List<GetDanaJaminanView> findByjatuhtempo(@Param("tanggal") String string);
+    List<GetDanaJaminanView> findByjatuhtempo(@Param("tanggal") String tanggal);
 }

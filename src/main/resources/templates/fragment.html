@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html >
+<!-- <html lang="en"> -->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <body>
     <!-- header -->
@@ -32,8 +33,8 @@
     <div id="sidebar" th:fragment="sidebar">
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
             <div class="sidebar-sticky pt-3">
-              <ul class="nav flex-column">
-                <li class="nav-item">
+              <ul class="nav flex-column" id="sidebar-content">
+                <!-- <li class="nav-item">
                   <a class="nav-link" th:classappend="${#request.requestURI == '/danajaminan' ? 'active':''}" href="/danajaminan">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
                     Dana Jaminan
@@ -44,18 +45,18 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
                     Dana Collateral
                     </a>
-                </li>
+                </li> -->
+                <!-- <li>
+                    <a class="nav-link" href="/anggotakliring" th:classappend="${#request.requestURI == '/anggotakliring' ? 'active':''}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                    Anggota Kliring
+                    </a>
+                </li> -->
                 <li class="nav-item">
                   <a class="nav-link" href="/reportjaminan" th:classappend="${#request.requestURI == '/reportjaminan' ? 'active':''}">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
                   Generate Report
                   </a>
-                </li>
-                <li>
-                    <a class="nav-link" href="/anggotakliring" th:classappend="${#request.requestURI == '/anggotakliring' ? 'active':''}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                    Anggota Kliring
-                    </a>
                 </li>
               </ul>
             </div>
@@ -68,10 +69,17 @@
             <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <div sec:authorize="isAuthenticated()" class="text-white">
+                Welcome <b><span sec:authentication="name">Username</span></b>
+                &nbsp;
+                <i><span sec:authentication="principal.authorities" id="name">Roles</span></i>
+                &nbsp;
+            </div>
             <!-- <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"> -->
             <div class="navbar-nav">
+                
                 <div class="nav-item text-nowrap">
-                    <a class="nav-link px-3" href="#">Sign out</a>
+                    <a class="nav-link px-3" href="/logout">Sign out</a>
                 </div>
             </div>
         </nav>
@@ -86,6 +94,46 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
         <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+        <script>
+            var username = $('#name').text();
+            var id = 0;
+            if(username == '[admin]'){
+                id = 1
+            } else if(username == '[user]'){
+                id = 2
+            }
+
+            var url = $(location).attr('href').split('/');
+            console.log(url[url.length - 1]);
+            
+            function GetMenuByRoleId(id){
+                $.ajax({
+                    url: '/api/menurole/' + id,
+                    type: 'get',
+                    contentType: 'application/json',
+                    success: function(data){
+                        var list = "";
+                        for (let index = 0; index < data.length; index++) {
+                            list += `
+                            <li class="nav-item">
+                                <a class="nav-link ${url[url.length - 1] == data[index].menu.url ? 'active' : ''}" href="${data[index].menu.url}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                                ${data[index].menu.menu_name}
+                                </a>
+                            </li>
+                            `
+                        }
+
+                        $('#sidebar-content').append(list);
+                    }
+                })
+            }
+
+            $(document).ready(function() {
+                GetMenuByRoleId(id);
+            })
+        </script>
     </div>
 
     
