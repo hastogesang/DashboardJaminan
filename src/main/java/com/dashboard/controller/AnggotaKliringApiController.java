@@ -4,9 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-
-import com.dashboard.model.AnggotaKliring;
-import com.dashboard.repository.AnggotaKliringRepo;
+import com.dashboard.model.keuangan.AnggotaKliring;
+import com.dashboard.repository.keuangan.AnggotaKliringRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
-package com.dashboard.model;
+package com.dashboard.model.keuangan;
 
-import com.dashboard.repository.UserRepo;
+import com.dashboard.repository.keuangan.UserRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

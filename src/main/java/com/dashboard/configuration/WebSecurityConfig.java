@@ -1,6 +1,6 @@
 package com.dashboard.configuration;
 
-import com.dashboard.model.UserDetailServiceImpl;
+import com.dashboard.model.keuangan.UserDetailServiceImpl;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,8 +43,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/api/anggotakliring/**", "/anggotakliring").hasAuthority("user")
+            .antMatchers("/anggotakliring").hasAuthority("user")
             .antMatchers("/danajaminan", "/danacollateral").hasAuthority("admin")
+            .antMatchers("/api/anggotakliring/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin()

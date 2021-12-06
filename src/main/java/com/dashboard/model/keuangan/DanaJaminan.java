@@ -1,4 +1,4 @@
-package com.dashboard.model;
+package com.dashboard.model.keuangan;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

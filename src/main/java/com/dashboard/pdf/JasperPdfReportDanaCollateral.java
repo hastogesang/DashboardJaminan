@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.dashboard.model.GetDanaCollateralView;
+import com.dashboard.model.keuangan.GetDanaCollateralView;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;

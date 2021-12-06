@@ -1,4 +1,4 @@
-package com.dashboard.model;
+package com.dashboard.model.keuangan;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -33,4 +33,6 @@ public class Common{
     @Column(name = "modified_by")
     private String modifiedBy;
 
+    @Column(name = "deleted")
+    private String deleted;
 }

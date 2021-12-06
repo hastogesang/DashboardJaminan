@@ -1,6 +1,6 @@
-package com.dashboard.repository;
+package com.dashboard.repository.keuangan;
 
-import com.dashboard.model.User;
+import com.dashboard.model.keuangan.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

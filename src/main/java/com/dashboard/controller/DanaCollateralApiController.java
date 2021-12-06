@@ -21,12 +21,12 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dashboard.excel.DanaCollateralExcelExporter;
-import com.dashboard.model.DanaCollateral;
-import com.dashboard.model.DanaCollateralParam;
-import com.dashboard.model.GetDanaCollateralView;
+import com.dashboard.model.keuangan.DanaCollateral;
+import com.dashboard.model.keuangan.DanaCollateralParam;
+import com.dashboard.model.keuangan.GetDanaCollateralView;
 import com.dashboard.pdf.JasperPdfReportDanaCollateral;
-import com.dashboard.repository.DanaCollateralRepo;
-import com.dashboard.repository.GetDanaCollateralViewRepo;
+import com.dashboard.repository.keuangan.DanaCollateralRepo;
+import com.dashboard.repository.keuangan.GetDanaCollateralViewRepo;
 import com.dashboard.service.GoogleDriveService;
 import com.dashboard.service.TelegramService;
 

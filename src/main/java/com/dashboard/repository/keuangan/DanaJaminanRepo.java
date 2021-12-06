@@ -1,10 +1,10 @@
-package com.dashboard.repository;
+package com.dashboard.repository.keuangan;
 
 import java.util.Date;
 import java.util.List;
 
-import com.dashboard.model.DanaJaminan;
-import com.dashboard.model.GetDanaJaminanView;
+import com.dashboard.model.keuangan.DanaJaminan;
+import com.dashboard.model.keuangan.GetDanaJaminanView;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;

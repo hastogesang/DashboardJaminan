@@ -11,8 +11,8 @@ import java.util.List;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import com.dashboard.model.AnggotaKliring;
-import com.dashboard.model.DanaCollateral;
+import com.dashboard.model.keuangan.AnggotaKliring;
+import com.dashboard.model.keuangan.DanaCollateral;
 
 import org.apache.commons.lang3.ObjectUtils.Null;
 import org.apache.poi.ss.usermodel.BorderStyle;

@@ -1,4 +1,4 @@
-package com.dashboard.model;
+package com.dashboard.model.keuangan;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,9 +1,9 @@
-package com.dashboard.repository;
+package com.dashboard.repository.keuangan;
 
 import java.util.Date;
 import java.util.List;
 
-import com.dashboard.model.DanaCollateral;
+import com.dashboard.model.keuangan.DanaCollateral;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;

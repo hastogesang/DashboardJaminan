@@ -8,7 +8,7 @@ import java.util.List;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import com.dashboard.model.DanaJaminan;
+import com.dashboard.model.keuangan.DanaJaminan;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;

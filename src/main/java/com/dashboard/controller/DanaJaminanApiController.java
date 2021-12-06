@@ -30,12 +30,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dashboard.excel.DanaJaminanExcelExporter;
-import com.dashboard.model.DanaCollateralParam;
-import com.dashboard.model.DanaJaminan;
-import com.dashboard.model.GetDanaJaminanView;
+import com.dashboard.model.keuangan.DanaCollateralParam;
+import com.dashboard.model.keuangan.DanaJaminan;
+import com.dashboard.model.keuangan.GetDanaJaminanView;
 import com.dashboard.pdf.JasperPdfReport;
-import com.dashboard.repository.DanaJaminanRepo;
-import com.dashboard.repository.GetDanaJaminanViewRepo;
+import com.dashboard.repository.keuangan.DanaJaminanRepo;
+import com.dashboard.repository.keuangan.GetDanaJaminanViewRepo;
 import com.dashboard.service.SendEmail;
 import com.lowagie.text.DocumentException;
 

@@ -2,8 +2,8 @@ package com.dashboard.controller;
 
 import java.util.List;
 
-import com.dashboard.model.MenuRole;
-import com.dashboard.repository.MenuRoleRepo;
+import com.dashboard.model.keuangan.MenuRole;
+import com.dashboard.repository.keuangan.MenuRoleRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

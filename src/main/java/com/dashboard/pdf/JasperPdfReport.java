@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.dashboard.model.DanaJaminan;
-import com.dashboard.model.GetDanaJaminanView;
-import com.dashboard.repository.DanaJaminanRepo;
+import com.dashboard.model.keuangan.DanaJaminan;
+import com.dashboard.model.keuangan.GetDanaJaminanView;
+import com.dashboard.repository.keuangan.DanaJaminanRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

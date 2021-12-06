@@ -1,8 +1,8 @@
-package com.dashboard.repository;
+package com.dashboard.repository.keuangan;
 
 import java.util.List;
 
-import com.dashboard.model.MenuRole;
+import com.dashboard.model.keuangan.MenuRole;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
