@@ -11,7 +11,7 @@ public class ScheduledTasks {
     @Autowired
     private ClearingMemberService cms;
 
-    @Scheduled(cron = "00 00 07 * * *")
+    @Scheduled(cron = "00 00 08 * * *")
 	// @Scheduled(fixedRate = 60000)
 	public void reportCurrentTime() {
         cms.refreshAnggotaKliring();

@@ -1,5 +1,6 @@
 package com.dashboard.controller;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dashboard.excel.DanaCollateralExcelExporter;
@@ -28,6 +30,7 @@ import com.dashboard.pdf.JasperPdfReportDanaCollateral;
 import com.dashboard.repository.keuangan.DanaCollateralRepo;
 import com.dashboard.repository.keuangan.GetDanaCollateralViewRepo;
 import com.dashboard.service.GoogleDriveService;
+import com.dashboard.service.SendEmail;
 import com.dashboard.service.TelegramService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +66,10 @@ public class DanaCollateralApiController {
 
     @Autowired
     private GoogleDriveService googleDriveService;
+
+    @Autowired
+    private SendEmail sendEmail;
+    
     // @Autowired
     // private TelegramService telegramService;
 
@@ -185,11 +192,12 @@ public class DanaCollateralApiController {
         excelExporter.export(response);
     }
 
-    // @Scheduled(fixedRate = 10000)
+    // @Scheduled(fixedRate = 100000)
     @Scheduled(cron = "00 00 08 * * *")
-    public void fetchDBJob() throws ParseException, FileNotFoundException, JRException, SQLException{
+    public void fetchDBJob() throws Exception{
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<GetDanaCollateralView> danaCollaterals = getDanaCollateralViewRepo.findDanaCollateralViewByjatuhtempo(sdf.format(new Date()));
+        System.out.println("test");
 
         for (int i = 0; i < danaCollaterals.size(); i++) {
             GetDanaCollateralView danaCollateral = danaCollaterals.get(i);
@@ -211,7 +219,7 @@ public class DanaCollateralApiController {
                 Date jatuhTempoDate = Date.from(jatuhTempoBaru.atStartOfDay(ZoneId.systemDefault()).toInstant());
                 long daysBetween = Duration.between(jatuhtempoparse.atStartOfDay(), jatuhTempoBaru.atStartOfDay()).toDays();
 
-                BigDecimal nominal = danaCollateral.getNominal();
+                BigDecimal nominal = danaCollateral.getJumlah();
                 if(danaCollateral.getFlag_bunga().equalsIgnoreCase("F")){
                     nominal = danaCollateral.getPenempatan();
                 }
@@ -220,13 +228,13 @@ public class DanaCollateralApiController {
                 BigDecimal pph = bungaBruto.multiply(BigDecimal.valueOf(20)).divide(BigDecimal.valueOf(100), 2);
                 BigDecimal bungaNeto = bungaBruto.subtract(pph);
                 BigDecimal afterAdjustment = bungaNeto.add(danaCollateral.getAdjustment());
-                BigDecimal penempatan = nominal.add(afterAdjustment).subtract(danaCollateral.getBungatransfer());
+                BigDecimal penempatan = nominal.add(afterAdjustment).subtract(danaCollateral.getTransferdana());
 
                 DanaCollateral danaCollateralData = new DanaCollateral();
                 danaCollateralData.setBusinessdate(danaCollateral.getJatuhtempo());
                 danaCollateralData.setCode(danaCollateral.getCode());
                 danaCollateralData.setBank(danaCollateral.getBank());
-                danaCollateralData.setNominal(danaCollateral.getNominal());
+                danaCollateralData.setNominal(danaCollateral.getJumlah());
                 danaCollateralData.setTanggalpenempatan(danaCollateral.getJatuhtempo());
                 danaCollateralData.setJatuhtempo(jatuhTempoDate);
                 danaCollateralData.setJangkawaktu((int) daysBetween);
@@ -235,19 +243,36 @@ public class DanaCollateralApiController {
                 danaCollateralData.setPph(pph.setScale(4, RoundingMode.DOWN));
                 danaCollateralData.setAdjustment(danaCollateral.getAdjustment());
                 danaCollateralData.setBunganetto(afterAdjustment.setScale(4, RoundingMode.DOWN));
-                danaCollateralData.setBungatransfer(danaCollateral.getBungatransfer());
+                danaCollateralData.setBungatransfer(danaCollateral.getTransferdana());
                 danaCollateralData.setPenempatan(penempatan.setScale(4, RoundingMode.DOWN));
                 danaCollateralData.setAro(danaCollateral.getAro());
                 danaCollateralData.setMultiple(danaCollateral.getMultiple());
                 danaCollateralData.setSequence(danaCollateral.getSequence());
                 danaCollateralData.setFlag(danaCollateral.getFlag());
                 danaCollateralData.setAdmin(danaCollateral.getAdmin());
-                // danaCollateralRepo.save(danaCollateralData);
+                danaCollateralRepo.save(danaCollateralData);
 
                 jasperPdfReport.exportPdf(danaCollateralViews);
-                //     String fileId = googleDriveService.uploadFileInFolder("reportfromjasper.pdf", "reportfromjasper.pdf");
-                //     String shareableLink = googleDriveService.getShareableLink(fileId);
-                //     telegramService.sendMessage("1596642611", shareableLink);
+                LocalDate today = LocalDate.now();
+                String file = danaCollateralViews.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf";
+                // send email
+                try {
+                    sendEmail.SendMail("abrahamtjoanda@gmail.com",
+                            "<p>Berikut adalah :</p><h1>Test</h1><br><p>file report pdf</p>",
+                            "test report.pdf", file);
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
+
+                String fileId = googleDriveService.uploadFileInFolder(file, "application/pdf", file, "1HiaV3sgfj3U_x0-PmfDpIGPpkJ2qasYF");
+                String shareableLink = googleDriveService.getShareableLink(fileId);
+                System.out.println(shareableLink);
+                // telegramService.sendMessage("1596642611", shareableLink);
+
+                // delete file
+                File fileReport = new File(danaCollateralViews.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf");
+                fileReport.delete();
+                System.out.println("file berhasil dihapus");
             }            
         }
     }

@@ -37,7 +37,7 @@ public class GetDanaCollateralView {
     private Date jatuhtempo;
     
     @Column(name = "jumlah")
-    private BigDecimal nominal;
+    private BigDecimal jumlah;
 
     @Column(name = "sukubunga")
     private BigDecimal sukubunga;
@@ -52,7 +52,7 @@ public class GetDanaCollateralView {
     private BigDecimal adjustment;
     
     @Column(name = "transferdana")
-    private BigDecimal bungatransfer;
+    private BigDecimal transferdana;
     
     @Column(name = "penempatan")
     private BigDecimal penempatan;
