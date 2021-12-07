@@ -5,7 +5,7 @@
       type: 'get',
       contentType: 'application/json',
       success: function(data){
-        console.log(data);
+        // console.log(data);
         content(data);
       }
     })
@@ -405,12 +405,12 @@
         "flag_bunga":"`+ $('#flag_bunga').val() +`"
     }`;
 
-    console.log(submitted_data);
+    // console.log(submitted_data);
 
     if($('#flag_bunga').val()=="T"){
       // console.log(reformatAngka($('#transferdana').val()));
       // console.log($('#bunga').val());
-      if(parseFloat(reformatAngka($('#transferdana').val())) > parseFloat($('#bunga').val()) || parseFloat(reformatAngka($('#transferdana').val())) == 0){
+      if(reformatAngka($('#transferdana').val()) != $('#afterAdjustment').val()){
         // console.log("oke");
         // console.log("nol");
         $('#alerttransfer').removeClass('d-none')
@@ -426,7 +426,7 @@
             }
         })
       }
-    } else {
+    } else if($('#flag_bunga').val()=="F") {
       $.ajax({
           url: "/api/danajaminan",
           type: "post",
@@ -493,7 +493,7 @@
     if($('#flag_bunga').val()=="T"){
       // console.log(reformatAngka($('#transferdana').val()));
       // console.log($('#bunga').val());
-      if(parseFloat(reformatAngka($('#transferdana').val())) > parseFloat($('#bunga').val()) || parseFloat(reformatAngka($('#transferdana').val())) == 0){
+      if(reformatAngka($('#transferdana').val()) != $('#afterAdjustment').val()){
         // console.log("oke");
         // console.log("nol");
         $('#alerttransfer').removeClass('d-none')

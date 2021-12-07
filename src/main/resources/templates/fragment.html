@@ -77,7 +77,6 @@
             </div>
             <!-- <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"> -->
             <div class="navbar-nav">
-                
                 <div class="nav-item text-nowrap">
                     <a class="nav-link px-3" href="/logout">Sign out</a>
                 </div>
@@ -105,8 +104,8 @@
             }
 
             var url = $(location).attr('href').split('/');
-            console.log(url[url.length - 1]);
-            
+            // console.log(url[url.length - 1]);
+
             function GetMenuByRoleId(id){
                 $.ajax({
                     url: '/api/menurole/' + id,

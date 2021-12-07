@@ -145,27 +145,6 @@ public class DanaJaminanApiController {
             if(danaJaminanData.isPresent()){
                 danaJaminan.setId(id);
                 danaJaminan.setAnggotaKliring(danaJaminanData.get().getAnggotaKliring());
-                // danaJaminanData.get().setBusinessdate(danaJaminan.getBusinessdate());
-                // danaJaminanData.get().setCode(danaJaminan.getCode());
-                // danaJaminanData.get().setBank(danaJaminan.getBank());
-                // danaJaminanData.get().setJumlah(danaJaminan.getJumlah());
-                // danaJaminanData.get().setJangkawaktu(danaJaminan.getJangkawaktu());
-                // danaJaminanData.get().setTanggalpenempatan(danaJaminan.getTanggalpenempatan());
-                // danaJaminanData.get().setJatuhtempo(danaJaminan.getJatuhtempo());
-                // danaJaminanData.get().setSukubunga(danaJaminan.getSukubunga());
-                // danaJaminanData.get().setBungabruto(danaJaminan.getBungabruto());
-                // danaJaminanData.get().setPph(danaJaminan.getPph());
-                // danaJaminanData.get().setBunga(danaJaminan.getBunga());
-                // danaJaminanData.get().setAdjustment(danaJaminan.getAdjustment());
-                // danaJaminanData.get().setAdmin(danaJaminan.getAdmin());
-                // danaJaminanData.get().setTransferdana(danaJaminan.getTransferdana());
-                // danaJaminanData.get().setTransferdanakbi(danaJaminan.getTransferdanakbi());
-                // danaJaminanData.get().setPenempatan(danaJaminan.getPenempatan());
-                // danaJaminanData.get().setAro(danaJaminan.getAro());
-                // danaJaminanData.get().setMultiple(danaJaminan.getMultiple());
-                // danaJaminanData.get().setSequence(danaJaminan.getSequence());
-                // danaJaminanData.get().setFlag(danaJaminan.getFlag());
-                // danaJaminanData.get().setFlag_bunga(danaJaminan.getFlag_bunga());
                 danaJaminan.setCreatedBy(danaJaminanData.get().getCreatedBy());
                 danaJaminan.setCreatedOn(danaJaminanData.get().getCreatedOn());
                 danaJaminan.setModifiedBy(username);
@@ -268,32 +247,32 @@ public class DanaJaminanApiController {
                 // var penempatan = parseFloat(jumlah) + parseFloat(afterAdjustment) - parseFloat(transferDana) - parseFloat(transferDanaKbi);
                 // System.out.println(pph.setScale(4, RoundingMode.DOWN));
                 
-                // DanaJaminan danaJaminan2 = new DanaJaminan();
-                // danaJaminan2.setBusinessdate(danaJaminan.getJatuhtempo());
-                // danaJaminan2.setCode(danaJaminan.getCode());
-                // danaJaminan2.setBank(danaJaminan.getBank());
-                // danaJaminan2.setJumlah(jumlah.setScale(2, RoundingMode.DOWN));
-                // danaJaminan2.setJangkawaktu((int) daysBetween);
-                // danaJaminan2.setTanggalpenempatan(danaJaminan.getJatuhtempo());
-                // danaJaminan2.setJatuhtempo(jatuhTempoDate);
-                // danaJaminan2.setSukubunga(danaJaminan.getSukubunga());
-                // danaJaminan2.setBungabruto(bungaBruto.setScale(4, RoundingMode.DOWN));
-                // danaJaminan2.setPph(pph.setScale(4, RoundingMode.DOWN));
-                // danaJaminan2.setBunga(afterAdjustment.setScale(4, RoundingMode.DOWN));
-                // danaJaminan2.setAdjustment(danaJaminan.getAdjustment());
-                // danaJaminan2.setAdmin(danaJaminan.getAdmin());
-                // danaJaminan2.setTransferdana(danaJaminan.getTransferdana());
-                // danaJaminan2.setTransferdanakbi(danaJaminan.getTransferdanakbi());
-                // danaJaminan2.setPenempatan(penempatan.setScale(4, RoundingMode.DOWN));
-                // danaJaminan2.setAro(danaJaminan.getAro());
-                // danaJaminan2.setMultiple(danaJaminan.getMultiple());
-                // danaJaminan2.setSequence(danaJaminan.getSequence());
-                // danaJaminan2.setFlag(danaJaminan.getFlag());
-                // danaJaminan2.setFlag_bunga(danaJaminan.getFlag_bunga());
-                // danaJaminan2.setCreatedBy("scheduled");
-                // danaJaminan2.setCreatedOn(LocalDateTime.now());
-                // danaJaminanRepo.save(danaJaminan2);
-                // System.out.println("data baru berhasil ditambahkan");
+                DanaJaminan danaJaminan2 = new DanaJaminan();
+                danaJaminan2.setBusinessdate(danaJaminan.getJatuhtempo());
+                danaJaminan2.setCode(danaJaminan.getCode());
+                danaJaminan2.setBank(danaJaminan.getBank());
+                danaJaminan2.setJumlah(jumlah.setScale(2, RoundingMode.DOWN));
+                danaJaminan2.setJangkawaktu((int) daysBetween);
+                danaJaminan2.setTanggalpenempatan(danaJaminan.getJatuhtempo());
+                danaJaminan2.setJatuhtempo(jatuhTempoDate);
+                danaJaminan2.setSukubunga(danaJaminan.getSukubunga());
+                danaJaminan2.setBungabruto(bungaBruto.setScale(4, RoundingMode.DOWN));
+                danaJaminan2.setPph(pph.setScale(4, RoundingMode.DOWN));
+                danaJaminan2.setBunga(afterAdjustment.setScale(4, RoundingMode.DOWN));
+                danaJaminan2.setAdjustment(danaJaminan.getAdjustment());
+                danaJaminan2.setAdmin(danaJaminan.getAdmin());
+                danaJaminan2.setTransferdana(danaJaminan.getTransferdana());
+                danaJaminan2.setTransferdanakbi(danaJaminan.getTransferdanakbi());
+                danaJaminan2.setPenempatan(penempatan.setScale(4, RoundingMode.DOWN));
+                danaJaminan2.setAro(danaJaminan.getAro());
+                danaJaminan2.setMultiple(danaJaminan.getMultiple());
+                danaJaminan2.setSequence(danaJaminan.getSequence());
+                danaJaminan2.setFlag(danaJaminan.getFlag());
+                danaJaminan2.setFlag_bunga(danaJaminan.getFlag_bunga());
+                danaJaminan2.setCreatedBy("scheduled");
+                danaJaminan2.setCreatedOn(LocalDateTime.now());
+                danaJaminanRepo.save(danaJaminan2);
+                System.out.println("data baru berhasil ditambahkan");
 
                 // generate pdf
                 try {
@@ -308,19 +287,19 @@ public class DanaJaminanApiController {
                 }
                 
                 // send email
-                // LocalDate today = LocalDate.now();
-                // try {
-                //     sendEmail.SendMail("markuskurniawan78@gmail.com",
-                //             "<p>Berikut adalah :</p><h1>Test</h1><br><p>file report pdf</p>",
-                //             "test reportpdf", view.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf");
-                // } catch (MessagingException e) {
-                //     e.printStackTrace();
-                // }
+                LocalDate today = LocalDate.now();
+                try {
+                    sendEmail.SendMail("markuskurniawan78@gmail.com",
+                            "<p>Berikut adalah :</p><h1>Test</h1><br><p>file report pdf</p>",
+                            "test reportpdf", view.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf");
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
 
                 // delete file
-                // File fileReport = new File(view.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf");
-                // fileReport.delete();
-                // System.out.println("file berhasil dihapus");
+                File fileReport = new File(view.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf");
+                fileReport.delete();
+                System.out.println("file berhasil dihapus");
             }
 
         }
