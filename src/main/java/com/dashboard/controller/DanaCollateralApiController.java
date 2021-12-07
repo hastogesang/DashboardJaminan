@@ -1,11 +1,9 @@
 package com.dashboard.controller;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
@@ -31,7 +29,7 @@ import com.dashboard.repository.keuangan.DanaCollateralRepo;
 import com.dashboard.repository.keuangan.GetDanaCollateralViewRepo;
 import com.dashboard.service.GoogleDriveService;
 import com.dashboard.service.SendEmail;
-import com.dashboard.service.TelegramService;
+// import com.dashboard.service.TelegramService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -47,8 +45,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import net.sf.jasperreports.engine.JRException;
 
 @RestController
 @CrossOrigin("*")
@@ -197,7 +193,6 @@ public class DanaCollateralApiController {
     public void fetchDBJob() throws Exception{
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<GetDanaCollateralView> danaCollaterals = getDanaCollateralViewRepo.findDanaCollateralViewByjatuhtempo(sdf.format(new Date()));
-        System.out.println("test");
 
         for (int i = 0; i < danaCollaterals.size(); i++) {
             GetDanaCollateralView danaCollateral = danaCollaterals.get(i);
@@ -282,13 +277,5 @@ public class DanaCollateralApiController {
         DayOfWeek day = DayOfWeek.of(ld.get(ChronoField.DAY_OF_WEEK));
         return day;
     }
-    
-    // @Scheduled(fixedRate = 100000)
-    // public void doGoogleSignIn() throws Exception {
-    //     String fileId = googleDriveService.uploadFileInFolder("reportfromjasper.pdf", "application/pdf", "reportfromjasper.pdf", "1HiaV3sgfj3U_x0-PmfDpIGPpkJ2qasYF");
-    //     String shareableLink = googleDriveService.getShareableLink(fileId);
-    //     System.out.println(shareableLink);
-    // }
-
 }
  

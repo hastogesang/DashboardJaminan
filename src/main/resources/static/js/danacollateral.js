@@ -67,6 +67,10 @@ function exportData(){
     var bank = $("#myInput").val()
     var date1 = $("#startDate").val()
     var date2 = $("#endDate").val()
+    if(date1 != '' && date2 != ''){
+        date1 = date1.replaceAll("-", "/");
+        date2 = date2.replaceAll("-", "/");
+    }
     // $('#exportbutton').attr("href", `/api/danacollateral/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
     window.location.assign(`/api/danacollateral/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`, "Download")
 
@@ -173,6 +177,7 @@ function add(){
                 <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control" id="transferdana" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" required>
+                    <span id="alerttransfer" class="text-danger d-none">transfer dana harus sama dengan bunga after adjustment dan tidak boleh 0</span> 
                 </div>
             </div>
         </div>
@@ -308,10 +313,11 @@ function save(){
         "flag_bunga":"` + $('#flagBunga').val() + `"
     }`
 
-    console.log(submitted_data)
+    // console.log(submitted_data)
 
     if($('#flagBunga').val() == "T"){
         if(reformatAngka($('#transferdana').val()) == afterAdjustment && reformatAngka($('#transferdana').val()) != 0){
+            $('#alerttransfer').addClass('d-none')
             $.ajax({
                 url: "/api/danacollateral",
                 type: "post",
@@ -322,7 +328,7 @@ function save(){
                 }
             })
         } else {
-            alert("[TEMP] Transfer is not valid")
+            $('#alerttransfer').removeClass('d-none')
         }
     } else if($('#flagBunga').val() == "F"){
         $.ajax({
@@ -395,6 +401,7 @@ function edit(id){
                         <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="transferdana" value="${formatAngka(result.bungatransfer)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" required>
+                            <span id="alerttransfer" class="text-danger d-none">transfer dana harus sama dengan bunga after adjustment dan tidak boleh 0</span>
                         </div>
                     </div>
                 </div>
@@ -488,7 +495,6 @@ function edit(id){
 }
 
 function update(){
-    console.log("test")
     calcInterest()
     calcAdjustment()
     var today = new Date()
@@ -508,8 +514,6 @@ function update(){
     var penempatan = (parseFloat(reformatAngka($('#jumlah').val())) + parseFloat(afterAdjustment) - parseFloat(reformatAngka($('#transferdana').val())).toFixed(2))
     var flag = 0
     var admin = 0
-    var modified_by = "admin"
-    var modified_on = (today.getMonth()+1) + "/" + today.getDate() + "/" + today.getFullYear()
 
     var submitted_data =
     `{
@@ -540,6 +544,7 @@ function update(){
 
     if($('#flagBunga').val() == "T"){
         if(reformatAngka($('#transferdana').val()) == afterAdjustment && reformatAngka($('#transferdana').val()) != 0){
+            $('#alerttransfer').addClass('d-none')
             $.ajax({
                 url: "/api/danacollateral",
                 type: "put",
@@ -550,7 +555,7 @@ function update(){
                 }
             })
         } else {
-            alert("[TEMP] Transfer is not valid")
+            $('#alerttransfer').removeClass('d-none')
         }
     } else if($('#flagBunga').val() == "F"){
         $.ajax({
