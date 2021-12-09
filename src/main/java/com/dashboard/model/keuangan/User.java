@@ -1,6 +1,7 @@
 package com.dashboard.model.keuangan;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -38,8 +39,8 @@ public class User extends Common {
     @Column(name = "divisi")
     private String divisi;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> role = new HashSet<>();
+    // @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    // @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    // private Set<Role> role = new HashSet<>();
 
 }

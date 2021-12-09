@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             // .antMatchers("/api/anggotakliring/**").permitAll()
             .anyRequest().authenticated()
             .and()
-            .formLogin()
+            .formLogin() 
                 .loginPage("/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
