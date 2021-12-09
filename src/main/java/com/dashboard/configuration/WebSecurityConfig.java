@@ -47,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             // .antMatchers("/danajaminan", "/danacollateral").hasAuthority("admin")
             // .antMatchers("/api/anggotakliring/**").permitAll()
             .anyRequest().authenticated()
+            // .anyRequest().permitAll()
             .and()
             .formLogin() 
                 .loginPage("/login")
