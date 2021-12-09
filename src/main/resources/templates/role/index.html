@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>New Role</title>
+		<div th:insert="fragment::head"></div>
+		<link rel="stylesheet" href="/css/tablestyles.css">
+        <style>
+            table {
+                font-size: 14px !important;
+            }
+        </style>
+	</head>
+<body>
+	<div th:insert="fragment::navbar"></div>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div th:insert="fragment::sidebar"></div>
+
+			<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+				<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<h2>New Role</h2>
+					<div class="btn-toolbar mb-2 mb-md-0">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb py-0">
+								<li class="breadcrumb-item"><a href="#">Home</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+							</ol>
+						</nav>
+						<!-- <div class="btn-group mr-2">
+							<button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+						</div> -->
+					</div>
+				</div>
+				
+				<div id="content-body">
+					<div class="accordion" id="accordionOne">
+						<div class="card">
+							<div class="card-header" id="headingOne">
+								<div class="d-flex">
+									<div class="p-2">
+											Tambah role baru
+									</div>
+									<div class="ml-auto">
+										<button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+											+
+										</button>
+									</div>
+								</div>
+							</div>
+							
+							<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionOne">
+								<div id="card-body" class="card-body">
+                                    <button class="btn btn-sm btn-secondary mb-2" onclick="FormTambah()">Tambah Role +</button>
+									<div class="table-responsive">
+										<table id="table" class="table table-bordered table-sm">
+											<thead>
+												<tr>
+													<th>Role Name</th>
+													<th>Akses Menu</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody id="tbody">
+												<!-- Content -->
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+            
+		</div>
+	</div>
+
+    <!-- modal add -->
+    <div class="modal fade" id="daftarModal" tabindex="-1" role="dialog" aria-labelledby="daftarModalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="daftarModalTitle">Tambah Role</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm" onsubmit="event.preventDefault();">
+                        <div class="form-group">
+                            <label for="rolename" class="col-form-label">Role Name:</label>
+                            <input type="text" class="form-control" id="rolename" required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="aksesmenu" class="col-form-label">Akses Menu:</label>
+                            <select id="aksesmenu" class="form-control selectpicker" multiple data-live-search="true" required>
+                            </select>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" onclick="Save(this.value)">Save changes</button>
+                </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal edit -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalTitle">Edit Menu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editmenu" onsubmit="event.preventDefault();">
+                        <div class="form-group">
+                            <label for="rolename-edit" class="col-form-label">Role Name:</label>
+                            <input type="text" class="form-control" id="rolename-edit" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="aksesmenu-edit" class="col-form-label">Akses Menu:</label>
+                            <select id="aksesmenu-edit" class="form-control selectpicker" multiple data-live-search="true" required="true">
+                            </select>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" onclick="Update(this.value)" id="edit-save-btn">Save changes</button>
+                </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal delete -->
+    <div class="modal fade" id="hapusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Yakin ingin menghapus data?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-danger" id="delete-btn" onclick="Delete(this.value)">Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<div th:insert="fragment::script"></div>
+    <script src="/js/role.js"></script>
+</body>
+</html>

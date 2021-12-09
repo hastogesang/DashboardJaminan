@@ -15,11 +15,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Where;
+
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "Menu")
+@Where(clause = "deleted = 'false'")
 public class Menu extends Common{
     
     @Id
