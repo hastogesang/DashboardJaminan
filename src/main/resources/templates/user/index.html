@@ -4,6 +4,11 @@
 		<title>User</title>
 		<div th:insert="fragment::head"></div>
 		<link rel="stylesheet" href="/css/tablestyles.css">
+		<style>
+            table {
+                font-size: 14px !important;
+            }
+        </style>
 	</head>
 <body>
 	<div th:insert="fragment::navbar"></div>
@@ -15,14 +20,14 @@
 			<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
 				<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 					<h2>User</h2>
-					<!-- <div class="btn-toolbar mb-2 mb-md-0">
+					<div class="btn-toolbar mb-2 mb-md-0">
 						<nav aria-label="breadcrumb">
 							<ol class="breadcrumb py-0">
 								<li class="breadcrumb-item"><a href="#">Home</a></li>
 								<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
 							</ol>
 						</nav>
-					</div> -->
+					</div>
 				</div>
 				
 				<div id="content-body">
@@ -31,7 +36,7 @@
 							<div class="card-header" id="headingOne">
 								<div class="d-flex">
 									<div class="p-2">
-											User
+											Manage User
 									</div>
 									<div class="ml-auto">
 										<button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -42,17 +47,16 @@
 							</div>
 							
 							<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionOne">
-								<div id="card-body" class="card-body">                    
+								<div id="card-body" class="card-body">  
+                                    <button class="btn btn-sm btn-secondary mb-2" onclick="FormTambah()">Tambah User +</button>
                                     <div class="table-responsive">
 										<table id="table" class="table table-bordered table-sm">
 											<thead>
 												<tr>
-													<th><span onclick="add()">Tambah</span></th>
-													<th>user_id</th>
-													<th>username</th>
-													<th>divisi</th>
-                                                    <th>role(s)</th>
-                                                    <th></th>
+													<th>Username</th>
+													<th>Divisi</th>
+                                                    <th>Role(s)</th>
+                                                    <th>Action</th>
 												</tr>
 											</thead>
 											<tbody id="tbody">
@@ -67,6 +71,140 @@
 				</div>
 			</main>
 
+		</div>
+	</div>
+
+	<!-- modal add -->
+	<div class="modal fade" id="daftarModal" tabindex="-1" role="dialog" aria-labelledby="daftarModalTitle" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="daftarModalTitle">Tambah User</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="registerForm" onsubmit="event.preventDefault();">
+						<div class="form-group">
+							<label for="username" class="col-form-label">Username:</label>
+			
+							<input type="hidden" id="user_check" value="-1">
+							<div class="row">
+								<div class="col">
+									<input type="text" class="form-control border" id="username" onchange="resetUserCheck()" required>
+								</div>
+								<div class="col-auto" id="check">
+									<button type="button" class="btn btn-primary" onclick="userCheck()">Check</button>
+								</div>
+							</div>
+							<span id="alert_username" class="text-danger d-none"></span>
+						</div>
+			
+						<div class="form-group">
+							<label for="password" class="col-form-label">Password:</label>
+							<input type="password" class="form-control" id="password" required>
+						</div>
+						<div class="form-group">
+							<label for="conf_password" class="col-form-label">Confirm Password:</label>
+							<input type="password" class="form-control" id="conf_password" required>
+							<span id="alert_pass" class="text-danger d-none"></span>
+						</div>
+						<div class="form-group">
+							<label for="divisi" class="col-form-label">Divisi:</label>
+							<input type="text" class="form-control" id="divisi">
+						</div>
+						<div class="form-group">
+							<label for="roles" class="col-form-label">Roles:</label>
+							<select id="roles" class="form-control selectpicker" multiple data-live-search="true" required>
+							</select>
+							<span id="alert_role" class="text-danger d-none">Must have at least one role</span>
+						</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" onclick="Save(this.value)">Save changes</button>
+				</div>
+					</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- modal edit -->
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="editModalTitle">Edit Menu</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="editmenu" onsubmit="event.preventDefault();">
+						<input type="hidden" id="user_id-edit" disabled>
+						<div class="form-group">
+							<label for="username-edit" class="col-form-label">Username:</label>
+			
+							<input type="hidden" id="user_check-edit" value="-1">
+							<div class="row">
+								<div class="col">
+									<input type="text" class="form-control border" id="username-edit" onchange="resetUserCheckEdit()" required>
+								</div>
+								<div class="col-auto" id="check-edit">
+									<button type="button" class="btn btn-primary" onclick="userCheckEdit(this.value)" id="btncheck-edit">Check</button>
+								</div>
+							</div>
+							<span id="alert_username-edit" class="text-danger d-none"></span>
+						</div>
+			
+						<div class="form-group">
+							<label for="password-edit" class="col-form-label">Password:</label>
+							<input type="password" class="form-control" id="password-edit" required>
+						</div>
+						<div class="form-group">
+							<label for="conf_password-edit" class="col-form-label">Confirm Password:</label>
+							<input type="password" class="form-control" id="conf_password-edit" required>
+							<span id="alert_pass" class="text-danger d-none"></span>
+						</div>
+						<div class="form-group">
+							<label for="divisi-edit" class="col-form-label">Divisi:</label>
+							<input type="text" class="form-control" id="divisi-edit">
+						</div>
+						<div class="form-group">
+							<label for="roles-edit" class="col-form-label">Roles:</label>
+							<select id="roles-edit" class="form-control selectpicker" multiple data-live-search="true" required>
+							</select>
+							<span id="alert_role" class="text-danger d-none">Must have at least one role</span>
+						</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" onclick="Update(this.value)" id="edit-save-btn">Save changes</button>
+				</div>
+					</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- modal delete -->
+	<div class="modal fade" id="hapusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Yakin ingin menghapus data?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+					<button type="button" class="btn btn-danger" id="delete-btn" onclick="Delete(this.value)">Hapus</button>
+				</div>
+			</div>
 		</div>
 	</div>
 

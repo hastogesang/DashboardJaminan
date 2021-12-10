@@ -4,7 +4,7 @@ $(document).ready(function(){
         type:'get',
         contentType:'application/json',
         success:function(result) {
-            console.log(result)
+            // console.log(result)
             for (var i = 0; i < result.length; i++) {
                 setTBody(result[i])
             }
@@ -30,12 +30,10 @@ function setTBody(result) {
 
             str +=
                 `<tr>
-                    <td><div class="text-center"><span onclick="edit(${result.id})">Edit</span></div></td>
-                    <td>${result.id}</td>
                     <td>${result.username}</td>
                     <td>${result.divisi}</td>
                     <td>${roles}</td>
-                    <td><div class="text-center"><span onclick="deleted(${result.id})">Delete</span></div></td>
+                    <td><div class="text-center"><span onclick="FormEdit(${result.id})">Edit</span>&nbsp&nbsp<span onclick="FormDelete(${result.id})">Delete</span></div></td>
 
                 </tr>`                
 
@@ -44,84 +42,21 @@ function setTBody(result) {
     })
 }
 
-function add(){
-    var str = ''
-    str += `
-    <h3>Create</h3>
-
-    <form onsubmit="event.preventDefault();">
-        <div class="col-lg-6">
-            <div class="form-group form-row">
-                <label for="username" class="col-sm-3 col-form-label">Username*</label>
-
-                <input type="hidden" id="user_check" value="-1">
-                <div class="col-sm-9">
-                    <div class="row">
-                        <div class="col">
-                            <input type="text" class="form-control border" id="username" onchange="resetUserCheck()" required>
-                        </div>
-                        <div class="col-auto" id="check">
-                            <button type="button" class="btn btn-primary" onclick="userCheck()">Check</button>
-                        </div>
-                    </div>
-                    <span id="alert_username" class="text-danger d-none"></span>
-                </div>
-
-            </div>
-
-            
-            <div class="form-group form-row">
-                <label for="password" class="col-sm-3 col-form-label">Password*</label>
-                <div class="col-sm">
-                    <input type="password" class="form-control" id="password" required>
-                </div>
-            </div>
-            <div class="form-group form-row">
-                <label for="conf_password" class="col-sm-3 col-form-label">Confirm Password*</label>
-                <div class="col-sm">
-                    <input type="password" class="form-control" id="conf_password" required>
-                    <span id="alert_pass" class="text-danger d-none"></span>
-                </div>
-            </div>
-            <div class="form-group form-row">
-                <label for="divisi" class="col-sm-3 col-form-label">Divisi</label>
-                <div class="col-sm">
-                    <input type="text" class="form-control" id="divisi">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="roles" class="col-form-label">Roles*</label>
-                <div id="roles" class="form-control overflow-auto" style="height:100px;">
-                </div>
-                <span id="alert_role" class="text-danger d-none">Must have at least one role</span>
-
-            </div>
-        </div>
-                        
-        <button type="submit" class="btn btn-sm btn-primary" onclick="save()">Simpan</button>
-        <button type="reset" class="btn btn-sm btn-dark">Batal</button>
-    </form>`
-
+function FormTambah(){
     $.ajax({
         url: '/api/role',
         type: 'get',
         contentType: 'application/json',
-        success: function(roleResult) {
-            var str2 = ''
-            for (i = 0; i < roleResult.length; i++) {
-                str2 += `
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="${roleResult[i].id}" id="role${i}" name="roles">
-                    <label class="form-check-label" for="role${i}">
-                    ${roleResult[i].rolename}
-                    </label>
-                </div>`
+        success: function(result) {
+            var str = '';
+            for (var i = 0; i < result.length; i++) {
+                str += `<option value="${result[i].id}">${result[i].rolename}</option>`
             }
-            $('#roles').html(str2)
+            $('#roles').html(str)
+            $("#roles").selectpicker("refresh")
+            $('#daftarModal').modal('show')
         }
     })
-
-    $('#card-body').html(str)
 }
 
 function userCheck(user) {
@@ -163,24 +98,64 @@ function userCheck(user) {
     }
 }
 
+function userCheckEdit(user) {
+    var username = $('#username-edit').val()
+    if(user == username){
+        $('#username-edit').removeClass("border-danger")
+        $('#username-edit').addClass("border-success")
+        $('#alert_username-edit').addClass("d-none")
+        $('#user_check-edit').val(0)
+    }
+    else if(username != ""){
+        $('#alert_username-edit').addClass("d-none")
+        $.ajax({
+            url: '/api/user/username/' + username,
+            type: 'get',
+            contentType: 'application/json',
+            success: function(result) {
+                if(result == ""){
+                    $('#username-edit').removeClass("border-danger")
+                    $('#username-edit').addClass("border-success")
+                    $('#alert_username-edit').addClass("d-none")
+
+                    $('#user_check-edit').val(0)
+                }
+                else {
+                    $('#username-edit').removeClass("border-success")
+                    $('#username-edit').addClass("border-danger")
+                    $('#alert_username-edit').removeClass("d-none")
+                    $('#alert_username-edit').text("Username already exists");
+
+                    $('#user_check-edit').val(1)
+                }
+            }
+        })
+    }
+    else{
+        $('#alert_username-edit').removeClass("d-none")
+        $('#alert_username-edit').text("Username must be filled")
+    }
+}
+
 function resetUserCheck(){
     $('#username').removeClass("border-danger border-success")
     $('#user_check').val(-1)
 }
 
-function save() {
+function resetUserCheckEdit(){
+    $('#username-edit').removeClass("border-danger border-success")
+    $('#user_check-edit').val(-1)
+}
+
+function Save() {
     var ok_user = false
     var ok_pass = false
     var ok_role = false
-    var checked = []
-    $('input[name="roles"]:checked').each(function(){
-        checked.push($(this).val())
-    })
-    var user_check = $('#user_check').val()
     var username = $('#username').val()
     var password = $('#password').val()
     var conf_pass = $('#conf_password').val()
     var divisi = $('#divisi').val()
+    var roles = $('#roles').val()
     
     if(username == ""){
         $('#alert_username').removeClass("d-none")
@@ -189,6 +164,7 @@ function save() {
     else{
         $('#alert_username').addClass("d-none")
         userCheck()
+        var user_check = $('#user_check').val()
         if(user_check == 0)
             ok_user = true
     }
@@ -206,7 +182,7 @@ function save() {
         ok_pass = true
     }
 
-    if(checked.length == 0)
+    if(roles.length == 0)
         $('#alert_role').removeClass("d-none")
     else{
         $('#alert_role').addClass("d-none")
@@ -233,12 +209,11 @@ function save() {
                     type:'get',
                     contentType:'application/json',
                     success:function(result) {
-
-                        $('input[name="roles"]:checked').each(function(){
+                        for (var i = 0; i < roles.length; i++) {
                             var submitted_data =
                                 `{
                                     "userId": "`+result.id+`",
-                                    "roleId": "`+$(this).val()+`"
+                                    "roleId": "`+roles[i]+`"
                                 }`
 
                             $.ajax({
@@ -247,81 +222,31 @@ function save() {
                                 contentType: "application/json",
                                 data : submitted_data,
                                 success: function(){
-                                    window.location.reload();
+                                    $('#daftarModal').modal('hide');
+                                    location.reload();
                                 }
                             })
-                        })
+                        }
                     }
                 })
             }
         })
     }
-
 }
 
-function edit(id){
-    var str = ''
-
+function FormEdit(id) {
     $.ajax({
         url:"/api/user/"+id,
         type:"get",
         contentType:"application/json",
         success:function(result) {
-            console.log(result)
-            str += `
-            <h3>Edit</h3>
-
-            <form onsubmit="event.preventDefault();">
-            <input type="hidden" id="user_id" value="${result.id}" disabled>
-                <div class="col-lg-6">
-                    <div class="form-group form-row">
-                        <label for="username" class="col-sm-3 col-form-label">Username</label>
-
-                        <input type="hidden" id="user_check" value="0">
-                        <div class="col-sm-9">
-                            <div class="row">
-                                <div class="col">
-                                    <input type="text" class="form-control border" id="username" onchange="resetUserCheck()" value="${result.username}" required>
-                                </div>
-                                <div class="col-auto" id="check">
-                                    <button type="button" class="btn btn-primary" onclick="userCheck('${result.username}')">Check</button>
-                                </div>
-                            </div>
-                            <span id="alert_username" class="text-danger d-none"></span> 
-                        </div>
-                    </div>
-                    <div class="form-group form-row">
-                        <label for="password" class="col-sm-3 col-form-label">New Password</label>
-                        <div class="col-sm">
-                            <input type="password" class="form-control" id="password" value="${result.password}" required>
-                        </div>
-                    </div>
-                    <div class="form-group form-row">
-                        <label for="conf_password" class="col-sm-3 col-form-label">Confirm Password</label>
-                        <div class="col-sm">
-                            <input type="password" class="form-control" id="conf_password" value="${result.password}" required>
-                            <span id="alert_pass" class="text-danger d-none"></span>
-                        </div>
-                    </div>
-                    <div class="form-group form-row">
-                        <label for="divisi" class="col-sm-3 col-form-label">Divisi</label>
-                        <div class="col-sm">
-                            <input type="text" class="form-control" id="divisi" value="${result.divisi}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="roles" class="col-form-label">Roles</label>
-                        <div id="roles" class="form-control overflow-auto" style="height:100px;">
-                        <span id="alert_role" class="text-danger d-none">Must have at least one role</span>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-sm btn-primary" onclick="update('${result.username}')">Simpan</button>
-                <button type="reset" class="btn btn-sm btn-dark">Batal</button>
-            </form>`
-            
-            $('#card-body').html(str)
+            $("#user_id-edit").val(result.id);
+            $("#username-edit").val(result.username);
+            $("#password-edit").val(result.password);
+            $("#conf_password-edit").val(result.password);
+            $("#divisi-edit").val(result.divisi);
+            $("#btncheck-edit").val(result.username);
+            $("#edit-save-btn").val(result.username);
 
             $.ajax({
                 url:'/api/userrole/' + id,
@@ -338,18 +263,14 @@ function edit(id){
                         type: 'get',
                         contentType: 'application/json',
                         success: function(roleResult) {
-                            var str2 = ''
+                            var str = '';
                             for (var i = 0; i < roleResult.length; i++) {
                                 var roleResultId = roleResult[i].id
-                                str2 += `
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="${roleResultId}" id="role${i}" name="roles" ${roleResultId != null ? roleid.includes(roleResultId) ? "Checked" : "" : ""}>
-                                    <label class="form-check-label" for="role${i}">
-                                    ${roleResult[i].rolename}
-                                    </label>
-                                </div>`
+                                str += `<option value="${roleResultId}" ${roleResultId != null ? roleid.includes(roleResultId) ? "Selected" : "" : ""}>${roleResult[i].rolename}</option>`
                             }
-                            $('#roles').html(str2)
+                            $('#roles-edit').html(str)
+                            $("#roles-edit").selectpicker("refresh");
+                            $('#editModal').modal('show')
                         }
                     })
                 }
@@ -358,49 +279,46 @@ function edit(id){
     })
 }
 
-function update(user) {
+function Update(user) {
     var ok_user = false
     var ok_pass = false
     var ok_role = false
-    var checked = []
-    $('input[name="roles"]:checked').each(function(){
-        checked.push($(this).val())
-    })
-    var user_id = $('#user_id').val()
-    var user_check = $('#user_check').val()
-    var username = $('#username').val()
-    var password = $('#password').val()
-    var conf_pass = $('#conf_password').val()
-    var divisi = $('#divisi').val()
+    var user_id = $('#user_id-edit').val()
+    var username = $('#username-edit').val()
+    var password = $('#password-edit').val()
+    var conf_pass = $('#conf_password-edit').val()
+    var divisi = $('#divisi-edit').val()
+    var roles = $('#roles-edit').val()
     
     if(username == ""){
-        $('#alert_username').removeClass("d-none")
-        $('#alert_username').text("Username must be filled")
+        $('#alert_username-edit').removeClass("d-none")
+        $('#alert_username-edit').text("Username must be filled")
     }
     else{
-        $('#alert_username').addClass("d-none")
-        userCheck(user)
+        $('#alert_username-edit').addClass("d-none")
+        userCheckEdit(user)
+        var user_check = $('#user_check-edit').val()
         if(user_check == 0)
             ok_user = true
     }
 
     if(password == "" || conf_pass == ""){
-        $('#alert_pass').removeClass("d-none")
-        $('#alert_pass').text("Password must be filled")
+        $('#alert_pass-edit').removeClass("d-none")
+        $('#alert_pass-edit').text("Password must be filled")
     }
     else if(password != conf_pass){
-        $('#alert_pass').removeClass("d-none")
-        $('#alert_pass').text("Password doesn't match")
+        $('#alert_pass-edit').removeClass("d-none")
+        $('#alert_pass-edit').text("Password doesn't match")
     }
     else{
-        $('#alert_pass').addClass("d-none")
+        $('#alert_pass-edit').addClass("d-none")
         ok_pass = true
     }
 
-    if(checked.length == 0)
-        $('#alert_role').removeClass("d-none")
+    if(roles.length == 0)
+        $('#alert_role-edit').removeClass("d-none")
     else{
-        $('#alert_role').addClass("d-none")
+        $('#alert_role-edit').addClass("d-none")
         ok_role = true
     }
 
@@ -434,23 +352,24 @@ function update(user) {
                             }
                         })
     
-                        $('input[name="roles"]:checked').each(function(){
+                        for (var i = 0; i < roles.length; i++) {
                             var submitted_data =
                                 `{
                                     "userId": "`+result.id+`",
-                                    "roleId": "`+$(this).val()+`"
+                                    "roleId": "`+roles[i]+`"
                                 }`
-    
+
                             $.ajax({
                                 url: "/api/userrole",
                                 type: "post",
                                 contentType: "application/json",
                                 data : submitted_data,
                                 success: function(){
-                                    window.location.reload();
+                                    $('#editModal').modal('hide')
+                                    location.reload();
                                 }
                             })
-                        })
+                        }
                     }
                 })
             }
@@ -458,11 +377,15 @@ function update(user) {
     }
 }
 
-function deleted(id){
+function FormDelete(id) {
+    $("#delete-btn").val(id);
+    $('#hapusModal').modal('show');
+}
+
+function Delete(id){
     $.ajax({
-        url: "/api/user/delete",
-        type: "put",
-        data : '{"id": "'+id+'"}',
+        url: "/api/user/"+id,
+        type: "delete",
         contentType: "application/json",
         success: function(){
             $.ajax({
@@ -470,7 +393,8 @@ function deleted(id){
                 type: "delete",
                 contentType: "application/json",
                 success: function(){
-                    window.location.reload();
+                    $('#hapusModal').modal('hide');
+                    location.reload();
                 }
             })
         }
