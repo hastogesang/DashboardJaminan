@@ -1,13 +1,18 @@
 package com.dashboard.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.dashboard.model.keuangan.Menu;
+import com.dashboard.model.keuangan.MenuRole;
+import com.dashboard.model.keuangan.Role;
 import com.dashboard.repository.keuangan.MenuRepo;
+import com.dashboard.repository.keuangan.MenuRoleRepo;
+import com.dashboard.repository.keuangan.RoleRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -112,6 +117,36 @@ public class MenuApiController {
 
         } catch (Exception e) {
             return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Autowired
+    private RoleRepo roleRepo;
+    @Autowired
+    private MenuRoleRepo menuRoleRepo;
+
+    @PostMapping("menubyrolename")
+    public ResponseEntity<List<Menu>> GetMenuRoleByRoleName(@RequestBody String rolename) {
+        try {
+            // rolename = "[admin, user]";
+            String fixRolename = rolename.replaceAll("[\\[\\]]", "");
+            String[] arrRolename = fixRolename.split(",", 0);
+            List<Menu> menus = new ArrayList<>();
+            for(int i = 0; i < arrRolename.length; i++){
+                Optional<Role> oRole= roleRepo.findByRolename(arrRolename[i].trim());
+
+                if(oRole.isPresent()){
+                    List<MenuRole> menuRoles = menuRoleRepo.findByRoleId(oRole.get().getId());
+                    for(MenuRole menuRole : menuRoles){
+                        if(!menus.contains(menuRole.menu))
+                            menus.add(menuRole.menu);
+                    }
+                }
+            }
+            
+            return new ResponseEntity<>(menus, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 

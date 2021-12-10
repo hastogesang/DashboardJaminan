@@ -39,7 +39,7 @@ public class MenuRoleApiController {
     }
 
     @GetMapping("/menurole/{id}")
-    public ResponseEntity<List<MenuRole>> GetMenuRoleById(@PathVariable("id") Long id) {
+    public ResponseEntity<List<MenuRole>> GetMenuRoleById(@PathVariable("id") Integer id) {
         try {
             //optional berarti data yang dicari bisa null
             List<MenuRole> menuRoleOptional = this.menuRoleRepo.findByRoleId(id);
