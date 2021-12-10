@@ -117,30 +117,31 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
         <script>
-            var username = $('#name').text();
-            var id = 0;
-            if(username == '[admin]'){
-                id = 1
-            } else if(username == '[user]'){
-                id = 2
-            }
+            // var username = $('#name').text();
+            // var id = 0;
+            // if(username == '[admin]'){
+            //     id = 1
+            // } else if(username == '[user]'){
+            //     id = 2
+            // }
 
             var url = $(location).attr('href').split('/');
             // console.log(url[url.length - 1]);
 
-            function GetMenuByRoleId(id){
+            function GetMenuByRolename(rolename){
                 $.ajax({
-                    url: '/api/menurole/' + id,
-                    type: 'get',
+                    url: '/api/menubyrolename',
+                    type: 'post',
+                    data: rolename,
                     contentType: 'application/json',
                     success: function(data){
                         var list = "";
                         for (let index = 0; index < data.length; index++) {
                             list += `
                             <li class="nav-item">
-                                <a class="nav-link ${url[url.length - 1] == data[index].menu.url ? 'active' : ''}" href="${data[index].menu.url}">
+                                <a class="nav-link ${url[url.length - 1] == data[index].url ? 'active' : ''}" href="${data[index].url}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                                ${data[index].menu.menu_name}
+                                ${data[index].menu_name}
                                 </a>
                             </li>
                             `
@@ -152,7 +153,7 @@
             }
 
             $(document).ready(function() {
-                GetMenuByRoleId(id);
+                GetMenuByRolename($('#name').text());
             })
         </script>
     </div>
