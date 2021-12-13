@@ -20,4 +20,5 @@ public interface UserRoleRepo extends JpaRepository<UserRole, Integer>{
     @Transactional
     @Query("delete from UserRole b where b.userId=:id")
     void deleteByUserId(@Param("id") Integer id);
+
 }
