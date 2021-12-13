@@ -1,75 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Home Page</title>
+
+<head>
     <div th:insert="fragment :: head"></div>
-    <link rel="stylesheet" href="/css/tablestyles.css">
-    <style>
-        .table{
-            font-family: tahoma, sans-serif;
-            font-size: 12px;
-            width: 80%;
-            border: 4px solid #d3d3d3 !important;
-            background-color: #F9F9F9;
-        }
-        th{
-            font-weight: 200;
-            background-color: rgb(146, 146, 146);
-            border-collapse: collapse;
-            color: white;
-        }
-        th div {
-            color: white;
-            text-decoration: none !important;
-            cursor: pointer;
-        }
-        th div:hover {
-          color: #3c8dbc;
-        }
-        td div {
-            color: #bc3f26;
-            text-decoration: underline;
-            cursor: pointer;
-        }
+</head>
 
-        td div:hover {
-            color: #fc3811;
-        }
-
-        .accordion {
-          margin-bottom: 50px;
-        }
-    </style>
-  </head>
-<body>
-    
-  <div th:insert="fragment :: navbar"></div>
-
-    <div class="container-fluid">
-      <div class="row">
-        <div th:insert="fragment :: sidebar"></div>
-          <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-              <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                  <h2>Home Page</h2>
-                  <div class="btn-toolbar mb-2 mb-md-0">
-                      <nav aria-label="breadcrumb">
-                          <ol class="breadcrumb py-0">
-                              <li class="breadcrumb-item"><a href="#">Home</a></li>
-                              <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-                          </ol>
-                      </nav>
-                      <!-- <div class="btn-group mr-2">
-                          <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-                      </div> -->
-                  </div>
-              </div>
-          </main>
-      </div>
+<body class="fix-header">
+    <!-- ============================================================== -->
+    <!-- Preloader -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
     </div>
+    <!-- ============================================================== -->
+    <!-- Wrapper -->
+    <!-- ============================================================== -->
+    <div id="wrapper">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <div th:insert="fragment :: navbar"></div>
+        <!-- End Top Navigation -->
+        <!-- ============================================================== -->
+        <!-- Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <div th:insert="fragment :: sidebar"></div>
+        <!-- ============================================================== -->
+        <!-- End Left Sidebar -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Page Content -->
+        <!-- ============================================================== -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row bg-title">
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                        <h4 class="page-title">Dashboard</h4>
+                    </div>
+                    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                        <ol class="breadcrumb py-0">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                        </ol>
+                    </div>
+                    <!-- /.col-lg-12 -->
+                </div>
+                <!-- /.row -->
+                <!-- ============================================================== -->
+                <!-- Different data widgets -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
 
-
-    
+                <!-- ============================================================== -->
+                <!-- chat-listing & recent comments -->
+                <!-- ============================================================== -->
+                
+            </div>
+            <!-- /.container-fluid -->
+            <footer class="footer text-center"> 2017 &copy; Ample Admin brought to you by wrappixel.com </footer>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page Content -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- All Jquery -->
+    <!-- ============================================================== -->
     <div th:insert="fragment :: script"></div>
-    <script src="/js/danajaminan.js"></script>
+</body>
 
-</body></html>
+</html>
