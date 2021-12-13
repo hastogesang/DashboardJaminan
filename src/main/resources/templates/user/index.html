@@ -12,65 +12,66 @@
 	</head>
 <body>
 	<div th:insert="fragment::navbar"></div>
+	<div th:insert="fragment::sidebar"></div>
+	<div id="page-wrapper">
+		<div class="container-fluid">
+			<div class="row">
 
-	<div class="container-fluid">
-		<div class="row">
-			<div th:insert="fragment::sidebar"></div>
-
-			<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-				<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-					<h2>User</h2>
-					<div class="btn-toolbar mb-2 mb-md-0">
-						<nav aria-label="breadcrumb">
-							<ol class="breadcrumb py-0">
-								<li class="breadcrumb-item"><a href="#">Home</a></li>
-								<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-							</ol>
-						</nav>
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+						<h2>User</h2>
+						<div class="btn-toolbar mb-2 mb-md-0">
+							<nav aria-label="breadcrumb">
+								<ol class="breadcrumb py-0">
+									<li class="breadcrumb-item"><a href="#">Home</a></li>
+									<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+								</ol>
+							</nav>
+						</div>
 					</div>
-				</div>
-				
-				<div id="content-body">
-					<div class="accordion" id="accordionOne">
-						<div class="card">
-							<div class="card-header" id="headingOne">
-								<div class="d-flex">
-									<div class="p-2">
-											Manage User
-									</div>
-									<div class="ml-auto">
-										<button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-											+
-										</button>
+					
+					<div id="content-body">
+						<div class="accordion" id="accordionOne">
+							<div class="card">
+								<div class="card-header" id="headingOne">
+									<div class="d-flex">
+										<div class="p-2">
+												Manage User
+										</div>
+										<div class="ml-auto">
+											<button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+												+
+											</button>
+										</div>
 									</div>
 								</div>
-							</div>
-							
-							<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionOne">
-								<div id="card-body" class="card-body">  
-                                    <button class="btn btn-sm btn-secondary mb-2" onclick="FormTambah()">Tambah User +</button>
-                                    <div class="table-responsive">
-										<table id="table" class="table table-bordered table-sm">
-											<thead>
-												<tr>
-													<th>Username</th>
-													<th>Divisi</th>
-                                                    <th>Role(s)</th>
-                                                    <th>Action</th>
-												</tr>
-											</thead>
-											<tbody id="tbody">
-												<!-- Content -->
-											</tbody>
-										</table>
+								
+								<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionOne">
+									<div id="card-body" class="card-body">  
+										<button class="btn btn-sm btn-secondary mb-2" onclick="FormTambah()">Tambah User +</button>
+										<div class="table-responsive">
+											<table id="table" class="table table-bordered table-sm">
+												<thead>
+													<tr>
+														<th>Username</th>
+														<th>Divisi</th>
+														<th>Role(s)</th>
+														<th>Action</th>
+													</tr>
+												</thead>
+												<tbody id="tbody">
+													<!-- Content -->
+												</tbody>
+											</table>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			</main>
+				</main>
 
+			</div>
 		</div>
 	</div>
 
