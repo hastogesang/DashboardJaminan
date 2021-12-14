@@ -4,6 +4,7 @@
 		<title>Dana Collateral</title>
 		<div th:insert="fragment::head"></div>
 		<link rel="stylesheet" href="/css/tablestyles.css">
+		
 	</head>
 <body class="fix-header">
 	<div th:insert="fragment::navbar"></div>
@@ -13,7 +14,7 @@
 		<div class="container-fluid">
 			<div class="row bg-title">
 				<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-					<h4 class="page-title">User</h4>
+					<h4 class="page-title">Dana Collateral</h4>
 				</div>
 				<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 					<ol class="breadcrumb py-0">
@@ -31,11 +32,11 @@
 									<input id="myInput" type="text" placeholder="Masukkan nama bank..">
 									<input id="startDate" type="date" placeholder="Start Date">
 									<input id="endDate" type="date" placeholder="End Date">
-									<a class="btn btn-sm btn-primary" id="search" onclick="searchFiltered()">search</a>
-									<button class="btn btn-sm btn-default" id="reset" onclick="reset()">reset</button>
+									<a class="btn btn-default btn-outline" id="search" onclick="searchFiltered()">search</a>
+									<a class="btn btn-default btn-outline" id="reset" onclick="reset()">reset</a>
 								</div>
 								<div class="col-md-1">
-									<button class="btn btn-sm btn-default" id="exportbutton" onclick="exportData()">Export</button>
+									<button class="btn btn-default btn-outline" id="exportbutton" onclick="exportData()">Export</button>
 								</div>
 							</div>
 							<br>
