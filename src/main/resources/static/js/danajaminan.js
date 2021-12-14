@@ -16,8 +16,8 @@
   for (let i = 0; i < data.length; i++) {
     table += "<tr>";
     table += `<td class="text-center">
-                          <div onclick="FormEdit(${data[i].id})">edit</div>
-                          <div onclick="FormDelete(${data[i].id})">hapus</div>
+                          <div><span onclick="FormEdit(${data[i].id})">edit</span></div>
+                          <div><span onclick="FormDelete(${data[i].id})">hapus</span></div>
                         </td>`;
     table += "<td>" + data[i].id + "</td>";
     table += "<td>" + data[i].businessdate + "</td>";

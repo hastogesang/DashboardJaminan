@@ -3,7 +3,8 @@
   <head>
     <title>Daftar Dana Jaminan</title>
     <div th:insert="fragment :: head"></div>
-    <style>
+    <link rel="stylesheet" href="/css/tablestyles.css">
+    <!-- <style>
         .table{
             font-family: tahoma, sans-serif;
             /* font-size: 12px; */
@@ -34,7 +35,7 @@
         td div:hover {
             color: #fc3811;
         }
-    </style>
+    </style> -->
   </head>
 <body class="fix-header">
     
@@ -47,47 +48,54 @@
               <h4 class="page-title">Dana Jaminan</h4>
           </div>
           <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
-            <a type="button" id="exportbutton" class="btn btn-default btn-outline pull-right m-l-20 hidden-xs hidden-sm waves-effect waves-light">Export</a>
+            <ol class="breadcrumb py-0">
+              <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Dana Jaminan</li>
+            </ol>
           </div>
           <!-- /.col-lg-12 -->
       </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="white-box">
-            <main role="main">
-              <div class="card-body" id="card-body">
+
+      <div class="white-box">
+        <main role="main">
+          <div class="card-body" id="card-body">
+            <div class="row">
+              <div class="col-md-11">
                 <input id="bank" type="text" placeholder="masukkan nama bank..">
                 <input id="date1" type="date">
                 <input id="date2" type="date">
                 <a class="btn btn-default btn-outline" onclick="SearchBydate()">search</a>
                 <a class="btn btn-default btn-outline" onclick="ResetSearch()">reset</a>
-                <br><br>
-                <div class="table-responsive">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>
-                            <div onclick="FormTambah()">Tambah</div>
-                        </th>
-                        <th>id</th>
-                        <th>businessdate</th>
-                        <th>code</th>
-                        <th>bank</th>
-                        <th>jumlah</th>
-                        <th>tanggalpenempatan</th>
-                        <th>jatuhtempo</th>
-                        <th>sukubunga</th>
-                        <th>admin</th>
-                      </tr>
-                    </thead>
-                    <tbody id="tbody">
-                    </tbody>
-                  </table>
-                </div>
               </div>
-            </main>
+              <div class="col-md-1">
+                <a type="button" id="exportbutton" class="btn btn-default btn-outline pull-right m-l-20 hidden-xs hidden-sm waves-effect waves-light">Export</a>
+              </div>
+            </div>
+            <br>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>
+                        <span onclick="FormTambah()">Tambah</span>
+                    </th>
+                    <th>id</th>
+                    <th>businessdate</th>
+                    <th>code</th>
+                    <th>bank</th>
+                    <th>jumlah</th>
+                    <th>tanggalpenempatan</th>
+                    <th>jatuhtempo</th>
+                    <th>sukubunga</th>
+                    <th>admin</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody">
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        </main>
       </div>
 
     </div>
@@ -114,7 +122,7 @@
     </div>
 </div>
     
-    <div th:insert="fragment :: script"></div>
-    <script src="/js/danajaminan.js"></script>
+<div th:insert="fragment :: script"></div>
+<script src="/js/danajaminan.js"></script>
 
 </body></html>
