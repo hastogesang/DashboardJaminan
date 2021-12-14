@@ -18,7 +18,7 @@ function setTBody(result) {
             `<tr>
                 <td>
                     <div class="text-center"><span onclick="edit(${result[i].id})">Edit</span></div>
-                    <div class="text-center"><span onclick="hapus(${result[i].id})">Hapus</span></div>
+                    <div class="text-center"><span onclick="FormDelete(${result[i].id})">Hapus</span></div>
                 </td>
                 <td>${result[i].id}</td>
                 <td>${result[i].businessdate}</td>
@@ -573,7 +573,12 @@ function update(){
     }
 }
 
-function hapus(id){
+function FormDelete(id) {
+    $("#delete-btn").val(id);
+    $('#hapusModal').modal('show');
+}
+
+function Delete(id){
     $.ajax({
         url: "/api/danacollateral/"+id,
         type: "delete",
