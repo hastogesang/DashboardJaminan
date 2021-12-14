@@ -17,6 +17,7 @@
     table += "<tr>";
     table += `<td class="text-center">
                           <div onclick="FormEdit(${data[i].id})">edit</div>
+                          <div onclick="FormDelete(${data[i].id})">hapus</div>
                         </td>`;
     table += "<td>" + data[i].id + "</td>";
     table += "<td>" + data[i].businessdate + "</td>";
@@ -44,14 +45,14 @@
                 <div class="form-group form-row col-md-6">
                   <label for="code" class="col-sm-4 col-form-label">Anggota Keliring</label>
                   <div class="col-sm-8">
-                    <select id="code" class="form-control input-sm">
+                    <select id="code" class="form-control">
                     </select>
                   </div>
                 </div>
                 <div class="form-group form-row col-md-6">
                   <label for="bank" class="col-sm-4 col-form-label">Bank</label>
                   <div class="col-sm-8">
-                    <input type="text" class="form-control input-sm" id="bank" required>
+                    <input type="text" class="form-control" id="bank" required>
                   </div>
                 </div>
               </div>
@@ -107,7 +108,7 @@
                   <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                   <div class="col-sm-8">
                     <input type="text" class="form-control" id="transferdana" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
-                    <span id="alerttransfer" class="text-danger d-none">transfer dana tidak boleh lebih dari bunga after adjustment dan tidak boleh 0</span> 
+                    <span id="alerttransfer" class="text-danger hide">transfer dana harus sama dengan bunga after adjustment dan tidak boleh 0</span> 
                   </div>
                 </div>
                 <div class="form-group form-row col-md-6">
@@ -212,14 +213,14 @@
               <div class="form-group form-row col-md-6">
                 <label for="code" class="col-sm-4 col-form-label">Anggota Keliring</label>
                 <div class="col-sm-8">
-                  <select id="code" class="form-control input-sm" required>
+                  <select id="code" class="form-control" required>
                   </select>
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
                 <label for="bank" class="col-sm-4 col-form-label">Bank</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control input-sm" id="bank" value="${data.bank}" required>
+                  <input type="text" class="form-control" id="bank" value="${data.bank}" required>
                 </div>
               </div>
             </div>
@@ -275,7 +276,7 @@
                 <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                 <div class="col-sm-8">
                   <input type="text" class="form-control" id="transferdana" value="${formatRupiah(data.transferdana)}" onblur="ubahAngka(this.value, this.id)" onfocus="reformat(this.value, this.id)" required>
-                  <span id="alerttransfer" class="text-danger d-none">transfer dana tidak boleh lebih dari bunga after adjustment dan tidak boleh 0</span>
+                  <span id="alerttransfer" class="text-danger hide">transfer dana harus sama dengan bunga after adjustment dan tidak boleh 0</span>
                 </div>
               </div>
               <div class="form-group form-row col-md-6">
@@ -413,9 +414,9 @@
       if(reformatAngka($('#transferdana').val()) != $('#afterAdjustment').val()){
         // console.log("oke");
         // console.log("nol");
-        $('#alerttransfer').removeClass('d-none')
+        $('#alerttransfer').removeClass('hide')
       } else {
-        $('#alerttransfer').addClass('d-none')
+        $('#alerttransfer').addClass('hide')
         $.ajax({
             url: "/api/danajaminan",
             type: "post",
@@ -496,9 +497,9 @@
       if(reformatAngka($('#transferdana').val()) != $('#afterAdjustment').val()){
         // console.log("oke");
         // console.log("nol");
-        $('#alerttransfer').removeClass('d-none')
+        $('#alerttransfer').removeClass('hide')
       } else {
-        $('#alerttransfer').addClass('d-none')
+        $('#alerttransfer').addClass('hide')
         $.ajax({
             url:'/api/danajaminan/'+id,
             type: 'put' ,
@@ -520,6 +521,25 @@
           }
       })
     }
+  }
+
+  function FormDelete(id) {
+      $("#delete-btn").val(id);
+      $('#hapusModal').modal('show');
+      console.log(id);
+  }
+
+  function Delete(id) {
+      $.ajax({
+          url:'/api/danajaminan/'+id,
+          type: 'delete' ,
+          contentType:'application/json',
+          data: {},
+          success: function(){
+              TampilData();
+              $('#hapusModal').modal('hide');
+          }
+      });
   }
 
 

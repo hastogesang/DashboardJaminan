@@ -6,12 +6,12 @@
     <style>
         .table{
             font-family: tahoma, sans-serif;
-            font-size: 12px;
-            width: 80%;
+            /* font-size: 12px; */
+            /* width: 80%; */
             border: 4px solid #d3d3d3 !important;
             background-color: #F9F9F9;
         }
-        th{
+        table th{
             font-weight: 200;
             background-color: rgb(146, 146, 146);
             border-collapse: collapse;
@@ -34,85 +34,85 @@
         td div:hover {
             color: #fc3811;
         }
-
-        .accordion {
-          margin-bottom: 50px;
-        }
     </style>
   </head>
-<body>
+<body class="fix-header">
     
   <div th:insert="fragment :: navbar"></div>
   <div th:insert="fragment :: sidebar"></div>
 	<div id="page-wrapper">
     <div class="container-fluid">
-      <div class="row">
-
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">Dana Jaminan</h1>
-            <div class="btn-toolbar mb-2 mb-md-0">
-              <div class="btn-group mr-2">
-                <a type="button" class="btn btn-sm btn-outline-secondary" id="exportbutton">Export</a>
-              </div>
-            </div>
+      <div class="row bg-title">
+          <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+              <h4 class="page-title">Dana Jaminan</h4>
           </div>
-
-          <div class="accordion" id="accordionExample">
-            <div class="card">
-                <div class="card-header" id="headingOne">
-                    <div class="d-flex bd-highlight">
-                        <div class="p-2 bd-highlight">
-                            Daftar Dana Jaminan
-                        </div>
-                        <div class="ml-auto bd-highlight">
-                            <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                +
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body" id="card-body">
-                      <input id="bank" type="text" placeholder="masukkan nama bank..">
-                      <input id="date1" type="date">
-                      <input id="date2" type="date">
-                      <a class="btn btn-sm btn-outline-secondary" onclick="SearchBydate()">search</a>
-                      <a class="btn btn-sm btn-outline-secondary" onclick="ResetSearch()">reset</a>
-                      <br><br>
-                      <div class="table-responsive">
-                        <table class="table table-bordered table-sm my-table">
-                          <thead>
-                            <tr>
-                              <th>
-                                  <div onclick="FormTambah()">Tambah</div>
-                              </th>
-                              <th>id</th>
-                              <th>businessdate</th>
-                              <th>code</th>
-                              <th>bank</th>
-                              <th>jumlah</th>
-                              <th>tanggalpenempatan</th>
-                              <th>jatuhtempo</th>
-                              <th>sukubunga</th>
-                              <th>admin</th>
-                            </tr>
-                          </thead>
-                          <tbody id="tbody">
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                </div>
-            </div>
+          <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+            <a type="button" id="exportbutton" class="btn btn-default btn-outline pull-right m-l-20 hidden-xs hidden-sm waves-effect waves-light">Export</a>
           </div>
-        </main>
+          <!-- /.col-lg-12 -->
       </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="white-box">
+            <main role="main">
+              <div class="card-body" id="card-body">
+                <input id="bank" type="text" placeholder="masukkan nama bank..">
+                <input id="date1" type="date">
+                <input id="date2" type="date">
+                <a class="btn btn-default btn-outline" onclick="SearchBydate()">search</a>
+                <a class="btn btn-default btn-outline" onclick="ResetSearch()">reset</a>
+                <br><br>
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>
+                            <div onclick="FormTambah()">Tambah</div>
+                        </th>
+                        <th>id</th>
+                        <th>businessdate</th>
+                        <th>code</th>
+                        <th>bank</th>
+                        <th>jumlah</th>
+                        <th>tanggalpenempatan</th>
+                        <th>jatuhtempo</th>
+                        <th>sukubunga</th>
+                        <th>admin</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
-
+  <!-- modal delete -->
+  <div class="modal fade" id="hapusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Yakin ingin menghapus data?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-danger" id="delete-btn" onclick="Delete(this.value)">Hapus</button>
+            </div>
+        </div>
+    </div>
+</div>
     
     <div th:insert="fragment :: script"></div>
     <script src="/js/danajaminan.js"></script>

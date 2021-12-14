@@ -49,6 +49,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -198,8 +199,29 @@ public class DanaJaminanApiController {
         excelExporter.export(response);
     }
 
+    @DeleteMapping(value = "/danajaminan/{id}")
+    public ResponseEntity<Object> DeleteDanaJaminan(@PathVariable("id") Integer id) {
+        try {
+            Optional<DanaJaminan> danaJaminanData = this.danaJaminanRepo.findById(id);
+            if (danaJaminanData.isPresent()) {
+                // System.out.println(categoryData.get().getCategoryName());
+                danaJaminanData.get().setId(id);
+                danaJaminanData.get().setDeleted("true");
+                this.danaJaminanRepo.save(danaJaminanData.get());
 
-    @Scheduled(cron = "00 03 16 * * *")
+                ResponseEntity rest = new ResponseEntity<>("success", HttpStatus.OK);
+                return rest;
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+
+        } catch (Exception e) {
+            return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    @Scheduled(cron = "00 05 09 * * *")
     // @Scheduled(fixedRate = 15000)
     public void fetchDBJob() throws ParseException{
 
@@ -269,8 +291,10 @@ public class DanaJaminanApiController {
                 danaJaminan2.setSequence(danaJaminan.getSequence());
                 danaJaminan2.setFlag(danaJaminan.getFlag());
                 danaJaminan2.setFlag_bunga(danaJaminan.getFlag_bunga());
-                danaJaminan2.setCreatedBy("scheduled");
+                danaJaminan2.setCreatedBy(danaJaminan.getCreated_by());
                 danaJaminan2.setCreatedOn(LocalDateTime.now());
+                danaJaminan2.setModifiedBy(danaJaminan.getModified_by());
+                danaJaminan2.setModifiedOn(danaJaminan.getModified_on());
                 danaJaminanRepo.save(danaJaminan2);
                 System.out.println("data baru berhasil ditambahkan");
 

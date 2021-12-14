@@ -1,6 +1,8 @@
 package com.dashboard.model.keuangan;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -99,5 +101,14 @@ public class GetDanaJaminanView {
 
     @Column
     String address;
+    
+    @Column
+    String created_by;
+    
+    @Column
+    String modified_by;
+
+    @Column
+    LocalDateTime modified_on;
     
 }

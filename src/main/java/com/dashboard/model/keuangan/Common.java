@@ -34,5 +34,5 @@ public class Common{
     private String modifiedBy;
 
     @Column(name = "deleted")
-    private String deleted;
+    private String deleted = "false";
 }
