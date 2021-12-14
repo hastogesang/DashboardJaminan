@@ -22,8 +22,8 @@ public class MenuController {
             ModelAndView view = new ModelAndView("/menu/index");
             return view;
         } else {
-            ModelAndView home = new ModelAndView("index");
-            return home;
+            ModelAndView error = new ModelAndView("error/403");
+            return error;
         }
     }
 

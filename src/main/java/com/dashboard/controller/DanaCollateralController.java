@@ -22,8 +22,8 @@ public class DanaCollateralController {
             ModelAndView view = new ModelAndView("dana_collateral/index");
         return view;
         } else {
-            ModelAndView home = new ModelAndView("index");
-            return home;
+            ModelAndView error = new ModelAndView("error/403");
+            return error;
         }
     }
 }

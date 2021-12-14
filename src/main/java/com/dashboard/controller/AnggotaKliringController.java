@@ -22,8 +22,8 @@ public class AnggotaKliringController {
             ModelAndView view = new ModelAndView("anggota_kliring/index");
             return view;
         } else {
-            ModelAndView home = new ModelAndView("index");
-            return home;
+            ModelAndView error = new ModelAndView("error/403");
+            return error;
         }
     }
 }
