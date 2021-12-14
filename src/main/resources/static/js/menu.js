@@ -17,7 +17,7 @@
             table += "<td>" + data[i].menu_name + "</td>";
             table += "<td>" + data[i].url + "</td>";
             table += "<td>" + data[i].keterangan + "</td>";
-            table += "<td class='text-center'>" + "<span onclick='FormEdit("+data[i].id+")'>Edit</span>&nbsp&nbsp<span onclick='FormDelete("+data[i].id+")'>Delete</span>" + "</td>";
+            table += "<td class='text-center'><div class='text-center'>" + "<span onclick='FormEdit("+data[i].id+")'>Edit</span>&nbsp&nbsp<span onclick='FormDelete("+data[i].id+")'>Delete</span>" + "</div></td>";
             table += "</tr>";
         }
         $('#tbody').html(table);

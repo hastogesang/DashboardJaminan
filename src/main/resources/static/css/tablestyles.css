@@ -35,12 +35,12 @@ th div {
 th span:hover {
     color: #3c8dbc;
 }
-td div {
+td span {
     color: #bc3f26;
     text-decoration: underline;
     cursor: pointer;
 }
 
-td div:hover {
+td span:hover {
     color: #fc3811;
 }
