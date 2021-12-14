@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dashboard.excel.DanaCollateralExcelExporter;
@@ -37,6 +38,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -120,10 +122,10 @@ public class DanaCollateralApiController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> CreateDanaCollateral(@RequestBody DanaCollateral danaCollateral)
+    public ResponseEntity<Object> CreateDanaCollateral(@RequestBody DanaCollateral danaCollateral, HttpServletRequest request)
     {
         try {
-            danaCollateral.setCreatedBy("admin");
+            danaCollateral.setCreatedBy(request.getUserPrincipal().getName());
             danaCollateral.setCreatedOn(LocalDateTime.now());
             this.danaCollateralRepo.save(danaCollateral);
             return new ResponseEntity<>("success", HttpStatus.OK);
@@ -133,7 +135,7 @@ public class DanaCollateralApiController {
     }
 
     @PutMapping("")
-    public ResponseEntity<Object> EditDanaCollateral(@RequestBody DanaCollateral danaCollateral){
+    public ResponseEntity<Object> EditDanaCollateral(@RequestBody DanaCollateral danaCollateral, HttpServletRequest request){
         try {
             Optional<DanaCollateral> danaCollateralData = this.danaCollateralRepo.findById(danaCollateral.getId());
 
@@ -158,7 +160,7 @@ public class DanaCollateralApiController {
                 danaCollateralData.get().setFlag(danaCollateral.getFlag());
                 danaCollateralData.get().setAdmin(danaCollateral.getAdmin());
                 danaCollateralData.get().setFlag_bunga(danaCollateral.getFlag_bunga());
-                danaCollateralData.get().setModifiedBy("admin");
+                danaCollateralData.get().setModifiedBy(request.getUserPrincipal().getName());
                 danaCollateralData.get().setModifiedOn(LocalDateTime.now());
                 this.danaCollateralRepo.save(danaCollateralData.get());
 
@@ -186,6 +188,26 @@ public class DanaCollateralApiController {
         DanaCollateralExcelExporter excelExporter = new DanaCollateralExcelExporter(danaCollaterals);
 
         excelExporter.export(response);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> DeleteDanaCollateral(@PathVariable("id") Integer id, HttpServletRequest request){
+        try {
+            Optional<DanaCollateral> danaCollateralData = this.danaCollateralRepo.findById(id);
+
+            if(danaCollateralData.isPresent()){
+                danaCollateralData.get().setDeleted("true");
+                danaCollateralData.get().setModifiedBy(request.getUserPrincipal().getName());
+                danaCollateralData.get().setModifiedOn(LocalDateTime.now());
+                this.danaCollateralRepo.save(danaCollateralData.get());
+
+                return new ResponseEntity<>("success", HttpStatus.OK);
+            }else{
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
+        }
     }
 
     // @Scheduled(fixedRate = 100000)

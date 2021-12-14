@@ -16,7 +16,10 @@ function setTBody(result) {
     for (i = 0; i < result.length; i++) {
         str +=
             `<tr>
-                <td><div class="text-center"><span onclick="edit(${result[i].id})">Edit</span></div></td>
+                <td>
+                    <div class="text-center"><span onclick="edit(${result[i].id})">Edit</span></div>
+                    <div class="text-center"><span onclick="hapus(${result[i].id})">Hapus</span></div>
+                </td>
                 <td>${result[i].id}</td>
                 <td>${result[i].businessdate}</td>
                 <td>${result[i].anggotaKliring[0].name}</td>
@@ -177,7 +180,7 @@ function add(){
                 <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control" id="transferdana" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" required>
-                    <span id="alerttransfer" class="text-danger d-none">transfer dana harus sama dengan bunga after adjustment dan tidak boleh 0</span> 
+                    <span id="alerttransfer" class="text-danger hide">transfer dana harus sama dengan bunga after adjustment dan tidak boleh 0</span> 
                 </div>
             </div>
         </div>
@@ -252,7 +255,7 @@ function add(){
         </div>
         
         <button type="submit" class="btn btn-sm btn-primary" onclick="save()">Simpan</button>
-        <button type="reset" class="btn btn-sm btn-dark">Batal</button>
+        <button type="reset" class="btn btn-sm btn-default">Batal</button>
     </form>`
 
     $.ajax({
@@ -317,7 +320,7 @@ function save(){
 
     if($('#flagBunga').val() == "T"){
         if(reformatAngka($('#transferdana').val()) == afterAdjustment && reformatAngka($('#transferdana').val()) != 0){
-            $('#alerttransfer').addClass('d-none')
+            $('#alerttransfer').addClass('hide')
             $.ajax({
                 url: "/api/danacollateral",
                 type: "post",
@@ -328,7 +331,7 @@ function save(){
                 }
             })
         } else {
-            $('#alerttransfer').removeClass('d-none')
+            $('#alerttransfer').removeClass('hide')
         }
     } else if($('#flagBunga').val() == "F"){
         $.ajax({
@@ -401,7 +404,7 @@ function edit(id){
                         <label for="transferdana" class="col-sm-4 col-form-label">Transfer Dana</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="transferdana" value="${formatAngka(result.bungatransfer)}" onfocus="reformat(this.value, this.id)" onblur="format(this.value, this.id)" required>
-                            <span id="alerttransfer" class="text-danger d-none">transfer dana harus sama dengan bunga after adjustment dan tidak boleh 0</span>
+                            <span id="alerttransfer" class="text-danger hide">transfer dana harus sama dengan bunga after adjustment dan tidak boleh 0</span>
                         </div>
                     </div>
                 </div>
@@ -473,7 +476,7 @@ function edit(id){
                 </div>
                 
                 <button type="submit" class="btn btn-sm btn-primary" onclick="update()">Simpan</button>
-                <button type="reset" class="btn btn-sm btn-dark">Batal</button>
+                <button type="reset" class="btn btn-sm btn-default">Batal</button>
             </form>`
 
             $.ajax({
@@ -544,7 +547,7 @@ function update(){
 
     if($('#flagBunga').val() == "T"){
         if(reformatAngka($('#transferdana').val()) == afterAdjustment && reformatAngka($('#transferdana').val()) != 0){
-            $('#alerttransfer').addClass('d-none')
+            $('#alerttransfer').addClass('hide')
             $.ajax({
                 url: "/api/danacollateral",
                 type: "put",
@@ -555,7 +558,7 @@ function update(){
                 }
             })
         } else {
-            $('#alerttransfer').removeClass('d-none')
+            $('#alerttransfer').removeClass('hide')
         }
     } else if($('#flagBunga').val() == "F"){
         $.ajax({
@@ -568,4 +571,15 @@ function update(){
             }
         })
     }
+}
+
+function hapus(id){
+    $.ajax({
+        url: "/api/danacollateral/"+id,
+        type: "delete",
+        contentType: "application/json",
+        success: function(){
+            location.reload();
+        }
+    })
 }

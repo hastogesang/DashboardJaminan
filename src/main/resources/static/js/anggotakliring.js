@@ -8,7 +8,10 @@ $(document).ready(function(){
             for(i=0; i < result.length; i++) {
                 str+=
                 `<tr>
-                    <td><div class="text-center"><span onclick="edit(${result[i].id})">Edit</span></div></td>
+                    <td>
+                        <div class="text-center"><span onclick="edit(${result[i].id})">Edit</span></div>
+                        <div class="text-center"><span onclick="hapus(${result[i].id})">Hapus</span></div>
+                    </td>
                     <td>${result[i].code}</td>
                     <td>${result[i].name}</td>
                     <td>${result[i].address}</td>
@@ -27,36 +30,40 @@ function add(){
     <div id="alert" class="alert alert-danger fade show" role="alert" style="display:none">
     </div>
 
-    <!-- <form> -->
-
-        <div class="form-group form-row">
-            <label for="code" class="col-sm-2 col-form-label">Code</label>
-            <div class="col-sm-4">
-                <input type="text" class="form-control" id="code">
+    <form onsubmit="event.preventDefault();">
+        <div class="row">
+            <div class="col">
+                <div class="form-group form-row">
+                    <label for="code" class="col-sm-2 col-form-label">Code</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="code">
+                    </div>
+                </div>
+                <div class="form-group form-row">
+                    <label for="nama" class="col-sm-2 col-form-label">AnggotaKliring</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="nama">
+                    </div>
+                </div>
+                <div class="form-group form-row">
+                    <label for="address" class="col-sm-2 col-form-label">Alamat</label>
+                    <div class="col-sm-4">
+                        <textarea class="form-control" id="address" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="form-group form-row">
+                    <label for="type" class="col-sm-2 col-form-label">Tipe</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="type" placeholder="B/T">
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="form-group form-row">
-            <label for="name" class="col-sm-2 col-form-label">AnggotaKliring</label>
-            <div class="col-sm-4">
-                <input type="text" class="form-control" id="name">
-            </div>
+        <div class="col">
+            <button type="submit" class="btn btn-sm btn-primary" onclick="save()">Simpan</button>
+            <button type="reset" class="btn btn-sm btn-dark">Batal</button>
         </div>
-        <div class="form-group form-row">
-            <label for="address" class="col-sm-2 col-form-label">Alamat</label>
-            <div class="col-sm-4">
-                <textarea class="form-control" id="address" rows="2"></textarea>
-            </div>
-        </div>
-        <div class="form-group form-row">
-            <label for="type" class="col-sm-2 col-form-label">Tipe</label>
-            <div class="col-sm-4">
-                <input type="text" class="form-control" id="type" placeholder="B/T">
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-sm btn-primary" onclick="save()">Simpan</button>
-        <button type="submit" class="btn btn-sm btn-primary" onclick="javascript:window.open('/anggotakliring', '_self')">Batal</button>
-    <!-- </form> -->`
+        </form>`
 
     $('#card-body').html(str)
 }
@@ -65,7 +72,7 @@ function save(){
     var submitted_data =
     `{
         "code":"`+ $('#code').val() +`",
-        "name":"`+ $('#name').val() +`",
+        "name":"`+ $('#nama').val() +`",
         "address":"`+ $('#address').val() +`",
         "type":"`+ $('#type').val() +`"
     }`;
@@ -105,36 +112,42 @@ function edit(id){
             str = 
             `<h3>Edit</h3>
                             
-            <!-- <form> -->
-            <input type="hidden" id="id" value="${result.id}" disabled>
-            <div class="form-group form-row">
-                <label for="code" class="col-sm-2 col-form-label">Code</label>
-                <div class="col-sm-4">
-                    <input type="text" class="form-control" id="code" value="${result.code}">
+            <form onsubmit="event.preventDefault();">
+                <input type="hidden" id="id" value="${result.id}" disabled>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group form-row">
+                            <label for="code" class="col-sm-2 col-form-label">Code</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="code" value="${result.code}">
+                            </div>
+                        </div>
+                        <div class="form-group form-row">
+                            <label for="nama" class="col-sm-2 col-form-label">AnggotaKliring</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="nama" value="${result.name}">
+                            </div>
+                        </div>
+                        <div class="form-group form-row">
+                            <label for="address" class="col-sm-2 col-form-label">Alamat</label>
+                            <div class="col-sm-4">
+                                <textarea class="form-control" id="address" rows="2">${result.address}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group form-row">
+                            <label for="type" class="col-sm-2 col-form-label">Tipe</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="type" value="${result.type}">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group form-row">
-                <label for="name" class="col-sm-2 col-form-label">AnggotaKliring</label>
-                <div class="col-sm-4">
-                    <input type="text" class="form-control" id="name" value="${result.name}">
+                
+                <div class="col">
+                    <button type="submit" class="btn btn-sm btn-primary" onclick="update()">Simpan</button>
+                    <button type="reset" class="btn btn-sm btn-dark">Batal</button>
                 </div>
-            </div>
-            <div class="form-group form-row">
-                <label for="address" class="col-sm-2 col-form-label">Alamat</label>
-                <div class="col-sm-4">
-                    <textarea class="form-control" id="address" rows="2">${result.address}</textarea>
-                </div>
-            </div>
-            <div class="form-group form-row">
-                <label for="type" class="col-sm-2 col-form-label">Tipe</label>
-                <div class="col-sm-4">
-                    <input type="text" class="form-control" id="type" value="${result.type}">
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-sm btn-primary" onclick="update()">Simpan</button>
-            <button type="submit" class="btn btn-sm btn-primary" onclick="javascript:window.open('/anggotakliring', '_self')">Batal</button>
-            <!-- </form> -->`
+            </form>`
 
             $('#card-body').html(str)
         }
@@ -146,7 +159,7 @@ function update(){
     `{
         "id":"`+ $('#id').val() +`",
         "code":"`+ $('#code').val() +`",
-        "name":"`+ $('#name').val() +`",
+        "name":"`+ $('#nama').val() +`",
         "address":"`+ $('#address').val() +`",
         "type":"`+ $('#type').val() +`"
     }`;
@@ -158,6 +171,17 @@ function update(){
         data : submitted_data,
         success: function(){
             window.location.reload();
+        }
+    })
+}
+
+function hapus(id){
+    $.ajax({
+        url: "/api/anggotakliring/"+id,
+        type: "delete",
+        contentType: "application/json",
+        success: function(){
+            location.reload();
         }
     })
 }

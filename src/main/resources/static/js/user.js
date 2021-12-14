@@ -62,29 +62,25 @@ function FormTambah(){
 function userCheck(user) {
     var username = $('#username').val()
     if(user == username){
-        $('#username').removeClass("border-danger")
-        $('#username').addClass("border-success")
-        $('#alert_username').addClass("d-none")
+        $('#alert_username').addClass("hide")
+        $('#avail_username').removeClass("hide")
         $('#user_check').val(0)
     }
     else if(username != ""){
-        $('#alert_username').addClass("d-none")
+        $('#alert_username').addClass("hide")
         $.ajax({
             url: '/api/user/username/' + username,
             type: 'get',
             contentType: 'application/json',
             success: function(result) {
                 if(result == ""){
-                    $('#username').removeClass("border-danger")
-                    $('#username').addClass("border-success")
-                    $('#alert_username').addClass("d-none")
-
+                    $('#avail_username').removeClass("hide")
+                    $('#alert_username').addClass("hide")
                     $('#user_check').val(0)
                 }
                 else {
-                    $('#username').removeClass("border-success")
-                    $('#username').addClass("border-danger")
-                    $('#alert_username').removeClass("d-none")
+                    $('#avail_username').addClass("hide")
+                    $('#alert_username').removeClass("hide")
                     $('#alert_username').text("Username already exists");
 
                     $('#user_check').val(1)
@@ -93,37 +89,34 @@ function userCheck(user) {
         })
     }
     else{
-        $('#alert_username').removeClass("d-none")
+        $('#alert_username').removeClass("hide")
         $('#alert_username').text("Username must be filled")
     }
 }
 
 function userCheckEdit(user) {
     var username = $('#username-edit').val()
-    if(user == username){
-        $('#username-edit').removeClass("border-danger")
-        $('#username-edit').addClass("border-success")
-        $('#alert_username-edit').addClass("d-none")
+    if(user == username){        
+        $('#alert_username-edit').addClass("hide")
+        $('#avail_username-edit').removeClass("hide")
         $('#user_check-edit').val(0)
     }
     else if(username != ""){
-        $('#alert_username-edit').addClass("d-none")
+        $('#alert_username-edit').addClass("hide")
         $.ajax({
             url: '/api/user/username/' + username,
             type: 'get',
             contentType: 'application/json',
             success: function(result) {
                 if(result == ""){
-                    $('#username-edit').removeClass("border-danger")
-                    $('#username-edit').addClass("border-success")
-                    $('#alert_username-edit').addClass("d-none")
+                    $('#avail_username-edit').removeClass("hide")
+                    $('#alert_username-edit').addClass("hide")
 
                     $('#user_check-edit').val(0)
                 }
                 else {
-                    $('#username-edit').removeClass("border-success")
-                    $('#username-edit').addClass("border-danger")
-                    $('#alert_username-edit').removeClass("d-none")
+                    $('#avail_username-edit').addClass("hide")
+                    $('#alert_username-edit').removeClass("hide")
                     $('#alert_username-edit').text("Username already exists");
 
                     $('#user_check-edit').val(1)
@@ -132,7 +125,7 @@ function userCheckEdit(user) {
         })
     }
     else{
-        $('#alert_username-edit').removeClass("d-none")
+        $('#alert_username-edit').removeClass("hide")
         $('#alert_username-edit').text("Username must be filled")
     }
 }
@@ -158,11 +151,11 @@ function Save() {
     var roles = $('#roles').val()
     
     if(username == ""){
-        $('#alert_username').removeClass("d-none")
+        $('#alert_username').removeClass("hide")
         $('#alert_username').text("Username must be filled")
     }
     else{
-        $('#alert_username').addClass("d-none")
+        $('#alert_username').addClass("hide")
         userCheck()
         var user_check = $('#user_check').val()
         if(user_check == 0)
@@ -170,22 +163,25 @@ function Save() {
     }
 
     if(password == "" || conf_pass == ""){
-        $('#alert_pass').removeClass("d-none")
+        $('#alert_pass').removeClass("hide")
         $('#alert_pass').text("Password must be filled")
     }
     else if(password != conf_pass){
-        $('#alert_pass').removeClass("d-none")
+        $('#alert_pass').removeClass("hide")
         $('#alert_pass').text("Password doesn't match")
     }
     else{
-        $('#alert_pass').addClass("d-none")
+        $('#alert_pass').addClass("hide")
         ok_pass = true
     }
 
-    if(roles.length == 0)
-        $('#alert_role').removeClass("d-none")
+
+    console.log(roles)
+
+    if(roles == null)
+        $('#alert_role').removeClass("hide")
     else{
-        $('#alert_role').addClass("d-none")
+        $('#alert_role').addClass("hide")
         ok_role = true
     }
 
@@ -291,11 +287,11 @@ function Update(user) {
     var roles = $('#roles-edit').val()
     
     if(username == ""){
-        $('#alert_username-edit').removeClass("d-none")
+        $('#alert_username-edit').removeClass("hide")
         $('#alert_username-edit').text("Username must be filled")
     }
     else{
-        $('#alert_username-edit').addClass("d-none")
+        $('#alert_username-edit').addClass("hide")
         userCheckEdit(user)
         var user_check = $('#user_check-edit').val()
         if(user_check == 0)
@@ -303,22 +299,22 @@ function Update(user) {
     }
 
     if(password == "" || conf_pass == ""){
-        $('#alert_pass-edit').removeClass("d-none")
+        $('#alert_pass-edit').removeClass("hide")
         $('#alert_pass-edit').text("Password must be filled")
     }
     else if(password != conf_pass){
-        $('#alert_pass-edit').removeClass("d-none")
+        $('#alert_pass-edit').removeClass("hide")
         $('#alert_pass-edit').text("Password doesn't match")
     }
     else{
-        $('#alert_pass-edit').addClass("d-none")
+        $('#alert_pass-edit').addClass("hide")
         ok_pass = true
     }
 
     if(roles.length == 0)
-        $('#alert_role-edit').removeClass("d-none")
+        $('#alert_role-edit').removeClass("hide")
     else{
-        $('#alert_role-edit').addClass("d-none")
+        $('#alert_role-edit').addClass("hide")
         ok_role = true
     }
 

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.dashboard.model.keuangan.AnggotaKliring;
 import com.dashboard.repository.keuangan.AnggotaKliringRepo;
 
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,14 +54,14 @@ public class AnggotaKliringApiController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> CreateAnggotaKliring(@RequestBody AnggotaKliring anggotaKliring)
+    public ResponseEntity<Object> CreateAnggotaKliring(@RequestBody AnggotaKliring anggotaKliring, HttpServletRequest request)
     {
         try {
             Optional<String> anggotaKliringOpt = this.anggotaKliringRepo.isCodeExist(anggotaKliring.getCode());
             if(anggotaKliringOpt.isPresent())
                 return new ResponseEntity<>("code already exists", HttpStatus.BAD_REQUEST);
             else {
-                anggotaKliring.setCreatedBy("admin");
+                anggotaKliring.setCreatedBy(request.getUserPrincipal().getName());
                 anggotaKliring.setCreatedOn(LocalDateTime.now());
                 this.anggotaKliringRepo.save(anggotaKliring);
                 return new ResponseEntity<>("success", HttpStatus.OK);
@@ -70,7 +73,7 @@ public class AnggotaKliringApiController {
     }
 
     @PutMapping("")
-    public ResponseEntity<Object> EditAnggotaKliring(@RequestBody AnggotaKliring anggotaKliring){
+    public ResponseEntity<Object> EditAnggotaKliring(@RequestBody AnggotaKliring anggotaKliring, HttpServletRequest request){
         try {
             Optional<AnggotaKliring> anggotaKliringData = this.anggotaKliringRepo.findById(anggotaKliring.getId());
 
@@ -79,9 +82,29 @@ public class AnggotaKliringApiController {
                 anggotaKliringData.get().setName(anggotaKliring.getName());
                 anggotaKliringData.get().setAddress(anggotaKliring.getAddress());
                 anggotaKliringData.get().setType(anggotaKliring.getType());
-                anggotaKliringData.get().setModifiedBy("admin");
+                anggotaKliringData.get().setModifiedBy(request.getUserPrincipal().getName());
                 anggotaKliringData.get().setModifiedOn(LocalDateTime.now());
                 
+                this.anggotaKliringRepo.save(anggotaKliringData.get());
+
+                return new ResponseEntity<>("success", HttpStatus.OK);
+            }else{
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> DeleteAnggotaKliring(@PathVariable("id") Integer id, HttpServletRequest request){
+        try {
+            Optional<AnggotaKliring> anggotaKliringData = this.anggotaKliringRepo.findById(id);
+
+            if(anggotaKliringData.isPresent()){
+                anggotaKliringData.get().setDeleted("true");
+                anggotaKliringData.get().setModifiedBy(request.getUserPrincipal().getName());
+                anggotaKliringData.get().setModifiedOn(LocalDateTime.now());
                 this.anggotaKliringRepo.save(anggotaKliringData.get());
 
                 return new ResponseEntity<>("success", HttpStatus.OK);

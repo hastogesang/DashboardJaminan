@@ -5,89 +5,65 @@
 		<div th:insert="fragment::head"></div>
 		<link rel="stylesheet" href="/css/tablestyles.css">
 	</head>
-<body>
+<body class="fix-header">
 	<div th:insert="fragment::navbar"></div>
+	<div th:insert="fragment::sidebar"></div>
 
-	<div class="container-fluid">
-		<div class="row">
-			<div th:insert="fragment::sidebar"></div>
-
-			<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-				<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-					<h2>Dana Collateral</h2>
-					<div class="btn-toolbar mb-2 mb-md-0">
-						<nav aria-label="breadcrumb">
-							<ol class="breadcrumb py-0">
-								<li class="breadcrumb-item"><a href="#">Home</a></li>
-								<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-							</ol>
-						</nav>
-						<!-- <div class="btn-group mr-2">
-							<button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-						</div> -->
-					</div>
+	<div id="page-wrapper">
+		<div class="container-fluid">
+			<div class="row bg-title">
+				<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+					<h4 class="page-title">User</h4>
 				</div>
-				
-				<div id="content-body">
-					<div class="accordion" id="accordionOne">
-						<div class="card">
-							<div class="card-header" id="headingOne">
-								<div class="d-flex">
-									<div class="p-2">
-											Dana Collateral
-									</div>
-									<div class="ml-auto">
-										<button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-											+
-										</button>
-									</div>
+				<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+					<ol class="breadcrumb py-0">
+						<li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Dana Collateral</li>
+					</ol>
+				</div>
+			</div>
+
+				<main role="main" class="white-box">
+					<div id="content-body">
+						<div id="card-body" class="card-body">
+							<div class="row">
+								<div class="col-md-11">
+									<input id="myInput" type="text" placeholder="Masukkan nama bank..">
+									<input id="startDate" type="date" placeholder="Start Date">
+									<input id="endDate" type="date" placeholder="End Date">
+									<a class="btn btn-sm btn-primary" id="search" onclick="searchFiltered()">search</a>
+									<button class="btn btn-sm btn-default" id="reset" onclick="reset()">reset</button>
+								</div>
+								<div class="col-md-1">
+									<button class="btn btn-sm btn-default" id="exportbutton" onclick="exportData()">Export</button>
 								</div>
 							</div>
-							<!-- <button type="button" class="btn btn-sm btn-outline-secondary"
-							th:onclick="window.location.href='/api/danacollateral/pdf'">Export</button> -->
-							
-							<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionOne">
-								<div id="card-body" class="card-body">
-									<div class="d-flex">
-										<div>
-											<input id="myInput" type="text" placeholder="Masukkan nama bank..">
-											<input id="startDate" type="date" placeholder="Start Date">
-											<input id="endDate" type="date" placeholder="End Date">
-											<a class="btn btn-sm btn-outline-secondary" id="search" onclick="searchFiltered()">search</a>
-											<button class="btn btn-sm btn-outline-secondary" id="reset" onclick="reset()">reset</button>
-										</div>
-										<div class="ml-auto">
-											<button class="btn btn-sm btn-outline-secondary" id="exportbutton" onclick="exportData()">Export</button>
-										</div>
-									</div>
-									<br>
-									<div class="table-responsive">
-										<table id="table" class="table table-bordered table-sm">
-											<thead>
-												<tr>
-													<th><span onclick="add()">Tambah</span></th>
-													<th>id</th>
-													<th>businessdate</th>
-													<th>code</th>
-													<th>bank</th>
-													<th>nominal</th>
-													<th>tanggalpenempatan</th>
-													<th>jatuhtempo</th>
-													<th>sukubunga</th>
-												</tr>
-											</thead>
-											<tbody id="tbody">
-												<!-- Content -->
-											</tbody>
-										</table>
-									</div>
-								</div>
+							<br>
+							<div class="table-responsive">
+								<table id="table" class="table table-bordered table-sm">
+									<thead>
+										<tr>
+											<th><span onclick="add()">Tambah</span></th>
+											<th>id</th>
+											<th>businessdate</th>
+											<th>code</th>
+											<th>bank</th>
+											<th>nominal</th>
+											<th>tanggalpenempatan</th>
+											<th>jatuhtempo</th>
+											<th>sukubunga</th>
+										</tr>
+									</thead>
+									<tbody id="tbody">
+										<!-- Content -->
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>
-				</div>
-			</main>
+				</main>
 
+			</div>
 		</div>
 	</div>
 

@@ -19,6 +19,8 @@ import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import org.hibernate.annotations.Where;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "DanaCollateral")
+@Where(clause = "deleted = 'false'")
 public class DanaCollateral extends Common implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
