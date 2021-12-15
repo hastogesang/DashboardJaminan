@@ -221,7 +221,7 @@ public class DanaJaminanApiController {
     }
 
 
-    @Scheduled(cron = "00 05 09 * * *")
+    @Scheduled(cron = "00 34 08 * * *")
     // @Scheduled(fixedRate = 15000)
     public void fetchDBJob() throws ParseException{
 

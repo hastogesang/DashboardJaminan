@@ -60,14 +60,77 @@
         })
     }
 
-    function Save(){
+    function roleCheck(role) {
+        var rolename = $('#rolename').val()
+        if(role == rolename){
+            $('#alert_rolename').addClass("hide")
+            $('#avail_rolename').removeClass("hide")
+            $('#role_check').val(0)
+        }
+        else if(rolename != ""){
+            $('#alert_rolename').addClass("hide")
+            return $.ajax({
+                url: '/api/rolebyname/' + rolename,
+                type: 'get',
+                contentType: 'application/json',
+                success: function(result) {
+                    // console.log(result);
+                    if(result == ""){
+                        $('#avail_rolename').removeClass("hide")
+                        $('#alert_rolename').addClass("hide")
+                        $('#role_check').val(0)
+                    }
+                    else {
+                        $('#avail_rolename').addClass("hide")
+                        $('#alert_rolename').removeClass("hide")
+                        $('#alert_rolename').text("rolename already exists");
+
+                        $('#role_check').val(1)
+                    }
+                }
+            })
+        }
+        else{
+            $('#alert_rolename').removeClass("hide")
+            $('#alert_rolename').text("rolename must be filled")
+        }
+    }
+
+    function resetRoleCheck(){
+        $('#rolename').removeClass("border-danger border-success")
+        $('#role_check').val(-1)
+    }
+
+    function resetAlertAksesmenu(){
+        $('#alert_aksesmenu').addClass("hide")
+    }
+
+    async function Save(){
+        var ok_user = false;
+        var ok_aksesmenu = false;
+        var rolename = $('#rolename').val()
+        if(rolename == ""){
+            $('#avail_rolename').addClass("hide")
+            $('#alert_rolename').removeClass("hide")
+            $('#alert_rolename').text("rolename harus diisi")
+        } else {
+            $('#alert_rolename').addClass("hide")
+            await roleCheck()
+            var role_check = $('#role_check').val()
+            if(role_check == 0)
+                ok_user = true
+        }
+
+        if($('#aksesmenu').val().length == 0){
+            $('#alert_aksesmenu').removeClass("hide")
+        } else {
+            ok_aksesmenu = true
+        }
         var datarole ='{' ;
             datarole +='"rolename":"' + $('#rolename').val() + '"' ;
             datarole +='}' ;
 
-        if($('#rolename').val() == '' || $('#aksesmenu').val().length == 0){
-            alert('Role dan Akses Menu harus diisi!')
-        } else {
+        if(ok_user && ok_aksesmenu){
             $.ajax({
                 url: '/api/role',
                 type: 'post',
@@ -81,7 +144,7 @@
                         success: function(data){
                             var menu = [];
                             menu = $('#aksesmenu').val();
-
+    
                             for (let i = 0; i < menu.length; i++) {
                                 var formData ='{' ;
                                 formData +='"roleId":"' + data.id + '",' ;
@@ -99,7 +162,7 @@
                             }
                             $('#daftarModal').modal('hide');
                             location.reload();
-
+    
                         }
                     })
                 }

@@ -68,11 +68,12 @@ function userCheck(user) {
     }
     else if(username != ""){
         $('#alert_username').addClass("hide")
-        $.ajax({
+        return $.ajax({
             url: '/api/user/username/' + username,
             type: 'get',
             contentType: 'application/json',
             success: function(result) {
+                console.log(result);
                 if(result == ""){
                     $('#avail_username').removeClass("hide")
                     $('#alert_username').addClass("hide")
@@ -140,7 +141,7 @@ function resetUserCheckEdit(){
     $('#user_check-edit').val(-1)
 }
 
-function Save() {
+async function Save() {
     var ok_user = false
     var ok_pass = false
     var ok_role = false
@@ -156,7 +157,7 @@ function Save() {
     }
     else{
         $('#alert_username').addClass("hide")
-        userCheck()
+        await userCheck()
         var user_check = $('#user_check').val()
         if(user_check == 0)
             ok_user = true

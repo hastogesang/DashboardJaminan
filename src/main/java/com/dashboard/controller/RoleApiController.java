@@ -57,16 +57,15 @@ public class RoleApiController {
     }
 
     @GetMapping("/rolebyname/{rolename}")
-    public ResponseEntity<List<Role>> GetRoleByRolename(@PathVariable("rolename") String rolename)
+    public ResponseEntity<Role> GetRoleByRolename(@PathVariable("rolename") String rolename)
     {
-        if (rolename != null)
+        try
         {
-            Optional<Role> rOptional = this.roleRepo.findByRolename(rolename);
-            ResponseEntity response = new ResponseEntity(rOptional, HttpStatus.OK);
-            return response;
-        } else {
-            List<Role> roles = this.roleRepo.findAll();
-            return new ResponseEntity<>(roles, HttpStatus.OK);
+            Role role = this.roleRepo.getRoleByRolename(rolename);
+           
+            return new ResponseEntity(role, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
