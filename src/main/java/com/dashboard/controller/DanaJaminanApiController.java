@@ -36,6 +36,7 @@ import com.dashboard.model.keuangan.GetDanaJaminanView;
 import com.dashboard.pdf.JasperPdfReport;
 import com.dashboard.repository.keuangan.DanaJaminanRepo;
 import com.dashboard.repository.keuangan.GetDanaJaminanViewRepo;
+import com.dashboard.service.HasAuthorityService;
 import com.dashboard.service.SendEmail;
 import com.lowagie.text.DocumentException;
 
@@ -78,9 +79,15 @@ public class DanaJaminanApiController {
     @Autowired
     private JasperPdfReport jasperPdfReport;
 
+    @Autowired
+    private HasAuthorityService hasAuthorityService;
+
     @GetMapping(value = "/danajaminan")
-    public ResponseEntity<List<DanaJaminan>> GetAllDanaJaminan() {
+    public ResponseEntity<List<DanaJaminan>> GetAllDanaJaminan(HttpServletRequest request) {
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             List<DanaJaminan> danaJaminans = this.danaJaminanRepo.findTop1000ByOrderByIdDesc();
 
             return new ResponseEntity<>(danaJaminans, HttpStatus.OK);
@@ -90,8 +97,11 @@ public class DanaJaminanApiController {
     }
 
     @PostMapping("/danajaminan/filter")
-    public ResponseEntity<List<DanaJaminan>> GetFilteredDanaJaminan(@RequestBody DanaCollateralParam param){
+    public ResponseEntity<List<DanaJaminan>> GetFilteredDanaJaminan(@RequestBody DanaCollateralParam param, HttpServletRequest request){
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             String bank = null;
             if(param.getBank() != "") bank = param.getBank();
             Date date1 = null, date2 = null;
@@ -110,10 +120,13 @@ public class DanaJaminanApiController {
     }
 
     @GetMapping("/danajaminan/{id}")
-    public ResponseEntity<List<DanaJaminan>> GetDanaJaminanById(@PathVariable("id") Integer id)
+    public ResponseEntity<List<DanaJaminan>> GetDanaJaminanById(@PathVariable("id") Integer id, HttpServletRequest request)
     {
         if (id != 0)
         {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Optional<DanaJaminan> danaJaminans = this.danaJaminanRepo.findById(id);
             ResponseEntity response = new ResponseEntity(danaJaminans, HttpStatus.OK);
             return response;
@@ -128,6 +141,9 @@ public class DanaJaminanApiController {
     {
         String username = request.getUserPrincipal().getName();
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             danaJaminan.setCreatedBy(username);
             danaJaminan.setCreatedOn(LocalDateTime.now());
             this.danaJaminanRepo.save(danaJaminan);
@@ -141,6 +157,9 @@ public class DanaJaminanApiController {
     public ResponseEntity<Object> UpdateDanaJaminan(@RequestBody DanaJaminan danaJaminan, @PathVariable("id") Integer id, HttpServletRequest request){
         String username = request.getUserPrincipal().getName();
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Optional<DanaJaminan> danaJaminanData = this.danaJaminanRepo.findById(id);
 
             if(danaJaminanData.isPresent()){
@@ -200,8 +219,11 @@ public class DanaJaminanApiController {
     }
 
     @DeleteMapping(value = "/danajaminan/{id}")
-    public ResponseEntity<Object> DeleteDanaJaminan(@PathVariable("id") Integer id) {
+    public ResponseEntity<Object> DeleteDanaJaminan(@PathVariable("id") Integer id, HttpServletRequest request) {
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Optional<DanaJaminan> danaJaminanData = this.danaJaminanRepo.findById(id);
             if (danaJaminanData.isPresent()) {
                 // System.out.println(categoryData.get().getCategoryName());

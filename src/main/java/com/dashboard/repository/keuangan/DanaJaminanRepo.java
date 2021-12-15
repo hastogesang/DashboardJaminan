@@ -12,10 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface DanaJaminanRepo extends JpaRepository<DanaJaminan, Integer> {
-    // @Query("select d from DanaJaminan d where d.id < 11")
     List<DanaJaminan> findTop1000ByOrderByIdDesc();
 
-    // @Query(value = "select d from DanaJaminan d where d.jatuhtempo = ?1 and d.aro='T'")
     @Query(value = " SELECT * FROM GetDanaJaminanView" + " WHERE jatuhtempo = ?1 and aro='T'", nativeQuery = true)
     List<GetDanaJaminanView> findByjatuhtempo(@Param("tanggal") String string);
 

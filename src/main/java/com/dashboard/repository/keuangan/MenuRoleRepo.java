@@ -17,9 +17,6 @@ public interface MenuRoleRepo extends JpaRepository<MenuRole, Integer> {
     @Query(value = "SELECT * FROM Menu_Role WHERE menu_id = ?1", nativeQuery = true)
     List<MenuRole> findByMenuId(Integer id);
 
-    // @Query(value = "delete from Menu_Role where role_id = ?1", nativeQuery = true)
-    // Long deleteByRoleId(Integer id);
-
     @Modifying
     @Transactional
     @Query("delete from MenuRole b where b.roleId=:id")

@@ -37,9 +37,9 @@ public class HasAuthorityService {
             List<MenuRole> menuRoles = menuRoleRepo.findByRoleId(userRoles.get(i).getRoleId());
             for (int j = 0; j < menuRoles.size(); j++) {
                 String menuUrl = menuRoles.get(j).getMenu().getUrl();
-                if(!menuUrl.contains("/"))
-                    menuUrl = "/" + menuUrl;
-                if(menuUrl.contains(url)){
+                // if(!menuUrl.contains("/"))
+                    // menuUrl = "/" + menuUrl;
+                if(url.contains(menuUrl)){
                     hasAuthority++;
                 }
             }

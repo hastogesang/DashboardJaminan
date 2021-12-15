@@ -544,8 +544,6 @@
 
 
 
-
-
 // function tambahan
 
   function ubahAngka(angka,id){
@@ -599,25 +597,6 @@
     $('#exportbutton').attr("href", `/api/danajaminan/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
   }
 
-  // function ExportData(){
-  //   var date1 = $("#date1").val();
-  //   var date2 = $("#date2").val();
-  //   var bank = $('#bank').val();
-
-  //   if(date1 != '' && date2 != ''){
-  //     date1 = date1.replaceAll("-", "/");
-  //     date2 = date2.replaceAll("-", "/");
-  //   }
-
-  //   console.log(date1);
-  //   console.log(date2);
-  //   console.log(bank);
-
-  //   $('#exportbutton').attr("href", `/api/danajaminan/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
-    // window.location.href(`/api/danajaminan/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
-
-  // }
-
   function ResetSearch(){
     $('#bank').val("");
     $('#date1').val("");
@@ -632,14 +611,6 @@
 
     return datediff;
   }
-
-  // function stopRKey(evt) { 
-  //   var evt = (evt) ? evt : ((event) ? event : null); 
-  //   var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); 
-  //   if ((evt.keyCode == 13) && (node.type=="text"))  {return false;} 
-  // }
-
-  // document.onkeypress = stopRKey;
 
   function toFixed(num, fixed) {
       var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');

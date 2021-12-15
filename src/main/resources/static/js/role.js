@@ -288,6 +288,7 @@
 
     $('#daftarModal').on('hidden.bs.modal', function() {
         $('#registerForm input').val('');
+        $('.form-group span').addClass('hide')
     });
 
     $(document).ready(function() {

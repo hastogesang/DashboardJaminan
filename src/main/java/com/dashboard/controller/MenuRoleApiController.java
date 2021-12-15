@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.dashboard.model.keuangan.MenuRole;
 import com.dashboard.repository.keuangan.MenuRoleRepo;
+import com.dashboard.service.HasAuthorityService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,9 +29,15 @@ public class MenuRoleApiController {
     @Autowired
     private MenuRoleRepo menuRoleRepo;
 
+    @Autowired
+    private HasAuthorityService hasAuthorityService;
+
     @GetMapping("/menurole")
-    public ResponseEntity<List<MenuRole>> GetAllMenuRole(){
+    public ResponseEntity<List<MenuRole>> GetAllMenuRole(HttpServletRequest request){
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             List<MenuRole> menuRoleList = this.menuRoleRepo.findAll();
             return new ResponseEntity<>(menuRoleList, HttpStatus.OK);
         } catch (Exception ex) {
@@ -39,8 +46,11 @@ public class MenuRoleApiController {
     }
 
     @GetMapping("/menurole/{id}")
-    public ResponseEntity<List<MenuRole>> GetMenuRoleById(@PathVariable("id") Integer id) {
+    public ResponseEntity<List<MenuRole>> GetMenuRoleById(@PathVariable("id") Integer id, HttpServletRequest request) {
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             //optional berarti data yang dicari bisa null
             List<MenuRole> menuRoleOptional = this.menuRoleRepo.findByRoleId(id);
             // if (menuRoleOptional.isPresent()) {
@@ -59,6 +69,9 @@ public class MenuRoleApiController {
     {
         String username = request.getUserPrincipal().getName();
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             menuRole.setCreatedBy(username);
             menuRole.setCreatedOn(LocalDateTime.now());
             this.menuRoleRepo.save(menuRole);
@@ -69,8 +82,12 @@ public class MenuRoleApiController {
     }
 
     @DeleteMapping("/menurole/{id}")
-    public ResponseEntity<Object> DeleteMenuRole(@PathVariable("id") Integer id)
+    public ResponseEntity<Object> DeleteMenuRole(@PathVariable("id") Integer id, HttpServletRequest request)
     {
+
+        if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
         this.menuRoleRepo.deleteByRoleId(id);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }

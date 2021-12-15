@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.dashboard.model.keuangan.Role;
 import com.dashboard.repository.keuangan.RoleRepo;
+import com.dashboard.service.HasAuthorityService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,11 +31,17 @@ public class RoleApiController {
     @Autowired
     private RoleRepo roleRepo;
 
+    @Autowired
+    private HasAuthorityService hasAuthorityService;
+
     @PostMapping("/role")
     public ResponseEntity<Object> SaveRole(@RequestBody Role role, HttpServletRequest request)
     {
         String username = request.getUserPrincipal().getName();
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             role.setCreatedBy(username);
             role.setCreatedOn(LocalDateTime.now());
             role.setDeleted("false");
@@ -46,8 +53,11 @@ public class RoleApiController {
     }
 
     @GetMapping(value = "/role")
-    public ResponseEntity<List<Role>> GetAllRole() {
+    public ResponseEntity<List<Role>> GetAllRole(HttpServletRequest request) {
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             List<Role> roles = this.roleRepo.findAll();
 
             return new ResponseEntity<>(roles, HttpStatus.OK);
@@ -70,8 +80,11 @@ public class RoleApiController {
     }
 
     @GetMapping("/role/{id}")
-    public ResponseEntity<List<Role>> GetRoleById(@PathVariable("id") Integer id)
+    public ResponseEntity<List<Role>> GetRoleById(@PathVariable("id") Integer id, HttpServletRequest request)
     {
+        if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         if (id != null)
         {
             Optional<Role> rOptional = this.roleRepo.findById(id);
@@ -87,6 +100,9 @@ public class RoleApiController {
     public ResponseEntity<Object> UpdateRole(@RequestBody Role role, @PathVariable("id") Integer id, HttpServletRequest request){
         String username = request.getUserPrincipal().getName();
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Optional<Role> roledata = this.roleRepo.findById(id);
 
             if(roledata.isPresent()){
@@ -108,8 +124,11 @@ public class RoleApiController {
     }
 
     @DeleteMapping(value = "/role/{id}")
-    public ResponseEntity<Object> DeleteRole(@PathVariable("id") Integer id) {
+    public ResponseEntity<Object> DeleteRole(@PathVariable("id") Integer id, HttpServletRequest request) {
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Optional<Role> roleData = this.roleRepo.findById(id);
             if (roleData.isPresent()) {
                 // System.out.println(categoryData.get().getCategoryName());
