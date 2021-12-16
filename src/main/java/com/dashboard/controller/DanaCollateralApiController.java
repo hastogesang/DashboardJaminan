@@ -29,6 +29,7 @@ import com.dashboard.pdf.JasperPdfReportDanaCollateral;
 import com.dashboard.repository.keuangan.DanaCollateralRepo;
 import com.dashboard.repository.keuangan.GetDanaCollateralViewRepo;
 import com.dashboard.service.GoogleDriveService;
+import com.dashboard.service.HasAuthorityService;
 import com.dashboard.service.SendEmail;
 // import com.dashboard.service.TelegramService;
 
@@ -67,13 +68,18 @@ public class DanaCollateralApiController {
 
     @Autowired
     private SendEmail sendEmail;
+
+    @Autowired private HasAuthorityService hasAuthorityService;
     
     // @Autowired
     // private TelegramService telegramService;
 
     @GetMapping("")
-    public ResponseEntity<List<DanaCollateral>> GetAllDanaCollateral(){
+    public ResponseEntity<List<DanaCollateral>> GetAllDanaCollateral(HttpServletRequest request){
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             // List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findAll(Sort.by(Sort.Direction.DESC, "id"));
             List<DanaCollateral> danaCollaterals = this.danaCollateralRepo.findTop1000ByOrderByIdDesc();
 
@@ -84,8 +90,11 @@ public class DanaCollateralApiController {
     }
     
     @PostMapping("filter")
-    public ResponseEntity<List<DanaCollateral>> GetFilteredDanaCollateral(@RequestBody DanaCollateralParam param){
+    public ResponseEntity<List<DanaCollateral>> GetFilteredDanaCollateral(@RequestBody DanaCollateralParam param, HttpServletRequest request){
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             String bank = null;
             Date date1 = null, date2 = null;
             if(param.getBank() != "")
@@ -106,10 +115,13 @@ public class DanaCollateralApiController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<DanaCollateral> GetDanaCollateralById(@PathVariable("id") Integer id)
+    public ResponseEntity<DanaCollateral> GetDanaCollateralById(@PathVariable("id") Integer id, HttpServletRequest request)
     {
         try
         {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Optional<DanaCollateral> danaCollateral = this.danaCollateralRepo.findById(id);
             if (danaCollateral.isPresent()) 
                 return new ResponseEntity(danaCollateral, HttpStatus.OK);
@@ -125,6 +137,9 @@ public class DanaCollateralApiController {
     public ResponseEntity<Object> CreateDanaCollateral(@RequestBody DanaCollateral danaCollateral, HttpServletRequest request)
     {
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             danaCollateral.setCreatedBy(request.getUserPrincipal().getName());
             danaCollateral.setCreatedOn(LocalDateTime.now());
             this.danaCollateralRepo.save(danaCollateral);
@@ -137,6 +152,9 @@ public class DanaCollateralApiController {
     @PutMapping("")
     public ResponseEntity<Object> EditDanaCollateral(@RequestBody DanaCollateral danaCollateral, HttpServletRequest request){
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Optional<DanaCollateral> danaCollateralData = this.danaCollateralRepo.findById(danaCollateral.getId());
 
             if(danaCollateralData.isPresent()){
@@ -193,6 +211,9 @@ public class DanaCollateralApiController {
     @DeleteMapping("{id}")
     public ResponseEntity<Object> DeleteDanaCollateral(@PathVariable("id") Integer id, HttpServletRequest request){
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Optional<DanaCollateral> danaCollateralData = this.danaCollateralRepo.findById(id);
 
             if(danaCollateralData.isPresent()){

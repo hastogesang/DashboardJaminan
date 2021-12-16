@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.dashboard.model.keuangan.UserRole;
 import com.dashboard.repository.keuangan.UserRoleRepo;
+import com.dashboard.service.HasAuthorityService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/userrole")
 public class UserRoleApiController {
     @Autowired private UserRoleRepo userRoleRepo;
-
+    @Autowired private HasAuthorityService hasAuthorityService;
     @GetMapping("")
-    public ResponseEntity<List<UserRole>> GetAllUser(){
+    public ResponseEntity<List<UserRole>> GetAllUser(HttpServletRequest request){
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             List<UserRole> userRoles = this.userRoleRepo.findTop1000ByOrderByIdDesc();
 
             return new ResponseEntity<>(userRoles, HttpStatus.OK);
@@ -38,8 +42,11 @@ public class UserRoleApiController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<List<UserRole>> GetUserRolesByuserId(@PathVariable("id") Integer id){
+    public ResponseEntity<List<UserRole>> GetUserRolesByuserId(@PathVariable("id") Integer id, HttpServletRequest request){
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             List<UserRole> userRoles = this.userRoleRepo.findByuserId(id);
 
             return new ResponseEntity<>(userRoles, HttpStatus.OK);
@@ -52,6 +59,9 @@ public class UserRoleApiController {
     public ResponseEntity<Object> CreateUserRoles(@RequestBody UserRole userRole, HttpServletRequest request)
     {
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             this.userRoleRepo.save(userRole);
             return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception ex) {
@@ -60,8 +70,11 @@ public class UserRoleApiController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Object> DeleteUserRoles(@PathVariable("id") Integer id)
+    public ResponseEntity<Object> DeleteUserRoles(@PathVariable("id") Integer id, HttpServletRequest request)
     {
+        if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         try {
             this.userRoleRepo.deleteByUserId(id);
             return new ResponseEntity<>("success", HttpStatus.OK);

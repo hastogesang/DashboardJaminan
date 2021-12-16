@@ -7,8 +7,6 @@ $(document).ready(function(){
             setTBody(result);
         }
     })
-
-    // $('#exportbutton').attr("href", `/api/danacollateral/export?bankParam=&date1Param=&date2Param=`);
 })
 
 function setTBody(result) {
@@ -74,9 +72,7 @@ function exportData(){
         date1 = date1.replaceAll("-", "/");
         date2 = date2.replaceAll("-", "/");
     }
-    // $('#exportbutton').attr("href", `/api/danacollateral/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`);
     window.location.assign(`/api/danacollateral/export?bankParam=${bank}&date1Param=${date1}&date2Param=${date2}`, "Download")
-
   }
 
 function format(angka, id){
@@ -88,10 +84,7 @@ function reformat(angka, id){
 }
 
 function formatAngka(angka){
-    // if(angka.includes(",") && angka.includes("."))
-    //     return angka
-    // else
-        return new Intl.NumberFormat("id", {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(angka)
+    return new Intl.NumberFormat("id", {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(angka)
 }
 
 function reformatAngka(angka){
@@ -107,7 +100,6 @@ function calcInterest() {
     var bungaBruto = (jumlah * sukuBunga / 100) / 365 * datediff
     var bungaNeto = parseFloat(bungaBruto) - parseFloat(bungaBruto * 20 / 100)
 
-    // console.log(bungaNeto)
     $("#bunga").val(formatAngka(bungaNeto.toFixed(2)));
 }
 
@@ -123,13 +115,10 @@ function calcDatediff() {
 function calcAdjustment() {
     var adjustment = reformatAngka($("#adjustment").val())
     var bunga = reformatAngka($("#bunga").val())
-    // console.log(adjustment)
-    // console.log(bunga)
 
     var afterAdjustment = parseFloat(bunga) + parseFloat(adjustment)
 
     $("#afterAdjustment").val(formatAngka(afterAdjustment.toFixed(2)))
-    // $("#afterAdjustment").val(afterAdjustment.toFixed(2))
 }
 
 function add(){
@@ -315,8 +304,6 @@ function save(){
         "admin":"`+ admin +`",
         "flag_bunga":"` + $('#flagBunga').val() + `"
     }`
-
-    // console.log(submitted_data)
 
     if($('#flagBunga').val() == "T"){
         if(reformatAngka($('#transferdana').val()) == afterAdjustment && reformatAngka($('#transferdana').val()) != 0){
@@ -542,8 +529,6 @@ function update(){
         "admin":"`+ admin +`",
         "flag_bunga":"` + $('#flagBunga').val() + `"
     }`;
-
-    // console.log(submitted_data)
 
     if($('#flagBunga').val() == "T"){
         if(reformatAngka($('#transferdana').val()) == afterAdjustment && reformatAngka($('#transferdana').val()) != 0){

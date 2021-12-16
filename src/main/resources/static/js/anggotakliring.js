@@ -82,7 +82,6 @@ function save(){
         type: "get",
         contentType: "application/json",
         success: function(result){
-            console.log(result)
             if(result){
                 $('#alert').text("Code " + $('#code').val() + " already exist")
                 $('#alert').show("fast")

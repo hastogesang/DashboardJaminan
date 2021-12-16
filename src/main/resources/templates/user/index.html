@@ -33,7 +33,7 @@
 						<div id="card-body" class="card-body">  
 							<button class="btn btn-default" style="margin-bottom: 10px;" onclick="FormTambah()">Tambah User +</button>
 							<div class="table-responsive">
-								<table id="table" class="table table-bordered table-sm">
+								<table id="table" class="table table-bordered">
 									<thead>
 										<tr>
 											<th>Username</th>
@@ -127,15 +127,6 @@
 							<label for="username-edit" class="col-form-label">Username:</label>
 			
 							<input type="hidden" id="user_check-edit" value="-1">
-							<!-- <div class="row">
-								<div class="col">
-									<input type="text" class="form-control border" id="username-edit" onchange="resetUserCheckEdit()" required>
-								</div>
-								<div class="col-auto" id="check-edit">
-									<button type="button" class="btn btn-primary" onclick="userCheckEdit(this.value)" id="btncheck-edit">Check</button>
-								</div>
-							</div>
-							<span id="alert_username-edit" class="text-danger hide"></span> -->
 							<div class="input-group">
 								<input type="text" class="form-control" id="username-edit" onchange="resetUserCheckEdit()" required>
 								<span class="input-group-btn">

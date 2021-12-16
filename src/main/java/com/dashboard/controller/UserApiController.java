@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.dashboard.model.keuangan.User;
 import com.dashboard.repository.keuangan.UserRepo;
+import com.dashboard.service.HasAuthorityService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,10 +30,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/user")
 public class UserApiController {
     @Autowired private UserRepo userRepo;
-
+    @Autowired private HasAuthorityService hasAuthorityService;
     @GetMapping("")
-    public ResponseEntity<List<User>> GetAllUser(){
+    public ResponseEntity<List<User>> GetAllUser(HttpServletRequest request){
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             List<User> users = this.userRepo.findTop1000ByOrderByIdDesc();
 
             return new ResponseEntity<>(users, HttpStatus.OK);
@@ -42,10 +46,13 @@ public class UserApiController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<User> GetUserById(@PathVariable("id") Integer id)
+    public ResponseEntity<User> GetUserById(@PathVariable("id") Integer id, HttpServletRequest request)
     {
         try
         {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Optional<User> user = this.userRepo.findById(id);
             if (user.isPresent()) 
                 return new ResponseEntity(user, HttpStatus.OK);
@@ -58,10 +65,13 @@ public class UserApiController {
     }
 
     @GetMapping("username/{username}")
-    public ResponseEntity<User> GetUserByUsername(@PathVariable("username") String username)
+    public ResponseEntity<User> GetUserByUsername(@PathVariable("username") String username, HttpServletRequest request)
     {
         try
         {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             User user = this.userRepo.getUserByUsername(username);
            
             return new ResponseEntity(user, HttpStatus.OK);
@@ -74,6 +84,9 @@ public class UserApiController {
     public ResponseEntity<Object> CreateUser(@RequestBody User user, HttpServletRequest request)
     {
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             user.setPassword(passwordEncoders().encode(user.getPassword()));
             user.setCreatedBy(request.getUserPrincipal().getName());
             user.setCreatedOn(LocalDateTime.now());
@@ -93,6 +106,9 @@ public class UserApiController {
     @PutMapping("")
     public ResponseEntity<Object> EditUser(@RequestBody User user, HttpServletRequest request){
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Optional<User> userData = this.userRepo.findById(user.getId());
 
             if(userData.isPresent()){
@@ -119,6 +135,9 @@ public class UserApiController {
     @DeleteMapping("{id}")
     public ResponseEntity<Object> DeleteUser(@PathVariable("id") Integer id, HttpServletRequest request){
         try {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Optional<User> userData = this.userRepo.findById(id);
 
             if(userData.isPresent()){

@@ -4,7 +4,6 @@ $(document).ready(function(){
         type:'get',
         contentType:'application/json',
         success:function(result) {
-            // console.log(result)
             for (var i = 0; i < result.length; i++) {
                 setTBody(result[i])
             }
@@ -18,7 +17,6 @@ function setTBody(result) {
         type:'get',
         contentType:'application/json',
         success:function(urResult) {
-            // console.log(urResult)
             var str = ""
             var roles = ""
             for(var j = 0; j < urResult.length; j++){
@@ -73,7 +71,6 @@ function userCheck(user) {
             type: 'get',
             contentType: 'application/json',
             success: function(result) {
-                console.log(result);
                 if(result == ""){
                     $('#avail_username').removeClass("hide")
                     $('#alert_username').addClass("hide")
@@ -175,9 +172,6 @@ async function Save() {
         $('#alert_pass').addClass("hide")
         ok_pass = true
     }
-
-
-    console.log(roles)
 
     if(roles == null)
         $('#alert_role').removeClass("hide")
@@ -327,7 +321,6 @@ function Update(user) {
         "divisi": "`+divisi+`"
     }`
 
-    // console.log(submitted_data);
     if(ok_user && ok_pass && ok_role){
         $.ajax({
             url: "/api/user",
