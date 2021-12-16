@@ -66,9 +66,6 @@ public class AnggotaKliringApiController {
     public ResponseEntity<Object> CreateAnggotaKliring(@RequestBody AnggotaKliring anggotaKliring, HttpServletRequest request)
     {
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             Optional<String> anggotaKliringOpt = this.anggotaKliringRepo.isCodeExist(anggotaKliring.getCode());
             if(anggotaKliringOpt.isPresent())
                 return new ResponseEntity<>("code already exists", HttpStatus.BAD_REQUEST);
@@ -87,9 +84,6 @@ public class AnggotaKliringApiController {
     @PutMapping("")
     public ResponseEntity<Object> EditAnggotaKliring(@RequestBody AnggotaKliring anggotaKliring, HttpServletRequest request){
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             Optional<AnggotaKliring> anggotaKliringData = this.anggotaKliringRepo.findById(anggotaKliring.getId());
 
             if(anggotaKliringData.isPresent()){
@@ -114,9 +108,6 @@ public class AnggotaKliringApiController {
     @DeleteMapping("{id}")
     public ResponseEntity<Object> DeleteAnggotaKliring(@PathVariable("id") Integer id, HttpServletRequest request){
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             Optional<AnggotaKliring> anggotaKliringData = this.anggotaKliringRepo.findById(id);
 
             if(anggotaKliringData.isPresent()){

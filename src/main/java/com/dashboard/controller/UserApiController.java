@@ -84,9 +84,6 @@ public class UserApiController {
     public ResponseEntity<Object> CreateUser(@RequestBody User user, HttpServletRequest request)
     {
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             user.setPassword(passwordEncoders().encode(user.getPassword()));
             user.setCreatedBy(request.getUserPrincipal().getName());
             user.setCreatedOn(LocalDateTime.now());
@@ -106,9 +103,6 @@ public class UserApiController {
     @PutMapping("")
     public ResponseEntity<Object> EditUser(@RequestBody User user, HttpServletRequest request){
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             Optional<User> userData = this.userRepo.findById(user.getId());
 
             if(userData.isPresent()){
@@ -135,9 +129,6 @@ public class UserApiController {
     @DeleteMapping("{id}")
     public ResponseEntity<Object> DeleteUser(@PathVariable("id") Integer id, HttpServletRequest request){
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             Optional<User> userData = this.userRepo.findById(id);
 
             if(userData.isPresent()){

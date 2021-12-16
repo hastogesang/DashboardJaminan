@@ -137,9 +137,6 @@ public class DanaCollateralApiController {
     public ResponseEntity<Object> CreateDanaCollateral(@RequestBody DanaCollateral danaCollateral, HttpServletRequest request)
     {
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             danaCollateral.setCreatedBy(request.getUserPrincipal().getName());
             danaCollateral.setCreatedOn(LocalDateTime.now());
             this.danaCollateralRepo.save(danaCollateral);
@@ -152,9 +149,6 @@ public class DanaCollateralApiController {
     @PutMapping("")
     public ResponseEntity<Object> EditDanaCollateral(@RequestBody DanaCollateral danaCollateral, HttpServletRequest request){
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             Optional<DanaCollateral> danaCollateralData = this.danaCollateralRepo.findById(danaCollateral.getId());
 
             if(danaCollateralData.isPresent()){
@@ -211,9 +205,6 @@ public class DanaCollateralApiController {
     @DeleteMapping("{id}")
     public ResponseEntity<Object> DeleteDanaCollateral(@PathVariable("id") Integer id, HttpServletRequest request){
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             Optional<DanaCollateral> danaCollateralData = this.danaCollateralRepo.findById(id);
 
             if(danaCollateralData.isPresent()){
@@ -295,17 +286,17 @@ public class DanaCollateralApiController {
                 String file = danaCollateralViews.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf";
                 // send email
                 try {
-                    sendEmail.SendMail("abrahamtjoanda@gmail.com",
+                    sendEmail.SendMail("[email@email.com]",
                             "<p>Berikut adalah :</p><h1>Test</h1><br><p>file report pdf</p>",
                             "test report.pdf", file);
                 } catch (MessagingException e) {
                     e.printStackTrace();
                 }
 
-                String fileId = googleDriveService.uploadFileInFolder(file, "application/pdf", file, "1HiaV3sgfj3U_x0-PmfDpIGPpkJ2qasYF");
+                String fileId = googleDriveService.uploadFileInFolder(file, "application/pdf", file, "[folder_id]");
                 String shareableLink = googleDriveService.getShareableLink(fileId);
                 System.out.println(shareableLink);
-                // telegramService.sendMessage("1596642611", shareableLink);
+                // telegramService.sendMessage("[chat_id]", shareableLink);
 
                 // delete file
                 File fileReport = new File(danaCollateralViews.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf");

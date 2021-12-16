@@ -15,7 +15,8 @@ import org.springframework.web.client.RestTemplate;
 @Transactional
 public class TelegramService {
     public void sendMessage(String chat_id, String text){
-        String url = "https://api.telegram.org/bot2025165373:AAEeJqrkLJxq1E3ixT-nQNGQIr6SiwREYuQ/sendMessage";
+        String bot_id = "";
+        String url = "https://api.telegram.org/bot"+ bot_id +"/sendMessage";
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
