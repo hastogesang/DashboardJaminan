@@ -39,9 +39,6 @@ public class RoleApiController {
     {
         String username = request.getUserPrincipal().getName();
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             role.setCreatedBy(username);
             role.setCreatedOn(LocalDateTime.now());
             role.setDeleted("false");
@@ -67,10 +64,13 @@ public class RoleApiController {
     }
 
     @GetMapping("/rolebyname/{rolename}")
-    public ResponseEntity<Role> GetRoleByRolename(@PathVariable("rolename") String rolename)
+    public ResponseEntity<Role> GetRoleByRolename(@PathVariable("rolename") String rolename, HttpServletRequest request)
     {
         try
         {
+            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
             Role role = this.roleRepo.getRoleByRolename(rolename);
            
             return new ResponseEntity(role, HttpStatus.OK);
@@ -100,9 +100,6 @@ public class RoleApiController {
     public ResponseEntity<Object> UpdateRole(@RequestBody Role role, @PathVariable("id") Integer id, HttpServletRequest request){
         String username = request.getUserPrincipal().getName();
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             Optional<Role> roledata = this.roleRepo.findById(id);
 
             if(roledata.isPresent()){
@@ -126,9 +123,6 @@ public class RoleApiController {
     @DeleteMapping(value = "/role/{id}")
     public ResponseEntity<Object> DeleteRole(@PathVariable("id") Integer id, HttpServletRequest request) {
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             Optional<Role> roleData = this.roleRepo.findById(id);
             if (roleData.isPresent()) {
                 // System.out.println(categoryData.get().getCategoryName());

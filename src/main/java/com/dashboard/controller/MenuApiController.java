@@ -44,9 +44,6 @@ public class MenuApiController {
     {
         String username = request.getUserPrincipal().getName();
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             menu.setCreatedBy(username);
             menu.setCreatedOn(LocalDateTime.now());
             menu.setDeleted("false");
@@ -92,12 +89,6 @@ public class MenuApiController {
     public ResponseEntity<Object> UpdateMenu(@RequestBody Menu menu, @PathVariable("id") Integer id, HttpServletRequest request){
         String username = request.getUserPrincipal().getName();
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             Optional<Menu> menudata = this.menuRepo.findById(id);
 
             if(menudata.isPresent()){
@@ -121,12 +112,6 @@ public class MenuApiController {
     @DeleteMapping(value = "/menu/{id}")
     public ResponseEntity<Object> DeleteMenu(@PathVariable("id") Integer id, HttpServletRequest request) {
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             Optional<Menu> menuData = this.menuRepo.findById(id);
             if (menuData.isPresent()) {
                 // System.out.println(categoryData.get().getCategoryName());

@@ -69,9 +69,6 @@ public class MenuRoleApiController {
     {
         String username = request.getUserPrincipal().getName();
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
             menuRole.setCreatedBy(username);
             menuRole.setCreatedOn(LocalDateTime.now());
             this.menuRoleRepo.save(menuRole);
@@ -84,10 +81,6 @@ public class MenuRoleApiController {
     @DeleteMapping("/menurole/{id}")
     public ResponseEntity<Object> DeleteMenuRole(@PathVariable("id") Integer id, HttpServletRequest request)
     {
-
-        if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
         this.menuRoleRepo.deleteByRoleId(id);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
