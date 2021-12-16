@@ -101,7 +101,7 @@ function userCheckEdit(user) {
     }
     else if(username != ""){
         $('#alert_username-edit').addClass("hide")
-        $.ajax({
+        return $.ajax({
             url: '/api/user/username/' + username,
             type: 'get',
             contentType: 'application/json',
@@ -270,7 +270,7 @@ function FormEdit(id) {
     })
 }
 
-function Update(user) {
+async function Update(user) {
     var ok_user = false
     var ok_pass = false
     var ok_role = false
@@ -287,7 +287,7 @@ function Update(user) {
     }
     else{
         $('#alert_username-edit').addClass("hide")
-        userCheckEdit(user)
+        await userCheckEdit(user)
         var user_check = $('#user_check-edit').val()
         if(user_check == 0)
             ok_user = true
