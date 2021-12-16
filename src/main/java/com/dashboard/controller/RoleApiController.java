@@ -52,9 +52,9 @@ public class RoleApiController {
     @GetMapping(value = "/role")
     public ResponseEntity<List<Role>> GetAllRole(HttpServletRequest request) {
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
+            // if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+            //     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            // }
             List<Role> roles = this.roleRepo.findAll();
 
             return new ResponseEntity<>(roles, HttpStatus.OK);
@@ -68,9 +68,9 @@ public class RoleApiController {
     {
         try
         {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
+            // if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+            //     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            // }
             Role role = this.roleRepo.getRoleByRolename(rolename);
            
             return new ResponseEntity(role, HttpStatus.OK);

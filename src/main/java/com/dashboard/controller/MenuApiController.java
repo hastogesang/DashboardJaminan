@@ -57,9 +57,9 @@ public class MenuApiController {
     @GetMapping(value = "/menu")
     public ResponseEntity<List<Menu>> GetAllMenu(HttpServletRequest request) {
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
+            // if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+            //     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            // }
             List<Menu> menus = this.menuRepo.findAll();
 
             return new ResponseEntity<>(menus, HttpStatus.OK);
