@@ -104,7 +104,6 @@ public class UserApiController {
     public ResponseEntity<Object> EditUser(@RequestBody User user, HttpServletRequest request){
         try {
             Optional<User> userData = this.userRepo.findById(user.getId());
-
             if(userData.isPresent()){
                 userData.get().setUsername(user.getUsername());
 
@@ -116,8 +115,7 @@ public class UserApiController {
                 userData.get().setModifiedBy(request.getUserPrincipal().getName());
                 userData.get().setModifiedOn(LocalDateTime.now());
                 this.userRepo.save(userData.get());
-
-                return new ResponseEntity<>("success", HttpStatus.OK);
+                return new ResponseEntity<>(request.getUserPrincipal().getName(), HttpStatus.OK);
             }else{
                 return ResponseEntity.notFound().build();
             }

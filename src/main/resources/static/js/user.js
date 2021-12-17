@@ -313,55 +313,103 @@ async function Update(user) {
         ok_role = true
     }
 
-    var submitted_data =
-    `{
-        "id": "`+user_id+`",
-        "username": "`+username+`",
-        "password": "`+password+`",
-        "divisi": "`+divisi+`"
-    }`
+    // if(ok_user && ok_pass && ok_role){
+    //     $.ajax({
+    //         url: "/api/user",
+    //         type: "put",
+    //         contentType: "application/json",
+    //         data : submitted_data,
+    //         success: function(){
+    //             $.ajax({
+    //                 url:'/api/user/username/'+username,
+    //                 type:'get',
+    //                 contentType:'application/json',
+    //                 success:function(result) {
+    
+    //                     $.ajax({
+    //                         url: "/api/userrole/"+result.id,
+    //                         type: "delete",
+    //                         contentType: "application/json",
+    //                         success: function(){
+    //                         }
+    //                     })
+    
+    //                     for (var i = 0; i < roles.length; i++) {
+    //                         var submitted_data =
+    //                             `{
+    //                                 "userId": "`+result.id+`",
+    //                                 "roleId": "`+roles[i]+`"
+    //                             }`
+
+    //                         $.ajax({
+    //                             url: "/api/userrole",
+    //                             type: "post",
+    //                             contentType: "application/json",
+    //                             data : submitted_data,
+    //                             success: function(){
+    //                                 $('#editModal').modal('hide')
+    //                                 location.reload();
+    //                             }
+    //                         })
+    //                     }
+    //                 }
+    //             })
+    //         }
+    //     })
+    // }
 
     if(ok_user && ok_pass && ok_role){
         $.ajax({
-            url: "/api/user",
-            type: "put",
-            contentType: "application/json",
-            data : submitted_data,
-            success: function(){
+            url:'/api/user/username/'+user,
+            type:'get',
+            contentType:'application/json',
+            success:function(result) {
+
                 $.ajax({
-                    url:'/api/user/username/'+username,
-                    type:'get',
-                    contentType:'application/json',
-                    success:function(result) {
-    
-                        $.ajax({
-                            url: "/api/userrole/"+result.id,
-                            type: "delete",
-                            contentType: "application/json",
-                            success: function(){
-                            }
-                        })
-    
-                        for (var i = 0; i < roles.length; i++) {
+                    url: "/api/userrole/"+result.id,
+                    type: "delete",
+                    contentType: "application/json",
+                    success: function(){
+                    }
+                })
+
+                for (var i = 0; i < roles.length; i++) {
+                    var submitted_data =
+                        `{
+                            "userId": "`+result.id+`",
+                            "roleId": "`+roles[i]+`"
+                        }`
+
+                    $.ajax({
+                        url: "/api/userrole",
+                        type: "post",
+                        contentType: "application/json",
+                        data : submitted_data,
+                        success: function(){
                             var submitted_data =
-                                `{
-                                    "userId": "`+result.id+`",
-                                    "roleId": "`+roles[i]+`"
-                                }`
+                            `{
+                                "id": "`+user_id+`",
+                                "username": "`+username+`",
+                                "password": "`+password+`",
+                                "divisi": "`+divisi+`"
+                            }`
 
                             $.ajax({
-                                url: "/api/userrole",
-                                type: "post",
+                                url: "/api/user",
+                                type: "put",
                                 contentType: "application/json",
                                 data : submitted_data,
-                                success: function(){
+                                success: function(result){
                                     $('#editModal').modal('hide')
-                                    location.reload();
+                                    if(user == result && username != result)
+                                        open("/logout")
+                                    else
+                                        location.reload()
                                 }
                             })
                         }
-                    }
-                })
+                    })
+                }
             }
         })
     }
