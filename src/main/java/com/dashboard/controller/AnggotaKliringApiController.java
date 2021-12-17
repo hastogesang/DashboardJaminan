@@ -36,9 +36,9 @@ public class AnggotaKliringApiController {
     @GetMapping("")
     public ResponseEntity<List<AnggotaKliring>> GetAllAnggotaKliring(HttpServletRequest request){
         try {
-            if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
+            // if(hasAuthorityService.hasAuthority(request.getUserPrincipal().getName(),request.getRequestURI())==false){
+            //     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            // }
             List<AnggotaKliring> anggotaKliring = this.anggotaKliringRepo.findTop1000ByOrderByIdDesc();
 
             return new ResponseEntity<>(anggotaKliring, HttpStatus.OK);

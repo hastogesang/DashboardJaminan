@@ -107,14 +107,25 @@
                 </div>
                 <div class="modal-body">
                     <form id="editmenu" onsubmit="event.preventDefault();">
+                        <input type="hidden" id="role_id-edit" disabled>
                         <div class="form-group">
-                            <label for="rolename-edit" class="col-form-label">Role Name:</label>
-                            <input type="text" class="form-control" id="rolename-edit" required>
-                        </div>
+							<label for="rolename-edit" class="col-form-label">Rolename:</label>
+			
+							<input type="hidden" id="role_check-edit" value="-1">
+							<div class="input-group">
+								<input type="text" class="form-control" id="rolename-edit" onchange="resetRoleCheckEdit()" required>
+								<a class="input-group-btn">
+									<button type="button" class="btn btn-primary" onclick="roleCheckEdit()">Check</button>
+								</a>
+							</div>
+							<span id="alert_rolename-edit" class="text-danger hide"></span>
+							<span id="avail_rolename-edit" class="text-success hide">Rolename Available</span>
+						</div>
                         <div class="form-group">
                             <label for="aksesmenu-edit" class="col-form-label">Akses Menu:</label>
-                            <select id="aksesmenu-edit" class="form-control selectpicker" multiple data-live-search="true" required="true">
+                            <select id="aksesmenu-edit" class="form-control selectpicker" multiple data-live-search="true" onchange="resetAlertAksesmenuEdit()" required="true">
                             </select>
+                            <span id="alert_aksesmenu-edit" class="text-danger hide">akses menu tidak boleh kosong</span>
                         </div>
                 </div>
                 <div class="modal-footer">

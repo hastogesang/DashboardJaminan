@@ -96,12 +96,57 @@
         }
     }
 
+    function roleCheckEdit(role) {
+        var rolename = $('#rolename-edit').val()
+        if(role == rolename){
+            $('#alert_rolename-edit').addClass("hide")
+            $('#avail_rolename-edit').removeClass("hide")
+            $('#role_check-edit').val(0)
+        }
+        else if(rolename != ""){
+            $('#alert_rolename-edit').addClass("hide")
+            return $.ajax({
+                url: '/api/rolebyname/' + rolename,
+                type: 'get',
+                contentType: 'application/json',
+                success: function(result) {
+                    // console.log(result);
+                    if(result == ""){
+                        $('#avail_rolename-edit').removeClass("hide")
+                        $('#alert_rolename-edit').addClass("hide")
+                        $('#role_check-edit').val(0)
+                    }
+                    else {
+                        $('#avail_rolename-edit').addClass("hide")
+                        $('#alert_rolename-edit').removeClass("hide")
+                        $('#alert_rolename-edit').text("rolename already exists");
+
+                        $('#role_check-edit').val(1)
+                    }
+                }
+            })
+        }
+        else{
+            $('#alert_rolename-edit').removeClass("hide")
+            $('#alert_rolename-edit').text("rolename must be filled")
+        }
+    }
+
     function resetRoleCheck(){
         $('#rolename').removeClass("border-danger border-success")
         $('#role_check').val(-1)
     }
 
+    function resetRoleCheckEdit(){
+        $('#rolename-edit').removeClass("border-danger border-success")
+        $('#role_check-edit').val(-1)
+    }
+
     function resetAlertAksesmenu(){
+        $('#alert_aksesmenu').addClass("hide")
+    }
+
+    function resetAlertAksesmenuEdit(){
         $('#alert_aksesmenu').addClass("hide")
     }
 
@@ -182,6 +227,8 @@
                     type: 'get',
                     contentType: 'application/json',
                     success: function(data){
+                        $("#role_id-edit").val(data.id);
+                        $("#edit-save-btn").val(data.rolename);
                         $("#rolename-edit").val(data.rolename);
                     }
                 })
@@ -203,62 +250,87 @@
                         }
                         $('#aksesmenu-edit').html(str)
                         $("#aksesmenu-edit").selectpicker("refresh");
+                        $('#editModal').modal('show');
                     }
                 })
                 
-                // console.log(id);
-                $("#edit-save-btn").val(id);
-                $('#editModal').modal('show');
             }
         })
     }
     
-    function Update(id){
-        if($('#rolename-edit').val() == '' || $('#aksesmenu-edit').val().length == 0){
-            alert('Role dan Akses Menu harus diisi!')
+    async function Update(role){
+        var roleId = $("#role_id-edit").val();
+        var rolename = $('#rolename-edit').val();
+        var aksesmenu = $('#aksesmenu-edit').val();
+        var ok_role = false;
+        var ok_aksesmenu = false;
+
+        if(rolename == ""){
+            $('#avail_rolename-edit').addClass("hide")
+            $('#alert_rolename-edit').removeClass("hide")
+            $('#alert_rolename-edit').text("rolename harus diisi")
         } else {
-            var datarole ='{' ;
-            datarole +='"rolename":"' + $('#rolename-edit').val() + '"' ;
-            datarole +='}' ;
-    
+            $('#alert_rolename-edit').addClass("hide")
+            await roleCheckEdit(role)
+            var role_check = $('#role_check-edit').val()
+            if(role_check == 0)
+                ok_role = true
+        }
+
+        if(aksesmenu.length == 0){
+            $('#alert_aksesmenu-edit').removeClass("hide")
+        } else {
+            ok_aksesmenu = true
+        }
+
+        if(ok_role && ok_aksesmenu){
             $.ajax({
-                url:'/api/role/'+id,
-                type: 'put' ,
+                url:'/api/rolebyname/'+role,
+                type:'get',
                 contentType:'application/json',
-                data: datarole,
-                success: function(){
-                    
+                success:function(result) {
+                    var submitted_data =
+                        `{
+                            "id": "`+roleId+`",
+                            "rolename": "`+rolename+`"
+                        }`
                     $.ajax({
-                        url: '/api/menurole/'+id,
-                        type: 'delete',
-                        contentType: 'application/json',
-                        success: function(){
-                            var menu = [];
-                            menu = $('#aksesmenu-edit').val();
-                            // console.log(menu);
-                            for (let i = 0; i < menu.length; i++) {
-                                var formData ='{' ;
-                                formData +='"roleId":"' + id + '",' ;
-                                formData +='"menuId":"' + menu[i] + '"' ;
-                                formData +='}' ;
-                                // console.log(formData);
-                                $.ajax({
-                                    url: '/api/menurole',
-                                    type:'post',
-                                    data: formData,
-                                    contentType: 'application/json',
-                                    success: function(){
+                        url:'/api/role',
+                        type: 'put' ,
+                        contentType:'application/json',
+                        data: submitted_data,
+                        success: function(roles){
+                            $.ajax({
+                                url: '/api/menurole/'+result.id,
+                                type: 'delete',
+                                contentType: 'application/json',
+                                success: function(){
+                                    for (let i = 0; i < aksesmenu.length; i++) {
+                                        var formData ='{' ;
+                                        formData +='"roleId":"' + result.id + '",' ;
+                                        formData +='"menuId":"' + aksesmenu[i] + '"' ;
+                                        formData +='}' ;
+                                        // console.log(formData);
+                                        $.ajax({
+                                            url: '/api/menurole',
+                                            type:'post',
+                                            data: formData,
+                                            contentType: 'application/json',
+                                            success: function(){
+                                            }
+                                        })
                                     }
-                                })
-                            }
-                            $('#daftarModal').modal('hide');
-                            location.reload();
-                            // console.log("oke");
+                                    $('#editModal').modal('hide')
+                                    if(role == roles[0].authority && rolename != roles[0].authority)
+                                        open("/logout", "_self")
+                                    else
+                                        location.reload()
+                                }
+                            })
                         }
                     })
-    
                 }
-            });
+            })
         }
     }
 
@@ -288,6 +360,10 @@
 
     $('#daftarModal').on('hidden.bs.modal', function() {
         $('#registerForm input').val('');
+        $('.form-group span').addClass('hide')
+    });
+    
+    $('#editModal').on('hidden.bs.modal', function() {
         $('.form-group span').addClass('hide')
     });
 

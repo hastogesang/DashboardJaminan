@@ -1,6 +1,7 @@
 package com.dashboard.controller;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,9 @@ import com.dashboard.service.HasAuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,21 +100,21 @@ public class RoleApiController {
         }
     }
 
-    @PutMapping("/role/{id}")
-    public ResponseEntity<Object> UpdateRole(@RequestBody Role role, @PathVariable("id") Integer id, HttpServletRequest request){
+    @PutMapping("/role")
+    public ResponseEntity<Object> UpdateRole(@RequestBody Role role, HttpServletRequest request){
         String username = request.getUserPrincipal().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> currentPrincipalName = authentication.getAuthorities();
         try {
-            Optional<Role> roledata = this.roleRepo.findById(id);
+            Optional<Role> roledata = this.roleRepo.findById(role.getId());
 
             if(roledata.isPresent()){
-                role.setId(id);
                 role.setCreatedBy(roledata.get().getCreatedBy());
                 role.setCreatedOn(roledata.get().getCreatedOn());
                 role.setModifiedBy(username);
                 role.setModifiedOn(LocalDateTime.now());
-                role.setDeleted("false");
                 this.roleRepo.save(role);
-                ResponseEntity rest = new ResponseEntity<>("Success", HttpStatus.OK);
+                ResponseEntity rest = new ResponseEntity<>(currentPrincipalName, HttpStatus.OK);
                 return rest;
             }else{
                 return ResponseEntity.notFound().build();

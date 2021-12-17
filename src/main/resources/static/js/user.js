@@ -402,7 +402,7 @@ async function Update(user) {
                                 success: function(result){
                                     $('#editModal').modal('hide')
                                     if(user == result && username != result)
-                                        open("/logout")
+                                        open("/logout", "_self")
                                     else
                                         location.reload()
                                 }
