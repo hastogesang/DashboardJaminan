@@ -194,16 +194,12 @@ public class DanaJaminanApiController {
             date2 = null;
         }
 
-        // System.out.println(bank);
-        // System.out.println(date1);
-        // System.out.println(date2);
         response.setContentType("application/octet-stream");
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=report.xlsx";
         response.setHeader(headerKey, headerValue);
 
         List<DanaJaminan> danaJaminans = danaJaminanRepo.GetFilteredDanaJamninan(bank, date1, date2, Sort.by(Sort.Direction.DESC, "id"));
-        // System.out.println(danaJaminans);
         DanaJaminanExcelExporter excelExporter = new DanaJaminanExcelExporter(danaJaminans);
 
         excelExporter.export(response);
@@ -232,7 +228,6 @@ public class DanaJaminanApiController {
 
 
     @Scheduled(cron = "00 16 09 * * *")
-    // @Scheduled(fixedRate = 15000)
     public void fetchDBJob() throws ParseException{
 
         // get data
@@ -249,14 +244,10 @@ public class DanaJaminanApiController {
             if(danaJaminan.getFlag_bunga() != null){
                 Integer tambahBulan = 30;
                 LocalDate jatuhTempoBaru = jatuhtempoparse.plusDays(tambahBulan);
-                // System.out.println("jatuhTempoBaru"+jatuhTempoBaru);
-                // System.out.println("jatuhtempoparse"+jatuhtempoparse);
 
                 if(isWeekend(jatuhTempoBaru) == DayOfWeek.SATURDAY){
-                    // System.out.println("sabtu");
                     jatuhTempoBaru = jatuhTempoBaru.plusDays(2);
                 } else if(isWeekend(jatuhTempoBaru) == DayOfWeek.SUNDAY){
-                    // System.out.println("minggu");
                     jatuhTempoBaru = jatuhTempoBaru.plusDays(1);
                 }
 
@@ -270,14 +261,10 @@ public class DanaJaminanApiController {
                 }
                 
                 BigDecimal bungaBruto =  (jumlah.multiply(danaJaminan.getSukubunga()).divide(new BigDecimal("100"), 2)).divide(BigDecimal.valueOf(365), 2).multiply(BigDecimal.valueOf(daysBetween));
-                // BigDecimal bungaBruto = (jumlah * danaJaminan.get().getSukubunga() / 100) / 365 * daysBetween;
                 BigDecimal bungaNeto = bungaBruto.subtract(bungaBruto.multiply(BigDecimal.valueOf(20)).divide(new BigDecimal("100"), 2));
-                // // BigDecimal bungaNeto = bungaBruto - (bungaBruto * 20 / 100);
                 BigDecimal pph = bungaBruto.multiply(new BigDecimal("20").divide(new BigDecimal("100")));
                 BigDecimal afterAdjustment = bungaNeto.add(danaJaminan.getAdjustment());
                 BigDecimal penempatan = jumlah.add(afterAdjustment).subtract(danaJaminan.getTransferdana()).subtract(danaJaminan.getTransferdanakbi());
-                // var penempatan = parseFloat(jumlah) + parseFloat(afterAdjustment) - parseFloat(transferDana) - parseFloat(transferDanaKbi);
-                // System.out.println(pph.setScale(4, RoundingMode.DOWN));
                 
                 DanaJaminan danaJaminan2 = new DanaJaminan();
                 danaJaminan2.setBusinessdate(danaJaminan.getJatuhtempo());

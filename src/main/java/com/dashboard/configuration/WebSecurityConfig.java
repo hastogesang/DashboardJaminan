@@ -55,7 +55,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().authenticated();
+        String[] staticResources  =  {
+            "/css/**",
+            "/img/**",
+            "/css/login/**"
+        };
+
+        http.authorizeRequests()
+            .antMatchers(staticResources).permitAll()
+            .anyRequest().authenticated();
         http.formLogin()
             .loginPage("/login")
             .usernameParameter("username")
