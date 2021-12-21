@@ -70,7 +70,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .passwordParameter("password")
             .defaultSuccessUrl("/", true)
             .permitAll()
-            .and().logout().permitAll().and().csrf().disable();
+            .and().rememberMe().rememberMeParameter("RememberMe").tokenValiditySeconds(7 * 24 * 60 * 60)
+            .and().logout().deleteCookies("JSESSIONID").permitAll().and().csrf().disable();
     }
 
 }
