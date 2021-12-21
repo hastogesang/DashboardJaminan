@@ -249,8 +249,8 @@ public class DanaJaminanApiController {
             if(danaJaminan.getFlag_bunga() != null){
                 Integer tambahBulan = 30;
                 LocalDate jatuhTempoBaru = jatuhtempoparse.plusDays(tambahBulan);
-                System.out.println("jatuhTempoBaru"+jatuhTempoBaru);
-                System.out.println("jatuhtempoparse"+jatuhtempoparse);
+                // System.out.println("jatuhTempoBaru"+jatuhTempoBaru);
+                // System.out.println("jatuhtempoparse"+jatuhtempoparse);
 
                 if(isWeekend(jatuhTempoBaru) == DayOfWeek.SATURDAY){
                     // System.out.println("sabtu");

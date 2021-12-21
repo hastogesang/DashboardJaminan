@@ -200,7 +200,7 @@
       type: 'get',
       contentType: 'application/json',
       success: function (data) {
-        console.log(data);
+        // console.log(data);
         var tanggalpenempatan = data.tanggalpenempatan.split("/");
         tanggalpenempatan = tanggalpenempatan[2]+'-'+tanggalpenempatan[0]+'-'+tanggalpenempatan[1];
         var jatuhtempo = data.jatuhtempo.split("/");
@@ -460,8 +460,8 @@
     var jatuhtempo = new Date($('#jatuhtempo').val());
     jatuhtempo = (jatuhtempo.getMonth()+1)+'/'+ jatuhtempo.getDate()+'/'+jatuhtempo.getFullYear();
 
-    console.log(tanggalpenempatan);
-    console.log(jatuhtempo);
+    // console.log(tanggalpenempatan);
+    // console.log(jatuhtempo);
 
     var formData =
     `{
@@ -488,7 +488,7 @@
         "flag_bunga":"`+ $('#flag_bunga').val() +`"
     }`;
 
-    console.log(formData);
+    // console.log(formData);
     // console.log(id);
 
     if($('#flag_bunga').val()=="T"){
@@ -526,7 +526,7 @@
   function FormDelete(id) {
       $("#delete-btn").val(id);
       $('#hapusModal').modal('show');
-      console.log(id);
+      // console.log(id);
   }
 
   function Delete(id) {

@@ -72,9 +72,9 @@
 			
 							<input type="hidden" id="user_check" value="-1">
 							<div class="input-group">
-								<input type="text" class="form-control" id="username" onchange="resetUserCheck()" required>
+								<input type="text" class="form-control" id="username" onkeyup="resetUserCheck('')" required>
 								<span class="input-group-btn">
-									<button type="button" class="btn btn-primary" onclick="userCheck()">Check</button>
+									<button type="button" class="btn btn-primary" onclick="userCheck('','')">Check</button>
 								</span>
 							</div>
 							<span id="alert_username" class="text-danger hide"></span>
@@ -128,9 +128,9 @@
 			
 							<input type="hidden" id="user_check-edit" value="-1">
 							<div class="input-group">
-								<input type="text" class="form-control" id="username-edit" onchange="resetUserCheckEdit()" required>
+								<input type="text" class="form-control" id="username-edit" onkeyup="resetUserCheck('-edit')" required>
 								<span class="input-group-btn">
-									<button type="button" id="btncheck-edit" class="btn btn-primary" onclick="userCheckEdit(this.value)">Check</button>
+									<button type="button" id="btncheck-edit" class="btn btn-primary" onclick="userCheck(this.value, '-edit')">Check</button>
 								</span>
 							</div>
 							<span id="alert_username-edit" class="text-danger hide"></span>

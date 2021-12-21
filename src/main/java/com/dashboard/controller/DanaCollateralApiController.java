@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
@@ -48,6 +49,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import net.sf.jasperreports.engine.JRException;
 
 @RestController
 @CrossOrigin("*")
@@ -281,27 +284,37 @@ public class DanaCollateralApiController {
                 danaCollateralData.setAdmin(danaCollateral.getAdmin());
                 danaCollateralRepo.save(danaCollateralData);
 
-                jasperPdfReport.exportPdf(danaCollateralViews);
+                try {
+                    jasperPdfReport.exportPdf(danaCollateralViews);
+                    // System.out.println("pdf berhasil di generate...");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JRException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
                 LocalDate today = LocalDate.now();
                 String file = danaCollateralViews.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf";
                 // send email
                 try {
-                    sendEmail.SendMail("[email@email.com]",
+                    sendEmail.SendMail("email@email.com",
                             "<p>Berikut adalah :</p><h1>Test</h1><br><p>file report pdf</p>",
                             "test report.pdf", file);
                 } catch (MessagingException e) {
                     e.printStackTrace();
                 }
 
-                String fileId = googleDriveService.uploadFileInFolder(file, "application/pdf", file, "[folder_id]");
+                String fileId = googleDriveService.uploadFileInFolder(file, "application/pdf", file, "folder_id");
                 String shareableLink = googleDriveService.getShareableLink(fileId);
-                System.out.println(shareableLink);
-                // telegramService.sendMessage("[chat_id]", shareableLink);
+                // System.out.println(shareableLink);
+                // telegramService.sendMessage("chat_id", shareableLink);
 
                 // delete file
                 File fileReport = new File(danaCollateralViews.get(0).getName()+"_"+today.getMonthValue()+"_"+today.getYear()+".pdf");
                 fileReport.delete();
-                System.out.println("file berhasil dihapus");
+                // System.out.println("file berhasil dihapus");
             }            
         }
     }

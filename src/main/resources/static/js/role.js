@@ -60,94 +60,45 @@
         })
     }
 
-    function roleCheck(role) {
-        var rolename = $('#rolename').val()
-        if(role == rolename){
-            $('#alert_rolename').addClass("hide")
-            $('#avail_rolename').removeClass("hide")
-            $('#role_check').val(0)
+    function roleCheck(role, additional) {
+        var rolename = $('#rolename'+additional).val()
+        if(role == rolename && role!= ""){
+            $('#avail_rolename'+additional).removeClass("hide")
+            $('#role_check'+additional).val(0)
         }
         else if(rolename != ""){
-            $('#alert_rolename').addClass("hide")
             return $.ajax({
                 url: '/api/rolebyname/' + rolename,
                 type: 'get',
                 contentType: 'application/json',
                 success: function(result) {
-                    // console.log(result);
                     if(result == ""){
-                        $('#avail_rolename').removeClass("hide")
-                        $('#alert_rolename').addClass("hide")
-                        $('#role_check').val(0)
+                        $('#avail_rolename'+additional).removeClass("hide")
+                        $('#role_check'+additional).val(0)
                     }
                     else {
-                        $('#avail_rolename').addClass("hide")
-                        $('#alert_rolename').removeClass("hide")
-                        $('#alert_rolename').text("rolename already exists");
+                        $('#alert_rolename'+additional).text("rolename already exists");
+                        $('#alert_rolename'+additional).removeClass("hide")
 
-                        $('#role_check').val(1)
+                        $('#role_check'+additional).val(1)
                     }
                 }
             })
         }
         else{
-            $('#alert_rolename').removeClass("hide")
-            $('#alert_rolename').text("rolename must be filled")
+            $('#alert_rolename'+additional).text("rolename must be filled")
+            $('#alert_rolename'+additional).removeClass("hide")
         }
     }
 
-    function roleCheckEdit(role) {
-        var rolename = $('#rolename-edit').val()
-        if(role == rolename){
-            $('#alert_rolename-edit').addClass("hide")
-            $('#avail_rolename-edit').removeClass("hide")
-            $('#role_check-edit').val(0)
-        }
-        else if(rolename != ""){
-            $('#alert_rolename-edit').addClass("hide")
-            return $.ajax({
-                url: '/api/rolebyname/' + rolename,
-                type: 'get',
-                contentType: 'application/json',
-                success: function(result) {
-                    // console.log(result);
-                    if(result == ""){
-                        $('#avail_rolename-edit').removeClass("hide")
-                        $('#alert_rolename-edit').addClass("hide")
-                        $('#role_check-edit').val(0)
-                    }
-                    else {
-                        $('#avail_rolename-edit').addClass("hide")
-                        $('#alert_rolename-edit').removeClass("hide")
-                        $('#alert_rolename-edit').text("rolename already exists");
-
-                        $('#role_check-edit').val(1)
-                    }
-                }
-            })
-        }
-        else{
-            $('#alert_rolename-edit').removeClass("hide")
-            $('#alert_rolename-edit').text("rolename must be filled")
-        }
+    function resetRoleCheck(additional){
+        $('#alert_rolename'+additional).addClass("hide")
+        $('#avail_rolename'+additional).addClass("hide")
+        $('#role_check'+additional).val(-1)
     }
 
-    function resetRoleCheck(){
-        $('#rolename').removeClass("border-danger border-success")
-        $('#role_check').val(-1)
-    }
-
-    function resetRoleCheckEdit(){
-        $('#rolename-edit').removeClass("border-danger border-success")
-        $('#role_check-edit').val(-1)
-    }
-
-    function resetAlertAksesmenu(){
-        $('#alert_aksesmenu').addClass("hide")
-    }
-
-    function resetAlertAksesmenuEdit(){
-        $('#alert_aksesmenu').addClass("hide")
+    function resetAlertAksesmenu(additional){
+        $('#alert_aksesmenu'+additional).addClass("hide")
     }
 
     async function Save(){
@@ -155,12 +106,10 @@
         var ok_aksesmenu = false;
         var rolename = $('#rolename').val()
         if(rolename == ""){
-            $('#avail_rolename').addClass("hide")
-            $('#alert_rolename').removeClass("hide")
             $('#alert_rolename').text("rolename harus diisi")
+            $('#alert_rolename').removeClass("hide")
         } else {
-            $('#alert_rolename').addClass("hide")
-            await roleCheck()
+            await roleCheck('','')
             var role_check = $('#role_check').val()
             if(role_check == 0)
                 ok_user = true
@@ -266,12 +215,10 @@
         var ok_aksesmenu = false;
 
         if(rolename == ""){
-            $('#avail_rolename-edit').addClass("hide")
             $('#alert_rolename-edit').removeClass("hide")
             $('#alert_rolename-edit').text("rolename harus diisi")
         } else {
-            $('#alert_rolename-edit').addClass("hide")
-            await roleCheckEdit(role)
+            await roleCheck(role, '-edit')
             var role_check = $('#role_check-edit').val()
             if(role_check == 0)
                 ok_role = true

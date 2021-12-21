@@ -57,85 +57,41 @@ function FormTambah(){
     })
 }
 
-function userCheck(user) {
-    var username = $('#username').val()
-    if(user == username){
-        $('#alert_username').addClass("hide")
-        $('#avail_username').removeClass("hide")
-        $('#user_check').val(0)
+function userCheck(user, additional) {
+    var username = $('#username'+additional).val()
+    if(user == username && user!= ""){
+        $('#avail_username'+additional).removeClass("hide")
+        $('#user_check'+additional).val(0)
     }
     else if(username != ""){
-        $('#alert_username').addClass("hide")
         return $.ajax({
             url: '/api/user/username/' + username,
             type: 'get',
             contentType: 'application/json',
             success: function(result) {
                 if(result == ""){
-                    $('#avail_username').removeClass("hide")
-                    $('#alert_username').addClass("hide")
-                    $('#user_check').val(0)
+                    $('#avail_username'+additional).removeClass("hide")
+                    $('#user_check'+additional).val(0)
                 }
                 else {
-                    $('#avail_username').addClass("hide")
-                    $('#alert_username').removeClass("hide")
-                    $('#alert_username').text("Username already exists");
+                    $('#alert_username'+additional).text("Username already exists");
+                    $('#alert_username'+additional).removeClass("hide")
 
-                    $('#user_check').val(1)
+                    $('#user_check'+additional).val(1)
                 }
             }
         })
     }
     else{
-        $('#alert_username').removeClass("hide")
-        $('#alert_username').text("Username must be filled")
+        $('#alert_username'+additional).text("Username must be filled")
+        $('#alert_username'+additional).removeClass("hide")
     }
 }
 
-function userCheckEdit(user) {
-    var username = $('#username-edit').val()
-    if(user == username){        
-        $('#alert_username-edit').addClass("hide")
-        $('#avail_username-edit').removeClass("hide")
-        $('#user_check-edit').val(0)
-    }
-    else if(username != ""){
-        $('#alert_username-edit').addClass("hide")
-        return $.ajax({
-            url: '/api/user/username/' + username,
-            type: 'get',
-            contentType: 'application/json',
-            success: function(result) {
-                if(result == ""){
-                    $('#avail_username-edit').removeClass("hide")
-                    $('#alert_username-edit').addClass("hide")
-
-                    $('#user_check-edit').val(0)
-                }
-                else {
-                    $('#avail_username-edit').addClass("hide")
-                    $('#alert_username-edit').removeClass("hide")
-                    $('#alert_username-edit').text("Username already exists");
-
-                    $('#user_check-edit').val(1)
-                }
-            }
-        })
-    }
-    else{
-        $('#alert_username-edit').removeClass("hide")
-        $('#alert_username-edit').text("Username must be filled")
-    }
-}
-
-function resetUserCheck(){
-    $('#username').removeClass("border-danger border-success")
-    $('#user_check').val(-1)
-}
-
-function resetUserCheckEdit(){
-    $('#username-edit').removeClass("border-danger border-success")
-    $('#user_check-edit').val(-1)
+function resetUserCheck(additional){
+    $('#alert_username'+additional).addClass("hide")
+    $('#avail_username'+additional).addClass("hide")
+    $('#user_check'+additional).val(-1)
 }
 
 async function Save() {
@@ -149,24 +105,23 @@ async function Save() {
     var roles = $('#roles').val()
     
     if(username == ""){
-        $('#alert_username').removeClass("hide")
         $('#alert_username').text("Username must be filled")
+        $('#alert_username').removeClass("hide")
     }
     else{
-        $('#alert_username').addClass("hide")
-        await userCheck()
+        await userCheck('','')
         var user_check = $('#user_check').val()
         if(user_check == 0)
             ok_user = true
     }
 
     if(password == "" || conf_pass == ""){
-        $('#alert_pass').removeClass("hide")
         $('#alert_pass').text("Password must be filled")
+        $('#alert_pass').removeClass("hide")
     }
     else if(password != conf_pass){
-        $('#alert_pass').removeClass("hide")
         $('#alert_pass').text("Password doesn't match")
+        $('#alert_pass').removeClass("hide")
     }
     else{
         $('#alert_pass').addClass("hide")
@@ -282,24 +237,23 @@ async function Update(user) {
     var roles = $('#roles-edit').val()
     
     if(username == ""){
-        $('#alert_username-edit').removeClass("hide")
         $('#alert_username-edit').text("Username must be filled")
+        $('#alert_username-edit').removeClass("hide")
     }
     else{
-        $('#alert_username-edit').addClass("hide")
-        await userCheckEdit(user)
+        await userCheck(user, '-edit')
         var user_check = $('#user_check-edit').val()
         if(user_check == 0)
             ok_user = true
     }
 
     if(password == "" || conf_pass == ""){
-        $('#alert_pass-edit').removeClass("hide")
         $('#alert_pass-edit').text("Password must be filled")
+        $('#alert_pass-edit').removeClass("hide")
     }
     else if(password != conf_pass){
-        $('#alert_pass-edit').removeClass("hide")
         $('#alert_pass-edit').text("Password doesn't match")
+        $('#alert_pass-edit').removeClass("hide")
     }
     else{
         $('#alert_pass-edit').addClass("hide")
@@ -312,51 +266,6 @@ async function Update(user) {
         $('#alert_role-edit').addClass("hide")
         ok_role = true
     }
-
-    // if(ok_user && ok_pass && ok_role){
-    //     $.ajax({
-    //         url: "/api/user",
-    //         type: "put",
-    //         contentType: "application/json",
-    //         data : submitted_data,
-    //         success: function(){
-    //             $.ajax({
-    //                 url:'/api/user/username/'+username,
-    //                 type:'get',
-    //                 contentType:'application/json',
-    //                 success:function(result) {
-    
-    //                     $.ajax({
-    //                         url: "/api/userrole/"+result.id,
-    //                         type: "delete",
-    //                         contentType: "application/json",
-    //                         success: function(){
-    //                         }
-    //                     })
-    
-    //                     for (var i = 0; i < roles.length; i++) {
-    //                         var submitted_data =
-    //                             `{
-    //                                 "userId": "`+result.id+`",
-    //                                 "roleId": "`+roles[i]+`"
-    //                             }`
-
-    //                         $.ajax({
-    //                             url: "/api/userrole",
-    //                             type: "post",
-    //                             contentType: "application/json",
-    //                             data : submitted_data,
-    //                             success: function(){
-    //                                 $('#editModal').modal('hide')
-    //                                 location.reload();
-    //                             }
-    //                         })
-    //                     }
-    //                 }
-    //             })
-    //         }
-    //     })
-    // }
 
     if(ok_user && ok_pass && ok_role){
         $.ajax({
